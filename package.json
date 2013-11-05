@@ -8,6 +8,8 @@
     "express": "*"
   , "ejs": "*"
   , "fussy": "*"
+  , "oauth": "*"
+  , "request": "*"
   , "socket.io": "*"
   , "uglify-js": "*"
   }
