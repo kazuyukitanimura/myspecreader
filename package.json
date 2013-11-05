@@ -1,0 +1,20 @@
+{
+  "version": "0.0.1"
+, "private": true
+, "scripts": {
+    "start": "node app"
+  }
+, "dependencies": {
+    "express": "*"
+  , "ejs": "*"
+  , "fussy": "*"
+  , "socket.io": "*"
+  , "uglify-js": "*"
+  }
+, "engine": "node >= 0.10.21"
+, "author": {
+    "name": "kazuyukitanimura",
+    "email": "kazuyukitanimura@gmail.com"
+  }
+, "license": "MIT"
+}
