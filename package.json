@@ -8,6 +8,7 @@
     "express": "*"
   , "ejs": "*"
   , "fussy": "*"
+  , "node.extend": "*"
   , "oauth": "*"
   , "request": "*"
   , "socket.io": "*"
