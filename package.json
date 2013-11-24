@@ -11,10 +11,11 @@
   , "node.extend": "*"
   , "oauth": "*"
   , "request": "*"
+  , "simple-oauth2": "git://github.com/andreareginato/simple-oauth2.git"
   , "socket.io": "*"
   , "uglify-js": "*"
   }
-, "engine": "node >= 0.10.21"
+, "engine": "node >= 0.10.22"
 , "author": {
     "name": "kazuyukitanimura",
     "email": "kazuyukitanimura@gmail.com"
