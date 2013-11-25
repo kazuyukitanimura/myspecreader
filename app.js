@@ -5,12 +5,16 @@ var Feedly = require('./feedly');
 
 var feedly = new Feedly();
 
+var STATES = {
+  AUTH: 'auth'
+};
+
 // Feedly Authorization URI
 var authorization_uri = feedly.getAuthUrl({
   // this has to be exactly http://localhost during sandbox
   redirect_uri: 'http://localhost',
   scope: 'https://cloud.feedly.com/subscriptions',
-  state: 'now'
+  state: STATES.AUTH
 });
 
 // Initial page redirecting to Feedly
@@ -20,10 +24,22 @@ app.get('/auth', function(req, res) {
 
 // Callback service parsing the authorization token and asking for the access token
 app.get('/', function(req, res) {
+  var state = req.query.state;
   var code = req.query.code;
-  feedly.getAccessToken(code, {
-    redirect_uri: 'http://localhost'
-  });
+  if (code && state === STATES.AUTH) {
+    feedly.getAccessToken(code, {
+      redirect_uri: 'http://localhost'
+    });
+    res.send(200);
+  } else {
+    feedly.getStreams(function(err, data, response) {
+      if (err) {
+        console.error(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
 });
 
 app.listen(80, function() {

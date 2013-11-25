@@ -1,5 +1,5 @@
 var CLIENT_ID = 'sandbox';
-var CLIENT_SECRET = '';
+var CLIENT_SECRET = require('./secret').CLIENT_SECRET;
 var AUTH_PATH = '/auth/auth';
 var TOKEN_PATH = '/auth/token';
 var API_VERSION = 'v3';
@@ -7,6 +7,8 @@ var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 //var OAuth2 = require('simple-oauth2');
 var OAuth2 = require('oauth').OAuth2;
 var extend = require('node.extend');
+var path = require('path');
+var querystring = require('querystring');
 var url = require('url');
 var feedlyUrlObj = {
   protocol: 'http',
@@ -21,7 +23,7 @@ var OAUTH_CONFIG = {
   ClientId: CLIENT_ID,
   ClientSecret: CLIENT_SECRET,
   RequestTokenUrl: url.format(extend({
-    pathname: '/' + API_VERSION
+    pathname: API_VERSION
   },
   feedlyUrlObj)),
   AuthPath: AUTH_PATH,
@@ -59,7 +61,9 @@ var Feedly = module.exports = function(options) {
 };
 
 /**
+ * Get the first url to ask for authorization
  *
+ * @param params {Object} {redirect_uri: 'http://localhost', scope: 'https://cloud.feedly.com/subscriptions', state: 'now' }
  */
 Feedly.prototype.getAuthUrl = function(params) {
   return this._oa.getAuthorizeUrl(extend({
@@ -70,7 +74,10 @@ Feedly.prototype.getAuthUrl = function(params) {
 };
 
 /**
+ * Get an access token and save
  *
+ * @param code {String} code returned on feedly authorization
+ * @param params {Object} {redirect_uri: 'http://localhost'}
  */
 Feedly.prototype.getAccessToken = function(code, params) {
   this._oa.getOAuthAccessToken(code, extend({
@@ -84,15 +91,66 @@ Feedly.prototype.getAccessToken = function(code, params) {
 };
 
 /**
- *
+ * Internal callback function to save a token
  */
 Feedly.prototype._saveToken = function(err, accessToken, refreshToken, results) {
   if (err) {
-    console.log('Access Token Error', err.message);
+    console.error('Access Token Error', err.message);
   } else {
     this._token = accessToken || refreshToken;
     //this._token = this._oa.AccessToken.create(accessToken); // simple-oauth2
     this._results = results;
+    console.log(this._token);
   }
+};
+
+/**
+ * Internal function to build the url with the specified path and params
+ *
+ * @params api_path {String} the path string.
+ * @param params {Object} (optional) the query parameter object.
+ */
+Feedly.prototype._buildUrl = function() { //api_path, params
+  var api_path = Array.prototype.slice.call(arguments);
+  var params = api_path[api_path.length - 1];
+  var qs;
+  if (typeof params === 'object') {
+    qs = querystring.stringify(params);
+    api_path.pop();
+  }
+  api_path = path.join.apply(path, api_path);
+  api_path = path.join(OAUTH_CONFIG.RequestTokenUrl, path.normalize(api_path));
+  return qs ? api_path + '?' + qs: api_path;
+};
+
+/**
+ *
+ */
+Feedly.prototype._get = function(url, callback) {
+  this._oa.get(url, this._toekn, callback);
+};
+
+/**
+ *
+ */
+Feedly.prototype.getStreams = function(options, callback) {
+  if (!options) {
+    options = {};
+    callback = function() {};
+  }
+  if (!callback) {
+    callback = options;
+    options = {};
+  }
+  var api_path = 'streams';
+  var api_action = 'id';
+  var params = {
+    //count: options.count || 20,
+    //ranked: options.ranked || 'newest',
+    //continuation: options.continuation || 'abc',
+    streamId: options.streamId || 'all',
+    unreadOnly: options.unreadOnly || true
+  };
+  this._get(this._buildUrl(api_path, api_action, params), callback);
 };
 
