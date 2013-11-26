@@ -7,7 +7,6 @@ var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 //var OAuth2 = require('simple-oauth2');
 var OAuth2 = require('oauth').OAuth2;
 var extend = require('node.extend');
-var path = require('path');
 var querystring = require('querystring');
 var url = require('url');
 var feedlyUrlObj = {
@@ -44,6 +43,7 @@ var Feedly = module.exports = function(options) {
   }
 
   this._oa = new OAuth2(OAUTH_CONFIG.ClientId, OAUTH_CONFIG.ClientSecret, OAUTH_CONFIG.RequestTokenUrl, OAUTH_CONFIG.AuthPath, OAUTH_CONFIG.TokenPath);
+  this._oa.useAuthorizationHeaderforGET(true);
   //this._oa = new OAuth2({
   //  clientID: OAUTH_CONFIG.ClientId,
   //  clientSecret: OAUTH_CONFIG.ClientSecret,
@@ -83,7 +83,7 @@ Feedly.prototype.getAccessToken = function(code, params) {
   this._oa.getOAuthAccessToken(code, extend({
     grant_type: 'authorization_code'
   },
-  params), this._saveToken);
+  params), this._saveToken.bind(this));
   //this._oa.AuthCode.getToken(extend({
   //  code: code
   //},
@@ -95,12 +95,11 @@ Feedly.prototype.getAccessToken = function(code, params) {
  */
 Feedly.prototype._saveToken = function(err, accessToken, refreshToken, results) {
   if (err) {
-    console.error('Access Token Error', err.message);
+    this._normalizeError(err);
   } else {
     this._token = accessToken || refreshToken;
     //this._token = this._oa.AccessToken.create(accessToken); // simple-oauth2
     this._results = results;
-    console.log(this._token);
   }
 };
 
@@ -118,16 +117,62 @@ Feedly.prototype._buildUrl = function() { //api_path, params
     qs = querystring.stringify(params);
     api_path.pop();
   }
-  api_path = path.join.apply(path, api_path);
-  api_path = path.join(OAUTH_CONFIG.RequestTokenUrl, path.normalize(api_path));
+  api_path = api_path.reduce(function(x, y) {
+    return x.trim().replace(/\/$/, '') + '/' + y.trim().replace(/^\//, '');
+  },
+  OAUTH_CONFIG.RequestTokenUrl);
   return qs ? api_path + '?' + qs: api_path;
+};
+
+/**
+ * Normalize the error as an Error object.
+ *
+ * @param err {Object} An object to be normalized
+ */
+Feedly.prototype._normalizeError = function(err) {
+  if (err instanceof Error) {
+    return err;
+  } else if (err.statusCode) {
+    // for 4XX/5XX error
+    var e = new Error(err.statusCode);
+    try {
+      e.data = JSON.parse(err.data);
+    } catch(er) {
+      e.data = err.data;
+    }
+    return e;
+  } else {
+    // unknown error
+    return new Error(err);
+  }
+};
+
+Feedly.prototype._createResponseHandler = function(callback) {
+  return function(error, data, response) {
+    if (error) {
+      return callback && callback(this._normalizeError(error), data, response);
+    } else {
+      var obj;
+      if (data) {
+        try {
+          obj = JSON.parse(data);
+        } catch(e) {
+          obj = data;
+          return callback(e, data, reponse);
+        }
+        return callback && callback(undefined, obj, response);
+      } else {
+        return callback && callback(undefined, data, response);
+      }
+    }
+  }.bind(this);
 };
 
 /**
  *
  */
 Feedly.prototype._get = function(url, callback) {
-  this._oa.get(url, this._toekn, callback);
+  this._oa.get(url, this._token, this._createResponseHandler(callback));
 };
 
 /**
@@ -143,7 +188,7 @@ Feedly.prototype.getStreams = function(options, callback) {
     options = {};
   }
   var api_path = 'streams';
-  var api_action = 'id';
+  var api_action = 'ids';
   var params = {
     //count: options.count || 20,
     //ranked: options.ranked || 'newest',

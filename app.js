@@ -35,6 +35,7 @@ app.get('/', function(req, res) {
     feedly.getStreams(function(err, data, response) {
       if (err) {
         console.error(err);
+        res.send(500);
       } else {
         res.send(data);
       }
