@@ -4,6 +4,7 @@ var AUTH_PATH = '/auth/auth';
 var TOKEN_PATH = '/auth/token';
 var API_VERSION = 'v3';
 var API_SUBDOMAIN = 'sandbox'; // 'cloud';
+var ID_ALL = 'global.all';
 //var OAuth2 = require('simple-oauth2');
 var OAuth2 = require('oauth').OAuth2;
 var extend = require('node.extend');
@@ -172,6 +173,7 @@ Feedly.prototype._createResponseHandler = function(callback) {
  *
  */
 Feedly.prototype._get = function(url, callback) {
+  console.log(url);
   this._oa.get(url, this._token, this._createResponseHandler(callback));
 };
 
@@ -188,14 +190,21 @@ Feedly.prototype.getStreams = function(options, callback) {
     options = {};
   }
   var api_path = 'streams';
-  var api_action = 'ids';
+  var api_action = 'contents';
   var params = {
-    //count: options.count || 20,
-    //ranked: options.ranked || 'newest',
+    count: options.count || 20,
+    ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
-    streamId: options.streamId || 'all',
+    streamId: options.streamId || ID_ALL,
     unreadOnly: options.unreadOnly || true
   };
   this._get(this._buildUrl(api_path, api_action, params), callback);
 };
 
+/**
+ *
+ */
+Feedly.prototype.getSubscriptions = function(callback) {
+  var api_path = 'subscriptions';
+  this._get(this._buildUrl(api_path), callback);
+};

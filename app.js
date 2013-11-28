@@ -40,6 +40,14 @@ app.get('/', function(req, res) {
         res.send(data);
       }
     });
+    feedly.getSubscriptions(function(err, data, response) {
+      if (err) {
+        console.error(err);
+        res.send(500);
+      } else {
+        res.send(data);
+      }
+    });
   }
 });
 
