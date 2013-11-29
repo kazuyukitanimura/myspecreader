@@ -6,7 +6,7 @@ var API_VERSION = 'v3';
 var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 var ID_ALL = 'global.all';
 //var OAuth2 = require('simple-oauth2');
-var OAuth2 = require('oauth').OAuth2;
+var OAuth2 = require('./oauth2');
 var extend = require('node.extend');
 var querystring = require('querystring');
 var url = require('url');
@@ -15,6 +15,13 @@ var feedlyUrlObj = {
   host: API_SUBDOMAIN + '.feedly.com'
 };
 var feedlyApi = url.format(feedlyUrlObj);
+
+/**
+ * Convenient Functions
+ */
+var isObject = function(obj) {
+  return typeof obj === 'object';
+};
 
 /**
  * OAuth Configuration constants
@@ -118,7 +125,7 @@ Feedly.prototype._buildUrl = function() { //api_path, params
   var api_path = Array.prototype.slice.call(arguments);
   var params = api_path[api_path.length - 1];
   var qs;
-  if (typeof params === 'object') {
+  if (isObject(params)) {
     qs = querystring.stringify(params);
     api_path.pop();
   }
@@ -185,8 +192,11 @@ Feedly.prototype._get = function(url, callback) {
  *
  */
 Feedly.prototype._post = function(url, input, callback) {
-  console.log(url);
-  this._oa.post(url, this._token, this._createResponseHandler(callback));
+  if (isObject(input)) {
+    input = JSON.stringify(input);
+  }
+  console.log(url, input);
+  this._oa.post(url, this._token, input, this._createResponseHandler(callback));
 };
 
 /**
@@ -249,3 +259,4 @@ Feedly.prototype.getSearch = function(options, callback) {
   };
   this._get(this._buildUrl(api_path, api_action, params), callback);
 };
+

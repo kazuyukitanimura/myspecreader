@@ -3,6 +3,13 @@ var express = require('express');
 var app = express();
 var Feedly = require('./feedly');
 
+app.use(express.logger());
+app.use(express.compress());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(app.router);
+
 var feedly = new Feedly();
 
 var STATES = {
@@ -30,14 +37,9 @@ app.get('/', function(req, res) {
     feedly.getAccessToken(code, {
       redirect_uri: 'http://localhost'
     },
-    feedly.getStreams.bind(feedly, function(err, data, response) {
-      if (err) {
-        console.error(err);
-        res.send(500);
-      } else {
-        res.send(data);
-      }
-    }));
+    function(err, results) {
+      res.redirect('http://localhost/streams');
+    });
   } else {
     feedly.getSubscriptions(function(err, data, response) {
       if (err) {
@@ -48,6 +50,17 @@ app.get('/', function(req, res) {
       }
     });
   }
+});
+
+app.get('/streams', function(req, res) {
+  feedly.getStreams(function(err, data, response) {
+    if (err) {
+      console.error(err);
+      res.send(500);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
 app.get('/search', function(req, res) {
@@ -66,7 +79,7 @@ app.get('/search', function(req, res) {
 });
 
 app.post('/subscriptions', function(req, res) {
-  feedly.postSubscriptions(function(err, data, response) {
+  feedly.postSubscriptions(req.body, function(err, data, response) {
     if (err) {
       console.error(err);
       res.send(500);
