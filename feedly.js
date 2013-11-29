@@ -184,6 +184,14 @@ Feedly.prototype._get = function(url, callback) {
 /**
  *
  */
+Feedly.prototype._post = function(url, input, callback) {
+  console.log(url);
+  this._oa.post(url, this._token, this._createResponseHandler(callback));
+};
+
+/**
+ *
+ */
 Feedly.prototype.getStreams = function(options, callback) {
   if (!options) {
     options = {};
@@ -211,4 +219,33 @@ Feedly.prototype.getStreams = function(options, callback) {
 Feedly.prototype.getSubscriptions = function(callback) {
   var api_path = 'subscriptions';
   this._get(this._buildUrl(api_path), callback);
+};
+
+/**
+ *
+ */
+Feedly.prototype.postSubscriptions = function(input, callback) {
+  var api_path = 'subscriptions';
+  this._post(this._buildUrl(api_path), input, callback);
+};
+
+/**
+ *
+ */
+Feedly.prototype.getSearch = function(options, callback) {
+  if (!options) {
+    options = {};
+    callback = function() {};
+  }
+  if (!callback) {
+    callback = options;
+    options = {};
+  }
+  var api_path = 'search';
+  var api_action = 'feeds';
+  var params = {
+    q: options.q || '',
+    n: options.n || 20
+  };
+  this._get(this._buildUrl(api_path, api_action, params), callback);
 };

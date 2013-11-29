@@ -29,15 +29,15 @@ app.get('/', function(req, res) {
   if (code && state === STATES.AUTH) {
     feedly.getAccessToken(code, {
       redirect_uri: 'http://localhost'
-    }, feedly.getStreams.bind(feedly, function(err, data, response) {
-        if (err) {
-          console.error(err);
-          res.send(500);
-        } else {
-          res.send(data);
-        }
-      })
-    );
+    },
+    feedly.getStreams.bind(feedly, function(err, data, response) {
+      if (err) {
+        console.error(err);
+        res.send(500);
+      } else {
+        res.send(data);
+      }
+    }));
   } else {
     feedly.getSubscriptions(function(err, data, response) {
       if (err) {
@@ -48,6 +48,32 @@ app.get('/', function(req, res) {
       }
     });
   }
+});
+
+app.get('/search', function(req, res) {
+  var options = {
+    q: req.query.q,
+    n: req.query.n
+  };
+  feedly.getSearch(options, function(err, data, response) {
+    if (err) {
+      console.error(err);
+      res.send(500);
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+app.post('/subscriptions', function(req, res) {
+  feedly.postSubscriptions(function(err, data, response) {
+    if (err) {
+      console.error(err);
+      res.send(500);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
 app.listen(80, function() {
