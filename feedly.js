@@ -5,6 +5,7 @@ var TOKEN_PATH = '/auth/token';
 var API_VERSION = 'v3';
 var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 var ID_ALL = 'global.all';
+var ID_UNCATEGORIZED = 'global.uncategorized';
 //var OAuth2 = require('simple-oauth2');
 var OAuth2 = require('./oauth2');
 var extend = require('node.extend');
@@ -217,7 +218,7 @@ Feedly.prototype.getStreams = function(options, callback) {
     count: options.count || 20,
     ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
-    streamId: options.streamId || ID_ALL,
+    streamId: options.streamId || ID_ALL, // ID_UNCATEGORIZED
     unreadOnly: options.unreadOnly || true
   };
   this._get(this._buildUrl(api_path, api_action, params), callback);

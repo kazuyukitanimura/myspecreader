@@ -41,14 +41,7 @@ app.get('/', function(req, res) {
       res.redirect('http://localhost/streams');
     });
   } else {
-    feedly.getSubscriptions(function(err, data, response) {
-      if (err) {
-        console.error(err);
-        res.send(500);
-      } else {
-        res.send(data);
-      }
-    });
+    res.send(200);
   }
 });
 
@@ -69,6 +62,17 @@ app.get('/search', function(req, res) {
     n: req.query.n
   };
   feedly.getSearch(options, function(err, data, response) {
+    if (err) {
+      console.error(err);
+      res.send(500);
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+app.get('/subscriptions', function(req, res) {
+  feedly.getSubscriptions(function(err, data, response) {
     if (err) {
       console.error(err);
       res.send(500);
