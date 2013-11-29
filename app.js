@@ -29,17 +29,16 @@ app.get('/', function(req, res) {
   if (code && state === STATES.AUTH) {
     feedly.getAccessToken(code, {
       redirect_uri: 'http://localhost'
-    });
-    res.send(200);
+    }, feedly.getStreams.bind(feedly, function(err, data, response) {
+        if (err) {
+          console.error(err);
+          res.send(500);
+        } else {
+          res.send(data);
+        }
+      })
+    );
   } else {
-    feedly.getStreams(function(err, data, response) {
-      if (err) {
-        console.error(err);
-        res.send(500);
-      } else {
-        res.send(data);
-      }
-    });
     feedly.getSubscriptions(function(err, data, response) {
       if (err) {
         console.error(err);

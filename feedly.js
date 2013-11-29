@@ -79,12 +79,13 @@ Feedly.prototype.getAuthUrl = function(params) {
  *
  * @param code {String} code returned on feedly authorization
  * @param params {Object} {redirect_uri: 'http://localhost'}
+ * @params callback {Function}
  */
-Feedly.prototype.getAccessToken = function(code, params) {
+Feedly.prototype.getAccessToken = function(code, params, callback) {
   this._oa.getOAuthAccessToken(code, extend({
     grant_type: 'authorization_code'
   },
-  params), this._saveToken.bind(this));
+  params), this._saveToken.bind(this, callback));
   //this._oa.AuthCode.getToken(extend({
   //  code: code
   //},
@@ -94,13 +95,16 @@ Feedly.prototype.getAccessToken = function(code, params) {
 /**
  * Internal callback function to save a token
  */
-Feedly.prototype._saveToken = function(err, accessToken, refreshToken, results) {
+Feedly.prototype._saveToken = function(callback, err, accessToken, refreshToken, results) {
   if (err) {
-    this._normalizeError(err);
+    err = this._normalizeError(err);
   } else {
     this._token = accessToken || refreshToken;
     //this._token = this._oa.AccessToken.create(accessToken); // simple-oauth2
     this._results = results;
+  }
+  if (callback) {
+    callback(err, results);
   }
 };
 
