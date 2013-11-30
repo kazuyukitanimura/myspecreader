@@ -3,37 +3,8 @@ var sessions = require("client-sessions");
 var express = require('express');
 var app = express();
 var Feedly = require('./feedly');
-
-app.use(express.logger());
-app.use(express.compress());
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(sessions({
-  cookieName: 'mySpecReader',
-  secret: 'himitsu',
-  duration: 24 * 60 * 60 * 1000,
-  activeDuration: 30 * 60 * 1000
-}));
-app.use(function(req, res, next) {
-  var options = req.mySpecReader.options;
-  var loggedin = req.loggedin = (!!options && !! options.id);
-  var url = req.url;
-  if (loggedin) {
-    console.log(options);
-    req.feedly = new Feedly(options);
-    next();
-  //} else if (url === '/' || url === '/auth') {
-  //  next();
-  //} else {
-  //  res.redirect('/');
-  } else {
-    next();
-  }
-});
-app.use(app.router);
-
 var feedlyCommon = new Feedly();
+var url = require('./url');
 
 var STATES = {
   AUTH: 'auth'
@@ -47,17 +18,22 @@ var authorization_uri = feedlyCommon.getAuthUrl({
   state: STATES.AUTH
 });
 
-// Initial page redirecting to Feedly
-app.get('/auth', function(req, res) {
-  res.redirect(authorization_uri);
-});
-
-// Callback service parsing the authorization token and asking for the access token
-app.get('/', function(req, res) {
+// Feedly Authorization Middleware
+var auth_middleware = function(req, res, next) {
+  var options = req.mySpecReader.options;
+  var loggedin = req.loggedin = (!!options && !! options.id);
   var state = req.query.state;
   var code = req.query.code;
-  var loggedin = req.loggedin;
-  if (code && state === STATES.AUTH && ! loggedin) {
+  var url_pathname = url.parse(req.url).pathname;
+  if (loggedin) {
+    if (url_pathname === '/auth') {
+      res.redirect('/');
+    } else {
+      console.log(options);
+      req.feedly = new Feedly(options);
+      next();
+    }
+  } else if (url_pathname === '/' && code && state === STATES.AUTH) {
     feedlyCommon.getAccessToken(code, {
       redirect_uri: 'http://localhost'
     },
@@ -72,7 +48,34 @@ app.get('/', function(req, res) {
         res.redirect('/streams');
       }
     });
-  } else if (loggedin) {
+  } else {
+    next();
+  }
+};
+
+app.use(express.logger());
+app.use(express.compress());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(sessions({
+  cookieName: 'mySpecReader',
+  secret: 'himitsu',
+  duration: 24 * 60 * 60 * 1000,
+  activeDuration: 30 * 60 * 1000
+}));
+app.use(auth_middleware);
+app.use(app.router);
+
+// Initial page redirecting to Feedly
+app.get('/auth', function(req, res) {
+  res.redirect(authorization_uri);
+});
+
+// Callback service parsing the authorization token and asking for the access token
+app.get('/', function(req, res) {
+  var loggedin = req.loggedin;
+  if (loggedin) {
     res.redirect('/streams');
   } else {
     res.redirect('/auth');
