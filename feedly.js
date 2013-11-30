@@ -12,7 +12,7 @@ var extend = require('node.extend');
 var querystring = require('querystring');
 var url = require('./url');
 var feedlyUrlObj = {
-  protocol: 'http',
+  protocol: 'https',
   host: API_SUBDOMAIN + '.feedly.com'
 };
 var feedlyApi = url.format(feedlyUrlObj);

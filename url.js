@@ -3,7 +3,7 @@ var Url = module.exports = require('url');
 /**
  * Recursively flatten a nested array and create an url
  */
-Url.prototype.join = function() {
+Url.join = function() {
   return Array.prototype.slice.call(arguments).reduce(function(x, y) {
     if (Array.isArray(x)) {
       x = this.join(x);
