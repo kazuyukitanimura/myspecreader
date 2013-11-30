@@ -10,7 +10,7 @@ var ID_UNCATEGORIZED = 'global.uncategorized';
 var OAuth2 = require('./oauth2');
 var extend = require('node.extend');
 var querystring = require('querystring');
-var url = require('url');
+var url = require('./url');
 var feedlyUrlObj = {
   protocol: 'http',
   host: API_SUBDOMAIN + '.feedly.com'
@@ -130,10 +130,7 @@ Feedly.prototype._buildUrl = function() { //api_path, params
     qs = querystring.stringify(params);
     api_path.pop();
   }
-  api_path = api_path.reduce(function(x, y) {
-    return x.trim().replace(/\/$/, '') + '/' + y.trim().replace(/^\//, '');
-  },
-  OAUTH_CONFIG.RequestTokenUrl);
+  api_path = url.join(OAUTH_CONFIG.RequestTokenUrl, api_path);
   return qs ? api_path + '?' + qs: api_path;
 };
 
@@ -184,20 +181,20 @@ Feedly.prototype._createResponseHandler = function(callback) {
 /**
  *
  */
-Feedly.prototype._get = function(url, callback) {
-  console.log(url);
-  this._oa.get(url, this._token, this._createResponseHandler(callback));
+Feedly.prototype._get = function(api_url, callback) {
+  console.log(api_url);
+  this._oa.get(api_url, this._token, this._createResponseHandler(callback));
 };
 
 /**
  *
  */
-Feedly.prototype._post = function(url, input, callback) {
+Feedly.prototype._post = function(api_url, input, callback) {
   if (isObject(input)) {
     input = JSON.stringify(input);
   }
-  console.log(url, input);
-  this._oa.post(url, this._token, input, this._createResponseHandler(callback));
+  console.log(api_url, input);
+  this._oa.post(api_url, this._token, input, this._createResponseHandler(callback));
 };
 
 /**
@@ -218,7 +215,7 @@ Feedly.prototype.getStreams = function(options, callback) {
     count: options.count || 20,
     ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
-    streamId: options.streamId || ID_ALL, // ID_UNCATEGORIZED
+    streamId: options.streamId || url.join('user', this._results.id, 'category', ID_ALL), // ID_UNCATEGORIZED
     unreadOnly: options.unreadOnly || true
   };
   this._get(this._buildUrl(api_path, api_action, params), callback);
