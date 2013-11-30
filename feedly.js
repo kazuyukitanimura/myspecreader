@@ -23,6 +23,9 @@ var feedlyApi = url.format(feedlyUrlObj);
 var isObject = function(obj) {
   return typeof obj === 'object';
 };
+var isFunction = function(obj) {
+  return typeof obj === 'function';
+};
 
 /**
  * OAuth Configuration constants
@@ -61,12 +64,8 @@ var Feedly = module.exports = function(options) {
   //  authorizationPath: OAUTH_CONFIG.AuthPath,
   //  useBasicAuthorizationHeader: false
   //}); // simple-oauth2
-  //this.accessKey = options.accessKey;
-  //this.accessSecret = options.accessSecret;
-  this._token = options._token;
-  this._results = options._results;
-  //this._apiUrl = options._apiUrl || API_URL;
-  //this._streamUrl = options._streamUrl || STREAM_URL;
+  this._token = options.access_token || options.refresh_token;
+  this._results = options;
 };
 
 /**
@@ -90,6 +89,10 @@ Feedly.prototype.getAuthUrl = function(params) {
  * @params callback {Function}
  */
 Feedly.prototype.getAccessToken = function(code, params, callback) {
+  if (isFunction(params) && !callback) {
+    callback = params;
+    params = {};
+  }
   this._oa.getOAuthAccessToken(code, extend({
     grant_type: 'authorization_code'
   },
