@@ -5,7 +5,8 @@
     "start": "node app"
   }
 , "dependencies": {
-    "express": "*"
+    "client-sessions": "*"
+  , "express": "*"
   , "ejs": "*"
   , "fussy": "*"
   , "node.extend": "*"

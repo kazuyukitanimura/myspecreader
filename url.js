@@ -6,10 +6,10 @@ var Url = module.exports = require('url');
 Url.join = function() {
   return Array.prototype.slice.call(arguments).reduce(function(x, y) {
     if (Array.isArray(x)) {
-      x = this.join(x);
+      x = Url.join.apply(null, x);
     }
     if (Array.isArray(y)) {
-      y = this.join(y);
+      y = Url.join.apply(null, y);
     }
     return x.trim().replace(/\/$/, '') + '/' + y.trim().replace(/^\//, '');
   });
