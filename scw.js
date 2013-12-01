@@ -3,14 +3,14 @@ var fs = require('fs');
 var ByLineStream = require('./byLineStream');
 
 var MAX_FLOAT = Number.MAX_VALUE;
-var NON_CATEGORY;
+var NON_CATEGORY = typeof undefined;
 var NON_CATEGORY_SCORE = - MAX_FLOAT;
 
 var innerProduct = function(featureVector, weightVector) {
   var score = 0.0;
   for (var pos in featureVector) {
-    if (featureVector.hasOwnProperty(pos) && weightVector.hasOwnProperty(pos)) {
-      score += weightVector[pos] * featureVector[pos];
+    if (featureVector.hasOwnProperty(pos)) {
+      score += weightVector.getOrDefault(pos) * featureVector[pos];
     }
   }
   return score;
@@ -20,19 +20,20 @@ var calcLossScore = function(scores, correct, margin) {
   if (!margin) {
     margin = 0.0;
   }
+  var nonCorrectPredict;
   var correctDone = false;
   var predictDone = false;
-  var loss_score = margin;
+  var lossScore = margin;
   for (var category in scores) {
     if (scores.hasOwnProperty(category)) {
       var score = scores[category];
       if (category === correct) {
-        loss_score -= score;
+        lossScore -= score;
         correctDone = true;
       } else if (!predictDone) {
         nonCorrectPredict = category;
         if (nonCorrectPredict !== NON_CATEGORY) {
-          loss_score += score;
+          lossScore += score;
           predictDone = true;
         }
       }
@@ -41,29 +42,41 @@ var calcLossScore = function(scores, correct, margin) {
       }
     }
   }
-  return [ - loss_score, nonCorrectPredict];
+  return [ - lossScore, nonCorrectPredict];
 };
 
 var Vector = function(defaultVal) {
   if (! (this instanceof Vector)) { // enforcing new
     return new Vector(defaultVal);
   }
-  this.defaultVal = defaultVal;
+  Object.defineProperty(this, 'defaultVal', {
+    value: defaultVal,
+    enumerable: false // do not show during for-in
+  });
 };
 
-Vector.prototype.getDefault = function() {
-  return this.defaultVal;
+Vector.prototype.getOrDefault = function(key) {
+  if (!this.hasOwnProperty(key)) {
+    this[key] = this.defaultVal;
+  }
+  return this[key];
 };
 
 var Matrix = function(defaultVal) {
   if (! (this instanceof Matrix)) { // enforcing new
     return new Matrix(defaultVal);
   }
-  this.defaultVal = defaultVal;
+  Object.defineProperty(this, 'defaultVal', {
+    value: defaultVal,
+    enumerable: false // do not show during for-in
+  });
 };
 
-Matrix.prototype.getDefault = function() {
-  return new Vector(self.defaultVal);
+Matrix.prototype.getOrDefault = function(key) {
+  if (!this.hasOwnProperty(key)) {
+    this[key] = new Vector(this.defaultVal);
+  }
+  return this[key];
 };
 
 var Datum = function(category, featureVector) {
@@ -89,8 +102,8 @@ var SCW = function(phi, C, mode) {
   this.phi4 = Math.pow(phi, 4);
   this.mode = mode;
   this.C = C;
-  this.covarianceMatrix = Matrix(1.0); // key: category, value covarianceVector;
-  this.weightMatrix = Matrix(0.0); // key: category, value weightVector;
+  this.covarianceMatrix = new Matrix(1.0); // key: category, value covarianceVector;
+  this.weightMatrix = new Matrix(0.0); // key: category, value weightVector;
 };
 
 SCW.prototype.train = function(dataGen, maxIteration) {
@@ -134,12 +147,12 @@ SCW.prototype.calcScores = function(featureVector) {
 
 SCW.prototype.calcV = function(datum, nonCorrectPredict) {
   var v = 0.0;
-  var correctCov = this.covarianceMatrix[datum.category] || this.covarianceMatrix.getDefault();
+  var correctCov = this.covarianceMatrix.getOrDefault(datum.category);
   var featureVector = datum.featureVector;
   var pos;
   for (pos in featureVector) {
     if (featureVector.hasOwnProperty(pos)) {
-      v += (correctCov[pos] || correctCov.getDefault()) * Math.pow(featureVector[pos], 2);
+      v += correctCov.getOrDefault(pos) * Math.pow(featureVector[pos], 2);
     }
   }
 
@@ -147,10 +160,10 @@ SCW.prototype.calcV = function(datum, nonCorrectPredict) {
     return v;
   }
 
-  var wrongCov = this.covarianceMatrix[nonCorrectPredict] || this.covarianceMatrix.getDefault();
+  var wrongCov = this.covarianceMatrix.getOrDefault(nonCorrectPredict);
   for (pos in featureVector) {
     if (featureVector.hasOwnProperty(pos)) {
-      v += (wrongCov[pos] || wrongCov.getDefault()) * Math.pow(featureVector[pos], 2);
+      v += wrongCov.getOrDefault(pos) * Math.pow(featureVector[pos], 2);
     }
   }
   return v;
@@ -191,19 +204,17 @@ SCW.prototype.update = function(datum, scores) {
   var v = this.calcV(datum, nonCorrectPredict);
   var alpha = this.calcAlpha(m, v);
   var beta = this.calcBeta(v, alpha);
+  //console.log(v, alpha, beta);
 
   if (alpha > 0.0) {
     var pos, val;
     var featureVector = datum.featureVector;
-    var correctWeight = this.weightMatrix[datum.category] || this.weightMatrix.getDefault();
-    var correctCov = this.covarianceMatrix[datum.category] || this.covarianceMatrix.getDefault();
+    var correctWeight = this.weightMatrix.getOrDefault(datum.category);
+    var correctCov = this.covarianceMatrix.getOrDefault(datum.category);
     for (pos in featureVector) {
       if (featureVector.hasOwnProperty(pos)) {
         val = featureVector[pos];
-        if (!correctCov.hasOwnProperty(pos)) {
-          correctCov[pos] = correctCov.getDefault();
-        }
-        correctWeight[pos] = (correctWeight[pos] || correctWeight.getDefault()) + alpha * correctCov[pos] * val;
+        correctWeight[pos] = correctWeight.getOrDefault(pos) + alpha * correctCov.getOrDefault(pos) * val;
         correctCov[pos] -= beta * Math.pow(val, 2) * Math.pow(correctCov[pos], 2);
       }
     }
@@ -212,15 +223,12 @@ SCW.prototype.update = function(datum, scores) {
       return;
     }
 
-    var wrongWeight = this.weightMatrix[nonCorrectPredict] || this.weightMatrix.getDefault();
-    var wrongCov = this.covarianceMatrix[nonCorrectPredict] || this.covarianceMatrix.getDefault();
+    var wrongWeight = this.weightMatrix.getOrDefault(nonCorrectPredict);
+    var wrongCov = this.covarianceMatrix.getOrDefault(nonCorrectPredict);
     for (pos in featureVector) {
       if (featureVector.hasOwnProperty(pos)) {
         val = featureVector[pos];
-        if (!wrongCov.hasOwnProperty(pos)) {
-          wrongCov[pos] = wrongCov.getDefault();
-        }
-        wrongWeight[pos] = (wrongWeight[pos] || wrongWeight.getDefault()) - alpha * wrongCov[pos] * val;
+        wrongWeight[pos] = wrongWeight.getOrDefault(pos) - alpha * wrongCov.getOrDefault(pos) * val;
         wrongCov[pos] += beta * Math.pow(val, 2) * Math.pow(correctCov[pos], 2);
       }
     }
@@ -229,7 +237,7 @@ SCW.prototype.update = function(datum, scores) {
 
 var parseFile = function(filePath, callback) {
   fs.createReadStream(filePath).pipe(new ByLineStream()).on('readable', function() {
-    var pieces = this.read().strip().split(' ');
+    var pieces = this.read().trim().split(' ');
     var category = pieces.shift();
     var featureVector = {};
     for (var i = pieces.length; i--;) {
@@ -241,11 +249,6 @@ var parseFile = function(filePath, callback) {
       callback(datum);
     }
   });
-};
-
-// http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric/174921
-var isNumeric = function(num) {
-  return (num >= 0 || num < 0);
 };
 
 var main = function() {
@@ -262,10 +265,11 @@ var main = function() {
     if (datum.category === scw.test(datum.featureVector)) {
       success += 1;
     }
+    console.log('accuracy:', success, '/', testSize, '=', 100.0 * success / testSize, '%');
   };
 
-  var mode = (process.argv.length > 3) ? parseInt(process.argv[4], 10) : undefined;
-  var maxIteration = (process.argv.length > 4) ? parseInt(process.argv[5], 10) : 1;
+  var mode = (process.argv.length > 4) ? parseInt(process.argv[4], 10) : undefined;
+  var maxIteration = (process.argv.length > 5) ? parseInt(process.argv[5], 10) : 1;
 
   var eta = 10.0; // 100.0;
   for (var i = 5; i--;) {
@@ -273,19 +277,20 @@ var main = function() {
     for (var j = 10; j--;) {
       console.log('eta:', eta);
       console.log('C:', C);
-      var args = [eta, C];
-      if (isNumeric(mode)) {
-        args.push(mode);
-      }
-      scw = new Function.prototype.bind.apply(SCW, args); // hack to use new operator and apply http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible
+      scw = new SCW(eta, C, mode);
       scw.train(train, maxIteration);
       success = 0;
       testSize = 0;
       test(testCallback);
-      console.log('accuracy:', success, '/', testSize, '=', 100.0 * success / testSize, '%');
+      //break;
       C *= 0.5;
     }
+    //break;
     eta *= 0.1;
   }
 };
+
+if (require.main === module) {
+  main();
+}
 
