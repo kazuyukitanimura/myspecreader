@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var Feedly = require('./feedly');
 var feedlyCommon = new Feedly();
+var secret = require('./secret');
 var url = require('./url');
 
 var STATES = {
@@ -60,7 +61,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(sessions({
   cookieName: 'mySpecReader',
-  secret: 'himitsu',
+  secret: secret.SESSION_SECRET || 'himitsu',
   duration: 24 * 60 * 60 * 1000,
   activeDuration: 30 * 60 * 1000
 }));
