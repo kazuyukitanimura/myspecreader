@@ -232,10 +232,11 @@ SCW.prototype.update = function(datum, scores) {
         wrongCov[pos] += beta * Math.pow(val, 2) * Math.pow(correctCov[pos], 2);
       }
     }
+    //console.error(wrongCov);
   }
 };
 
-var parseFile = function(filePath, callback) {
+var parseFile = function(filePath, next, callback) {
   fs.createReadStream(filePath).pipe(new ByLineStream()).on('readable', function() {
     var pieces = this.read().trim().split(' ');
     var category = pieces.shift();
@@ -248,14 +249,14 @@ var parseFile = function(filePath, callback) {
     if (callback) {
       callback(datum);
     }
-  });
+  }).on('end', next);
 };
 
 var main = function() {
   var trainPath = process.argv[2];
   var testPath = process.argv[3];
-  var train = parseFile.bind(this, trainPath);
-  var test = parseFile.bind(this, testPath);
+  var mode = (process.argv.length > 4) ? parseInt(process.argv[4], 10) : undefined;
+  var maxIteration = (process.argv.length > 5) ? parseInt(process.argv[5], 10) : 1;
 
   var scw;
   var success = 0;
@@ -265,11 +266,17 @@ var main = function() {
     if (datum.category === scw.test(datum.featureVector)) {
       success += 1;
     }
-    console.log('accuracy:', success, '/', testSize, '=', 100.0 * success / testSize, '%');
+    //console.error(testSize, scw.calcScores(datum.featureVector));
   };
+  var test = parseFile.bind(this, testPath, function() {
+    console.log('accuracy:', success, '/', testSize, '=', 100.0 * success / testSize, '%');
+  });
+  var train = parseFile.bind(this, trainPath, function() {
+    success = 0;
+    testSize = 0;
+    test(testCallback);
+  });
 
-  var mode = (process.argv.length > 4) ? parseInt(process.argv[4], 10) : undefined;
-  var maxIteration = (process.argv.length > 5) ? parseInt(process.argv[5], 10) : 1;
 
   var eta = 10.0; // 100.0;
   for (var i = 5; i--;) {
@@ -279,13 +286,10 @@ var main = function() {
       console.log('C:', C);
       scw = new SCW(eta, C, mode);
       scw.train(train, maxIteration);
-      success = 0;
-      testSize = 0;
-      test(testCallback);
-      //break;
+      break;
       C *= 0.5;
     }
-    //break;
+    break;
     eta *= 0.1;
   }
 };
