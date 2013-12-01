@@ -138,8 +138,7 @@ SCW.prototype.calcScores = function(featureVector) {
   var weightMatrix = this.weightMatrix;
   for (var category in weightMatrix) {
     if (weightMatrix.hasOwnProperty(category)) {
-      var weightVector = weightMatrix[category];
-      scores[category] = innerProduct(featureVector, weightVector);
+      scores[category] = innerProduct(featureVector, weightMatrix[category]);
     }
   }
   return scores;
@@ -204,7 +203,6 @@ SCW.prototype.update = function(datum, scores) {
   var v = this.calcV(datum, nonCorrectPredict);
   var alpha = this.calcAlpha(m, v);
   var beta = this.calcBeta(v, alpha);
-  //console.log(v, alpha, beta);
 
   if (alpha > 0.0) {
     var pos, val;
@@ -232,7 +230,6 @@ SCW.prototype.update = function(datum, scores) {
         wrongCov[pos] += beta * Math.pow(val, 2) * Math.pow(correctCov[pos], 2);
       }
     }
-    //console.error(wrongCov);
   }
 };
 
@@ -266,7 +263,6 @@ var main = function() {
     if (datum.category === scw.test(datum.featureVector)) {
       success += 1;
     }
-    //console.error(testSize, scw.calcScores(datum.featureVector));
   };
   var test = parseFile.bind(this, testPath, function() {
     console.log('accuracy:', success, '/', testSize, '=', 100.0 * success / testSize, '%');
