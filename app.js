@@ -2,13 +2,21 @@ var fs = require('fs');
 var sessions = require("client-sessions");
 var express = require('express');
 var app = express();
+
+var Datum = require('./scw').Datum;
 var Feedly = require('./feedly');
 var feedlyCommon = new Feedly();
+var Scw = require('./scw').SCW;
 var secret = require('./secret');
 var url = require('./url');
 
 var STATES = {
   AUTH: 'auth'
+};
+var SCW_PARAMS = {
+  ETA: 10.0, // 100.0
+  C: 1.0,
+  MODE: 2 // 0, 1, or 2
 };
 
 // Feedly Authorization URI
@@ -21,8 +29,8 @@ var authorization_uri = feedlyCommon.getAuthUrl({
 
 // Feedly Authorization Middleware
 var auth_middleware = function(req, res, next) {
-  var options = req.mySpecReader.options;
-  var loggedin = req.loggedin = (!!options && !! options.id);
+  var feedlyOptions = req.mySpecReader.feedlyOptions;
+  var loggedin = req.loggedin = (!!feedlyOptions && !! feedlyOptions.id);
   var state = req.query.state;
   var code = req.query.code;
   var url_pathname = url.parse(req.url).pathname;
@@ -30,8 +38,10 @@ var auth_middleware = function(req, res, next) {
     if (url_pathname === '/auth') {
       res.redirect('/');
     } else {
-      console.log(options);
-      req.feedly = new Feedly(options);
+      console.log(feedlyOptions);
+      req.feedly = new Feedly(feedlyOptions);
+      var scwOptions; // update covarianceMatrix and weightMatrix from DB by feedlyOptions.id
+      req.scw = new SCW(SCW_PARAMS.ETA, SCW_PARAMS.C. SCW_PARAMS.MODE, scwOptions);
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
@@ -45,7 +55,7 @@ var auth_middleware = function(req, res, next) {
         res.send(500);
       } else {
         // setting a property will automatically cause a Set-Cookie response to be sent
-        req.mySpecReader.options = results;
+        req.mySpecReader.feedlyOptions = results;
         res.redirect('/streams');
       }
     });
@@ -81,6 +91,34 @@ app.get('/', function(req, res) {
   } else {
     res.redirect('/auth');
   }
+});
+
+app.get('/recommends', function() {
+  req.feedly.getStreams(function(err, data, response) {
+    if (err) {
+      console.error(err);
+      req.mySpecReader.reset();
+      res.send(500);
+    } else {
+      var now = Date.now();
+      var items = data.itmes;
+      var scw = rew.scw;
+      for (var i = items.length; i--;) {
+        var item = items[i];
+        var keywords = item.keywords;
+        var title = item.title;
+        var summary = item.summary.content;
+        var published = item.published;
+        var originId = item.origin.streamId;
+
+        var featureVector = {};
+        var category;
+        var datum = new Datum(category, featureVector);
+        scw.test(datum.featureVector);
+      }
+      res.send(data);
+    }
+  });
 });
 
 app.get('/streams', function(req, res) {
