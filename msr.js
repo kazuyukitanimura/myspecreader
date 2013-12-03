@@ -2,7 +2,8 @@ var Feedly = require('./feedly');
 var Scw = require('./scw');
 
 var SCW_PARAMS = {
-  ETA: 10.0, // 100.0
+  ETA: 10.0,
+  // 100.0
   C: 1.0,
   MODE: 2 // 0, 1, or 2
 };
@@ -15,14 +16,17 @@ var Msr = module.exports = function(options) {
     return new Msr(options);
   }
   Feedly.call(this, options);
-  var covarianceMatrix; // update covarianceMatrix from DB by options.id
-  var weightMatrix; // update weightMatrix from DB by options.id
-  // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
-  // fetch matrices asynchronously
-  this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C. SCW_PARAMS.MODE);
+  if (options.id) { // update covarianceMatrix and weightMatrix from DB by options.id
+    var scwOptions = {
+      covarianceMatrix: undefined,
+      weightMatrix: undefined
+    };
+    // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
+    // fetch matrices asynchronously
+    this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C.SCW_PARAMS.MODE, scwOptions);
+  }
 };
 Msr.prototype = Object.create(Msr.prototype); // Inheritance ECMAScript 5 for Object.create
-
 
 /**
  *
@@ -55,3 +59,4 @@ Msr.prototype.getRecommends = function(callback) {
     callback(err, data, response);
   });
 };
+

@@ -3,8 +3,8 @@ var sessions = require("client-sessions");
 var express = require('express');
 var app = express();
 
-var Feedly = require('./feedly');
-var feedlyCommon = new Feedly();
+var Msr = require('./msr');
+var msrCommon = new Msr();
 var secret = require('./secret');
 var url = require('./url');
 
@@ -12,18 +12,18 @@ var STATES = {
   AUTH: 'auth'
 };
 
-// Feedly Authorization URI
-var authorization_uri = feedlyCommon.getAuthUrl({
+// Msr Authorization URI
+var authorization_uri = msrCommon.getAuthUrl({
   // this has to be exactly http://localhost during sandbox
   redirect_uri: 'http://localhost',
   scope: 'https://cloud.feedly.com/subscriptions',
   state: STATES.AUTH
 });
 
-// Feedly Authorization Middleware
+// Msr Authorization Middleware
 var auth_middleware = function(req, res, next) {
-  var feedlyOptions = req.msrCookie.feedlyOptions;
-  var loggedin = req.loggedin = (!!feedlyOptions && !! feedlyOptions.id);
+  var msrOptions = req.msrCookie.msrOptions;
+  var loggedin = req.loggedin = (!!msrOptions && !! msrOptions.id);
   var state = req.query.state;
   var code = req.query.code;
   var url_pathname = url.parse(req.url).pathname;
@@ -31,12 +31,12 @@ var auth_middleware = function(req, res, next) {
     if (url_pathname === '/auth') {
       res.redirect('/');
     } else {
-      console.log(feedlyOptions);
-      req.feedly = new Feedly(feedlyOptions);
+      console.log(msrOptions);
+      req.msr = new Msr(msrOptions);
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
-    feedlyCommon.getAccessToken(code, {
+    msrCommon.getAccessToken(code, {
       redirect_uri: 'http://localhost'
     },
     function(err, results) {
@@ -46,7 +46,7 @@ var auth_middleware = function(req, res, next) {
         res.send(500);
       } else {
         // setting a property will automatically cause a Set-Cookie response to be sent
-        req.msrCookie.feedlyOptions = results;
+        req.msrCookie.msrOptions = results;
         res.redirect('/streams');
       }
     });
@@ -69,7 +69,7 @@ app.use(sessions({
 app.use(auth_middleware);
 app.use(app.router);
 
-// Initial page redirecting to Feedly
+// Initial page redirecting to Msr
 app.get('/auth', function(req, res) {
   res.redirect(authorization_uri);
 });
@@ -85,7 +85,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/recommends', function() {
-  req.feedly.getStreams(function(err, data, response) {
+  req.msr.getStreams(function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -97,7 +97,7 @@ app.get('/recommends', function() {
 });
 
 app.get('/streams', function(req, res) {
-  req.feedly.getStreams(function(err, data, response) {
+  req.msr.getStreams(function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -113,7 +113,7 @@ app.get('/search', function(req, res) {
     q: req.query.q,
     n: req.query.n
   };
-  req.feedly.getSearch(options, function(err, data, response) {
+  req.msr.getSearch(options, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -125,7 +125,7 @@ app.get('/search', function(req, res) {
 });
 
 app.get('/subscriptions', function(req, res) {
-  req.feedly.getSubscriptions(function(err, data, response) {
+  req.msr.getSubscriptions(function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -137,7 +137,7 @@ app.get('/subscriptions', function(req, res) {
 });
 
 app.post('/subscriptions', function(req, res) {
-  req.feedly.postSubscriptions(req.body, function(err, data, response) {
+  req.msr.postSubscriptions(req.body, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
