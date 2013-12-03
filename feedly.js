@@ -89,7 +89,7 @@ Feedly.prototype.getAuthUrl = function(params) {
  * @params callback {Function}
  */
 Feedly.prototype.getAccessToken = function(code, params, callback) {
-  if (isFunction(params) && !callback) {
+  if (isFunction(params) && ! callback) {
     callback = params;
     params = {};
   }
@@ -233,7 +233,7 @@ Feedly.prototype.getStreams = function(options, callback) {
     count: options.count || 20,
     ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
-    streamId: options.streamId || url.join('user', this._results.id, 'category', ID_ALL), // ID_UNCATEGORIZED
+    streamId: options.streamId || url.join('user', this._results.id, 'category', ID_ALL),
     unreadOnly: options.unreadOnly || true
   };
   this._get(this._buildUrl(api_path, api_action, params), callback);
@@ -250,6 +250,7 @@ Feedly.prototype.getSubscriptions = function(callback) {
 
 /**
  *
+ * @param input {String} or {Object} http post body
  * @params callback {Function}
  */
 Feedly.prototype.postSubscriptions = function(input, callback) {

@@ -5,17 +5,11 @@ var app = express();
 
 var Feedly = require('./feedly');
 var feedlyCommon = new Feedly();
-var Scw = require('./scw');
 var secret = require('./secret');
 var url = require('./url');
 
 var STATES = {
   AUTH: 'auth'
-};
-var SCW_PARAMS = {
-  ETA: 10.0, // 100.0
-  C: 1.0,
-  MODE: 2 // 0, 1, or 2
 };
 
 // Feedly Authorization URI
@@ -28,7 +22,7 @@ var authorization_uri = feedlyCommon.getAuthUrl({
 
 // Feedly Authorization Middleware
 var auth_middleware = function(req, res, next) {
-  var feedlyOptions = req.mySpecReader.feedlyOptions;
+  var feedlyOptions = req.msrCookie.feedlyOptions;
   var loggedin = req.loggedin = (!!feedlyOptions && !! feedlyOptions.id);
   var state = req.query.state;
   var code = req.query.code;
@@ -39,7 +33,6 @@ var auth_middleware = function(req, res, next) {
     } else {
       console.log(feedlyOptions);
       req.feedly = new Feedly(feedlyOptions);
-      req.scw = new SCW(SCW_PARAMS.ETA, SCW_PARAMS.C. SCW_PARAMS.MODE);
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
@@ -49,11 +42,11 @@ var auth_middleware = function(req, res, next) {
     function(err, results) {
       if (err) {
         console.error(err);
-        req.mySpecReader.reset();
+        req.msrCookie.reset();
         res.send(500);
       } else {
         // setting a property will automatically cause a Set-Cookie response to be sent
-        req.mySpecReader.feedlyOptions = results;
+        req.msrCookie.feedlyOptions = results;
         res.redirect('/streams');
       }
     });
@@ -68,7 +61,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(sessions({
-  cookieName: 'mySpecReader',
+  cookieName: 'msrCookie',
   secret: secret.SESSION_SECRET || 'himitsu',
   duration: 24 * 60 * 60 * 1000,
   activeDuration: 30 * 60 * 1000
@@ -92,34 +85,12 @@ app.get('/', function(req, res) {
 });
 
 app.get('/recommends', function() {
-  var covarianceMatrix; // update covarianceMatrix from DB by req.mySpecReader.feedlyOptions.id
-  var weightMatrix; // update weightMatrix from DB by req.mySpecReader.feedlyOptions.id
-  // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
-  // fetch matrices and stream data at the same time.
   req.feedly.getStreams(function(err, data, response) {
     if (err) {
       console.error(err);
-      req.mySpecReader.reset();
+      req.msrCookie.reset();
       res.send(500);
     } else {
-      var now = Date.now();
-      var items = data.itmes;
-      var scw = rew.scw;
-      for (var i = items.length; i--;) {
-        var item = items[i];
-        var keywords = item.keywords;
-        var title = item.title;
-        var summary = item.summary.content;
-        var published = item.published;
-        var originId = item.origin.streamId;
-
-        var featureVector = {};
-        item.estCategory = scw.test(featureVector);
-      }
-      items.sort(function(a, b) {
-        return a.estCategory - b.estCategory || b.published - a.published;
-      });
-      // TODO send only required data
       res.send(data);
     }
   });
@@ -129,7 +100,7 @@ app.get('/streams', function(req, res) {
   req.feedly.getStreams(function(err, data, response) {
     if (err) {
       console.error(err);
-      req.mySpecReader.reset();
+      req.msrCookie.reset();
       res.send(500);
     } else {
       res.send(data);
@@ -145,7 +116,7 @@ app.get('/search', function(req, res) {
   req.feedly.getSearch(options, function(err, data, response) {
     if (err) {
       console.error(err);
-      req.mySpecReader.reset();
+      req.msrCookie.reset();
       res.send(500);
     } else {
       res.send(data);
@@ -157,7 +128,7 @@ app.get('/subscriptions', function(req, res) {
   req.feedly.getSubscriptions(function(err, data, response) {
     if (err) {
       console.error(err);
-      req.mySpecReader.reset();
+      req.msrCookie.reset();
       res.send(500);
     } else {
       res.send(data);
@@ -169,7 +140,7 @@ app.post('/subscriptions', function(req, res) {
   req.feedly.postSubscriptions(req.body, function(err, data, response) {
     if (err) {
       console.error(err);
-      req.mySpecReader.reset();
+      req.msrCookie.reset();
       res.send(500);
     } else {
       res.send(data);
