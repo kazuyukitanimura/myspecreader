@@ -55,17 +55,37 @@ Msr.prototype.getRecommends = function(callback) {
   }
   this.getStreams(function(err, data, response) {
     if (!err) {
+      var now = Date.now();
       var items = data.itmes;
       var scw = this.scw;
       for (var i = items.length; i--;) {
+        var j;
         var item = items[i];
-        var keywords = item.keywords;
-        var title = item.title;
-        var summary = item.summary.content;
-        var published = item.published;
-        var originId = item.origin.streamId;
+        // E.g.
+        //{
+        //  "items": [
+        //    "keywords": [...],
+        //      "title": "...",
+        //      "summary": {
+        //        "content": "..."
+        //      },
+        //      "published": 1385928000000
+        //      "origin": {
+        //        "streamId": "...",
+        //      },
+        var keywords = item.keywords; // key prefix: k
+        var title = item.title; // key prefix: t
+        var summary = item.summary.content; // key prefix: s // TODO need a html cleaner
+        var featureVector = {// key: word, val:frequency // TODO extract feature cectors
+          ago: now - item.published, // nomoralize how old it is from the time the user sees it
+          originId: item.origin.streamId
+        }; 
 
-        var featureVector = {}; // TODO extract feature cectors
+        for (j = keywords.length; j--;) {
+          var k = 'k' + keywords[j];
+          featureVector[k] = featureVector[k]|0 + 1;
+        }
+
         item.estCategory = scw.test(featureVector);
       }
       items.sort(function(a, b) {
