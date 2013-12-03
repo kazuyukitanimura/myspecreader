@@ -113,7 +113,7 @@ Feedly.prototype._saveToken = function(callback, err, accessToken, refreshToken,
 Feedly.prototype._buildUrl = function() { //api_path, params
   var api_path = Array.prototype.slice.call(arguments);
   var params = api_path[api_path.length - 1];
-  var qs;
+  var qs = '';
   if (isObject(params)) {
     qs = querystring.stringify(params);
     api_path.pop();

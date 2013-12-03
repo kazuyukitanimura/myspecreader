@@ -59,7 +59,8 @@ Msr.prototype.getRecommends = function(callback) {
       var items = data.itmes;
       var scw = this.scw;
       for (var i = items.length; i--;) {
-        var j;
+        var j = 0;
+        var k = '';
         var item = items[i];
         // E.g.
         //{
@@ -69,6 +70,7 @@ Msr.prototype.getRecommends = function(callback) {
         //      "summary": {
         //        "content": "..."
         //      },
+        //      "language": "English", // support only English now
         //      "published": 1385928000000
         //      "origin": {
         //        "streamId": "...",
@@ -78,11 +80,17 @@ Msr.prototype.getRecommends = function(callback) {
         var summary = item.summary.content; // key prefix: s // TODO need a html cleaner
         var featureVector = {// key: word, val:frequency // TODO extract feature cectors
           ago: now - item.published, // nomoralize how old it is from the time the user sees it
-          originId: item.origin.streamId
+          originId: item.origin.streamId,
+          lang: item.language
         }; 
 
         for (j = keywords.length; j--;) {
-          var k = 'k' + keywords[j];
+          k = 'k ' + keywords[j].trim();
+          featureVector[k] = 1; // keyword should not been seen more than once
+        }
+        var titlePieces = title.trim().split(/\s+/);
+        for (j = titlePieces.length; j--;) {
+          k = 't ' + titlePieces[j];
           featureVector[k] = featureVector[k]|0 + 1;
         }
 

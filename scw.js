@@ -20,7 +20,7 @@ var calcLossScore = function(scores, correct, margin) {
   if (!margin) {
     margin = 0.0;
   }
-  var nonCorrectPredict;
+  var nonCorrectPredict = NON_CATEGORY;
   var correctDone = false;
   var predictDone = false;
   var lossScore = margin;
@@ -151,7 +151,7 @@ SCW.prototype.calcV = function(datum, nonCorrectPredict) {
   var v = 0.0;
   var correctCov = this.covarianceMatrix.getOrDefault(datum.category);
   var featureVector = datum.featureVector;
-  var pos;
+  var pos = '';
   for (pos in featureVector) {
     if (featureVector.hasOwnProperty(pos)) {
       v += correctCov.getOrDefault(pos) * Math.pow(featureVector[pos], 2);
@@ -208,7 +208,8 @@ SCW.prototype.update = function(datum, scores) {
   var beta = this.calcBeta(v, alpha);
 
   if (alpha > 0.0) {
-    var pos, val;
+    var pos = '';
+    var val = 0.0;
     var featureVector = datum.featureVector;
     var correctWeight = this.weightMatrix.getOrDefault(datum.category);
     var correctCov = this.covarianceMatrix.getOrDefault(datum.category);
