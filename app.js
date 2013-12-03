@@ -85,7 +85,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/recommends', function() {
-  req.msr.getStreams(function(err, data, response) {
+  req.msr.getRecommends(function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();

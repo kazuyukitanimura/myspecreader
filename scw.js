@@ -87,7 +87,7 @@ var Datum = function(category, featureVector) {
   this.featureVector = featureVector;
 };
 
-var SCW = module.exports.SCW = function(phi, C, mode, options)) {
+var SCW = module.exports.SCW = function(phi, C, mode, options) {
   if (!C) {
     C = 1.0;
   }
@@ -98,7 +98,7 @@ var SCW = module.exports.SCW = function(phi, C, mode, options)) {
     options = {};
   }
   if (! (this instanceof SCW)) { // enforcing new
-    return new SCW(phi, C, mode, options));
+    return new SCW(phi, C, mode, options);
   }
   this.phi = phi;
   this.phi2 = Math.pow(phi, 2);

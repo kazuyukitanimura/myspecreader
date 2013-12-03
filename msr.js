@@ -28,6 +28,10 @@ var Msr = module.exports = function(options) {
 };
 Msr.prototype = Object.create(Msr.prototype); // Inheritance ECMAScript 5 for Object.create
 
+Msr.prototype._initScw = function(options) {
+
+};
+
 /**
  *
  * @params callback {Function}
@@ -48,7 +52,7 @@ Msr.prototype.getRecommends = function(callback) {
         var published = item.published;
         var originId = item.origin.streamId;
 
-        var featureVector = {};
+        var featureVector = {}; // TODO extract feature cectors
         item.estCategory = scw.test(featureVector);
       }
       items.sort(function(a, b) {
