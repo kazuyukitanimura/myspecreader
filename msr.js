@@ -18,7 +18,7 @@ var Msr = module.exports = function(options) {
   Feedly.call(this, options);
   this._initScw(options);
 };
-Msr.prototype = Object.create(Msr.prototype); // Inheritance ECMAScript 5 for Object.create
+Msr.prototype = Object.create(Msr.prototype);
 
 Msr.prototype._initScw = function(options) {
   if (options.id && (!this.scw || options.forceScw)) { // update covarianceMatrix and weightMatrix from DB by options.id
@@ -77,21 +77,28 @@ Msr.prototype.getRecommends = function(callback) {
         //      },
         var keywords = item.keywords; // key prefix: k
         var title = item.title; // key prefix: t
-        var summary = item.summary.content; // key prefix: s // TODO need a html cleaner
-        var featureVector = {// key: word, val:frequency // TODO extract feature cectors
-          ago: now - item.published, // nomoralize how old it is from the time the user sees it
+        var summary = item.summary.content; // key prefix: s
+        var featureVector = { // key: word, val:frequency
+          ago: now - item.published,
+          // nomoralize how old it is from the time the user sees it
           originId: item.origin.streamId,
           lang: item.language
-        }; 
+        };
 
         for (j = keywords.length; j--;) {
           k = 'k ' + keywords[j].trim();
           featureVector[k] = 1; // keyword should not been seen more than once
         }
-        var titlePieces = title.trim().split(/\s+/);
+        var titlePieces = title.trim().split(/[\s.!?&\/\[\]\{\}]+/);
         for (j = titlePieces.length; j--;) {
           k = 't ' + titlePieces[j];
-          featureVector[k] = featureVector[k]|0 + 1;
+          featureVector[k] = (featureVector[k] | 0) + 1;
+        }
+        var summaryPieces = summary.trim().split(/[\s.!?&\/\[\]\{\}]+/);
+        // TODO need a html cleaner, extract stem words, drop stop words
+        for (j = summaryPieces.length; j--;) {
+          k = 's ' + summaryPieces[j];
+          featureVector[k] = (featureVector[k] | 0) + 1;
         }
 
         item.estCategory = scw.test(featureVector);
@@ -105,3 +112,22 @@ Msr.prototype.getRecommends = function(callback) {
   });
 };
 
+/**
+ *
+ * @param postBody {String} or {Object} http post body
+ * @params callback {Function}
+ */
+Msr.prototype.postRecommends = function(postBody, callback) {
+  if (!callback && !this.scw) {
+    return;
+  }
+  var featureVector = {};
+  this.scw.train(function(callback) {
+    if(!callback) {
+      return;
+    }
+    var datum;
+    callback(datum);
+  });
+  callback(err, data, response);
+};

@@ -110,6 +110,9 @@ var SCW = module.exports.SCW = function(phi, C, mode, options) {
 };
 
 SCW.prototype.train = function(dataGen, maxIteration) {
+  if (!maxIteration) {
+    maxIteration = 1;
+  }
   var trainCallback = function(datum) {
     var scores = this.calcScores(datum.featureVector);
     this.update(datum, scores);
@@ -238,6 +241,9 @@ SCW.prototype.update = function(datum, scores) {
 };
 
 var parseFile = function(filePath, next, callback) {
+  if (!callback) {
+    return;
+  }
   fs.createReadStream(filePath).pipe(new ByLineStream()).on('readable', function() {
     var pieces = this.read().trim().split(' ');
     var category = pieces.shift();
@@ -247,9 +253,7 @@ var parseFile = function(filePath, next, callback) {
       featureVector[kv[0]] = parseFloat(kv[1]);
     }
     var datum = new Datum(category, featureVector);
-    if (callback) {
-      callback(datum);
-    }
+    callback(datum);
   }).on('end', next);
 };
 

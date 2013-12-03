@@ -186,15 +186,15 @@ Feedly.prototype._get = function(api_url, callback) {
  * Internal function to perfrom http post
  *
  * @param url {String} http post url including http...
- * @param input {String} or {Object} http post body
+ * @param postBody {String} or {Object} http post body
  * @params callback {Function}
  */
-Feedly.prototype._post = function(api_url, input, callback) {
-  if (isObject(input)) {
-    input = JSON.stringify(input);
+Feedly.prototype._post = function(api_url, postBody, callback) {
+  if (isObject(postBody)) {
+    postBody = JSON.stringify(postBody);
   }
-  console.log(api_url, input);
-  this._oa.post(api_url, this._token, input, this._createResponseHandler(callback));
+  console.log(api_url, postBody);
+  this._oa.post(api_url, this._token, postBody, this._createResponseHandler(callback));
 };
 
 /**
@@ -235,12 +235,12 @@ Feedly.prototype.getSubscriptions = function(callback) {
 
 /**
  *
- * @param input {String} or {Object} http post body
+ * @param postBody {String} or {Object} http post body
  * @params callback {Function}
  */
-Feedly.prototype.postSubscriptions = function(input, callback) {
+Feedly.prototype.postSubscriptions = function(postBody, callback) {
   var api_path = 'subscriptions';
-  this._post(this._buildUrl(api_path), input, callback);
+  this._post(this._buildUrl(api_path), postBody, callback);
 };
 
 /**
