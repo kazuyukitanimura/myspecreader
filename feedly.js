@@ -160,6 +160,11 @@ Feedly.prototype._normalizeError = function(err) {
   }
 };
 
+/**
+ * Internal function to organize the data to pass to callback
+ *
+ * @params callback {Function}
+ */
 Feedly.prototype._createResponseHandler = function(callback) {
   return function(error, data, response) {
     if (error) {
@@ -182,7 +187,10 @@ Feedly.prototype._createResponseHandler = function(callback) {
 };
 
 /**
+ * Internal function to perfrom http get
  *
+ * @param url {String} http get url including http...
+ * @params callback {Function}
  */
 Feedly.prototype._get = function(api_url, callback) {
   console.log(api_url);
@@ -190,7 +198,11 @@ Feedly.prototype._get = function(api_url, callback) {
 };
 
 /**
+ * Internal function to perfrom http post
  *
+ * @param url {String} http post url including http...
+ * @param input {String} or {Object} http post body
+ * @params callback {Function}
  */
 Feedly.prototype._post = function(api_url, input, callback) {
   if (isObject(input)) {
@@ -202,6 +214,9 @@ Feedly.prototype._post = function(api_url, input, callback) {
 
 /**
  *
+ *
+ * @param options {Object}
+ * @params callback {Function}
  */
 Feedly.prototype.getStreams = function(options, callback) {
   if (!options) {
@@ -226,6 +241,7 @@ Feedly.prototype.getStreams = function(options, callback) {
 
 /**
  *
+ * @params callback {Function}
  */
 Feedly.prototype.getSubscriptions = function(callback) {
   var api_path = 'subscriptions';
@@ -234,6 +250,7 @@ Feedly.prototype.getSubscriptions = function(callback) {
 
 /**
  *
+ * @params callback {Function}
  */
 Feedly.prototype.postSubscriptions = function(input, callback) {
   var api_path = 'subscriptions';
@@ -242,6 +259,8 @@ Feedly.prototype.postSubscriptions = function(input, callback) {
 
 /**
  *
+ * @param options {Object}
+ * @params callback {Function}
  */
 Feedly.prototype.getSearch = function(options, callback) {
   if (!options) {

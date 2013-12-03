@@ -3,10 +3,9 @@ var sessions = require("client-sessions");
 var express = require('express');
 var app = express();
 
-var Datum = require('./scw').Datum;
 var Feedly = require('./feedly');
 var feedlyCommon = new Feedly();
-var Scw = require('./scw').SCW;
+var Scw = require('./scw');
 var secret = require('./secret');
 var url = require('./url');
 
@@ -40,8 +39,7 @@ var auth_middleware = function(req, res, next) {
     } else {
       console.log(feedlyOptions);
       req.feedly = new Feedly(feedlyOptions);
-      var scwOptions; // update covarianceMatrix and weightMatrix from DB by feedlyOptions.id
-      req.scw = new SCW(SCW_PARAMS.ETA, SCW_PARAMS.C. SCW_PARAMS.MODE, scwOptions);
+      req.scw = new SCW(SCW_PARAMS.ETA, SCW_PARAMS.C. SCW_PARAMS.MODE);
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
@@ -94,6 +92,10 @@ app.get('/', function(req, res) {
 });
 
 app.get('/recommends', function() {
+  var covarianceMatrix; // update covarianceMatrix from DB by req.mySpecReader.feedlyOptions.id
+  var weightMatrix; // update weightMatrix from DB by req.mySpecReader.feedlyOptions.id
+  // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
+  // fetch matrices and stream data at the same time.
   req.feedly.getStreams(function(err, data, response) {
     if (err) {
       console.error(err);
@@ -112,10 +114,12 @@ app.get('/recommends', function() {
         var originId = item.origin.streamId;
 
         var featureVector = {};
-        var category;
-        var datum = new Datum(category, featureVector);
-        scw.test(datum.featureVector);
+        item.estCategory = scw.test(featureVector);
       }
+      items.sort(function(a, b) {
+        return a.estCategory - b.estCategory || b.published - a.published;
+      });
+      // TODO send only required data
       res.send(data);
     }
   });

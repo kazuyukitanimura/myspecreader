@@ -79,7 +79,7 @@ Matrix.prototype.getOrDefault = function(key) {
   return this[key];
 };
 
-var Datum = module.export.Datum = function(category, featureVector) {
+var Datum = function(category, featureVector) {
   if (! (this instanceof Datum)) { // enforcing new
     return new Datum(category, featureVector);
   }
@@ -87,35 +87,32 @@ var Datum = module.export.Datum = function(category, featureVector) {
   this.featureVector = featureVector;
 };
 
-var SCW = module.export.SCW = function(phi, C, mode, options) {
+var SCW = module.exports.SCW = function(phi, C, mode) {
   if (!C) {
     C = 1.0;
   }
   if (!mode) {
     mode = 2;
   }
-  if (!options) {
-    options = {};
-  }
   if (! (this instanceof SCW)) { // enforcing new
-    return new SCW(phi, C, mode, options);
+    return new SCW(phi, C, mode);
   }
   this.phi = phi;
   this.phi2 = Math.pow(phi, 2);
   this.phi4 = Math.pow(phi, 4);
   this.mode = mode;
   this.C = C;
-  this.covarianceMatrix = options.covarianceMatrix || new Matrix(1.0); // key: category, value covarianceVector;
-  this.weightMatrix = options.weightMatrix || new Matrix(0.0); // key: category, value weightVector;
+  this.covarianceMatrix = new Matrix(1.0); // key: category, value covarianceVector;
+  this.weightMatrix = new Matrix(0.0); // key: category, value weightVector;
 };
 
 SCW.prototype.train = function(dataGen, maxIteration) {
-  var callback = function(datum) {
+  var trainCallback = function(datum) {
     var scores = this.calcScores(datum.featureVector);
     this.update(datum, scores);
   }.bind(this);
   for (var i = maxIteration; i--;) {
-    dataGen(callback);
+    dataGen(trainCallback);
   }
 };
 
@@ -285,10 +282,10 @@ var main = function() {
       console.log('C:', C);
       scw = new SCW(eta, C, mode);
       scw.train(train, maxIteration);
-      break;
+      //break;
       C *= 0.5;
     }
-    break;
+    //break;
     eta *= 0.1;
   }
 };
