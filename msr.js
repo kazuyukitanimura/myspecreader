@@ -16,7 +16,12 @@ var Msr = module.exports = function(options) {
     return new Msr(options);
   }
   Feedly.call(this, options);
-  if (options.id) { // update covarianceMatrix and weightMatrix from DB by options.id
+  this._initScw(options);
+};
+Msr.prototype = Object.create(Msr.prototype); // Inheritance ECMAScript 5 for Object.create
+
+Msr.prototype._initScw = function(options) {
+  if (options.id && (!this.scw || options.forceScw)) { // update covarianceMatrix and weightMatrix from DB by options.id
     var scwOptions = {
       covarianceMatrix: undefined,
       weightMatrix: undefined
@@ -26,10 +31,18 @@ var Msr = module.exports = function(options) {
     this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C.SCW_PARAMS.MODE, scwOptions);
   }
 };
-Msr.prototype = Object.create(Msr.prototype); // Inheritance ECMAScript 5 for Object.create
 
-Msr.prototype._initScw = function(options) {
-
+/**
+ * Override Feedly.prototype.getAccessToken
+ */
+Msr.prototype.getAccessToken = function(code, params, callback) {
+  var newCallback = function(err, results) {
+    if (!err && callback) {
+      this._initScw(results);
+    }
+    callback(err, results);
+  }.bind(this);
+  Feedly.prototype.getAccessToken.call(this, code, params, newCallback);
 };
 
 /**

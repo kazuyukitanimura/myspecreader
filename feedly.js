@@ -6,7 +6,6 @@ var API_VERSION = 'v3';
 var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 var ID_ALL = 'global.all';
 var ID_UNCATEGORIZED = 'global.uncategorized';
-//var OAuth2 = require('simple-oauth2');
 var OAuth2 = require('./oauth2');
 var extend = require('node.extend');
 var querystring = require('querystring');
@@ -56,14 +55,6 @@ var Feedly = module.exports = function(options) {
 
   this._oa = new OAuth2(OAUTH_CONFIG.ClientId, OAUTH_CONFIG.ClientSecret, OAUTH_CONFIG.RequestTokenUrl, OAUTH_CONFIG.AuthPath, OAUTH_CONFIG.TokenPath);
   this._oa.useAuthorizationHeaderforGET(true);
-  //this._oa = new OAuth2({
-  //  clientID: OAUTH_CONFIG.ClientId,
-  //  clientSecret: OAUTH_CONFIG.ClientSecret,
-  //  site: OAUTH_CONFIG.RequestTokenUrl,
-  //  tokenPath: OAUTH_CONFIG.TokenPath,
-  //  authorizationPath: OAUTH_CONFIG.AuthPath,
-  //  useBasicAuthorizationHeader: false
-  //}); // simple-oauth2
   this._token = options.access_token || options.refresh_token;
   this._results = options;
 };
@@ -78,7 +69,6 @@ Feedly.prototype.getAuthUrl = function(params) {
     response_type: 'code'
   },
   params));
-  //return this._oa.AuthCode.authorizeURL(params); // simple-oauth2
 };
 
 /**
@@ -97,10 +87,6 @@ Feedly.prototype.getAccessToken = function(code, params, callback) {
     grant_type: 'authorization_code'
   },
   params), this._saveToken.bind(this, callback));
-  //this._oa.AuthCode.getToken(extend({
-  //  code: code
-  //},
-  //params), this._saveToken); // simple-oauth2
 };
 
 /**
@@ -111,7 +97,6 @@ Feedly.prototype._saveToken = function(callback, err, accessToken, refreshToken,
     err = this._normalizeError(err);
   } else {
     this._token = accessToken || refreshToken;
-    //this._token = this._oa.AccessToken.create(accessToken); // simple-oauth2
     this._results = results;
   }
   if (callback) {

@@ -12,7 +12,6 @@
   , "node.extend": "*"
   , "oauth": "*"
   , "request": "*"
-  , "simple-oauth2": "git://github.com/andreareginato/simple-oauth2.git"
   , "socket.io": "*"
   , "uglify-js": "*"
   }
