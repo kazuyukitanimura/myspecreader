@@ -8,6 +8,15 @@ var SCW_PARAMS = {
   MODE: 2 // 0, 1, or 2
 };
 
+/**
+ * Convenient functions
+ */
+var stripHtml = function(text) {
+  // http://stackoverflow.com/questions/822452/strip-html-from-text-javascript
+  // http://css-tricks.com/snippets/javascript/strip-html-tags-in-javascript/
+  return text.replace(/<(?:.|\n)*?>/gm, '').trim(); // .replace(/(<([^>]+)>)/ig,"")
+};
+
 var Msr = module.exports = function(options) {
   if (!options) {
     options = {};
@@ -94,8 +103,8 @@ Msr.prototype.getRecommends = function(callback) {
           k = 't ' + titlePieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
-        var summaryPieces = summary.trim().split(/[\s.!?&\/\[\]\{\}]+/);
-        // TODO need a html cleaner, extract stem words, drop stop words
+        var summaryPieces = stripHtml(summary).split(/[\s.!?&\/\[\]\{\}]+/);
+        // TODO need to extract stem words, drop stop words
         for (j = summaryPieces.length; j--;) {
           k = 's ' + summaryPieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
