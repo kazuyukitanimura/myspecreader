@@ -9,6 +9,7 @@
   , "express": "*"
   , "ejs": "*"
   , "fussy": "*"
+  , "natural": "*"
   , "node.extend": "*"
   , "oauth": "*"
   , "request": "*"

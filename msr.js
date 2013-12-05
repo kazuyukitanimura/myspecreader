@@ -1,3 +1,6 @@
+var natural = require('natural');
+var treebankWordTokenizer = new natural.TreebankWordTokenizer();
+//natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
 var Feedly = require('./feedly');
 var Scw = require('./scw');
 
@@ -16,6 +19,24 @@ var stripHtml = function(text) {
   // http://css-tricks.com/snippets/javascript/strip-html-tags-in-javascript/
   return text.replace(/<(?:.|\n)*?>/gm, '').trim(); // .replace(/(<([^>]+)>)/ig,"")
 };
+//var separator = /[\s.!?&\/\[\]\{\}\(\):;]+/;
+//var strip = /$[\s.!?&\/\[\]\{\}\(\):;]+|[\s.!?&\/\[\]\{\}\(\):;]+$/g;
+var ignores = ['\'s', '\'re', '\'ll', '\'ve', '..', '&quot', '--'];
+var tokenize = function(text) {
+  //return stripHtml(text).replace(strip, '').split(separator);
+  var tokens = treebankWordTokenizer.tokenize(stripHtml(text));
+  for (var i = tokens.length; i--;) {
+    var token = tokens[i];
+    if ((token.length < 2 && ! /[\d$]+/.test(token)) || ignores.indexOf(token) !== - 1) {
+      tokens.splice(i, 1); // remove
+      continue;
+    }
+    //tokens[i] = token.replace(/\.$|^'/, '').stem(); // remove punctuations
+    tokens[i] = token.replace(/\.$|^'/, '').toLowerCase(); // remove punctuations
+  }
+  return tokens;
+  //return stripHtml(text).tokenizeAndStem();
+}
 
 var Msr = module.exports = function(options) {
   if (!options) {
@@ -63,13 +84,16 @@ Msr.prototype.getRecommends = function(callback) {
     callback(new Error());
     return;
   }
-  this.getStreams(function(err, data, response) {
+  this.getStreams(
+  /*{
+    count: 40
+  }
+  , */
+  function(err, data, response) {
     if (!err) {
       var now = Date.now();
       var items = data.items;
       var scw = this.scw;
-      var separator = /[\s.!?&\/\[\]\{\}\(\)]+/;
-      var strip = /$[\s.!?&\/\[\]\{\}\(\)]+|[\s.!?&\/\[\]\{\}\(\)]+$/g;
       for (var i = items.length; i--;) {
         var j = 0;
         var k = '';
@@ -106,19 +130,19 @@ Msr.prototype.getRecommends = function(callback) {
           k = 'k ' + keywords[j].trim().toLowerCase();
           featureVector[k] = 1; // keyword should not been seen more than once
         }
-        var titlePieces = stripHtml(title).replace(strip, '').split(separator);
+        var titlePieces = tokenize(title);
         for (j = titlePieces.length; j--;) {
-          k = 't ' + titlePieces[j].toLowerCase();
+          k = 't ' + titlePieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
-        var summaryPieces = stripHtml(summary).replace(strip, '').split(separator);
-        // TODO need to extract stem words, drop stop words
+        var summaryPieces = tokenize(summary);
         for (j = summaryPieces.length; j--;) {
-          k = 's ' + summaryPieces[j].toLowerCase();
+          k = 's ' + summaryPieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
         featureVector.img = /(<[^>]*img[^>]*>)/im.test(summary) | 0; // 0 or 1
-        item.estCategory = +scw.test(featureVector); // +change to number
+        item.featureVector = featureVector;
+        item.estCategory = + scw.test(featureVector); // +change to number
       }
       items.sort(function(a, b) {
         return a.estCategory - b.estCategory || b.published - a.published;
