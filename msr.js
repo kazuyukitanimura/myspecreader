@@ -68,6 +68,8 @@ Msr.prototype.getRecommends = function(callback) {
       var now = Date.now();
       var items = data.items;
       var scw = this.scw;
+      var separator = /[\s.!?&\/\[\]\{\}\(\)]+/;
+      var strip = /$[\s.!?&\/\[\]\{\}\(\)]+|[\s.!?&\/\[\]\{\}\(\)]+$/g;
       for (var i = items.length; i--;) {
         var j = 0;
         var k = '';
@@ -87,7 +89,7 @@ Msr.prototype.getRecommends = function(callback) {
         //      },
         var keywords = item.keywords || []; // key prefix: k
         var title = item.title || ''; // key prefix: t
-        var summary = item.summary.content || ''; // key prefix: s
+        var summary = (item.summary && item.summary.content) || ''; // key prefix: s
         var featureVector = {}; // key: word, val:frequency
         if (item.published) {
           // nomoralize how old it is from the time the user sees it
@@ -101,23 +103,22 @@ Msr.prototype.getRecommends = function(callback) {
         }
 
         for (j = keywords.length; j--;) {
-          k = 'k ' + keywords[j].trim();
+          k = 'k ' + keywords[j].trim().toLowerCase();
           featureVector[k] = 1; // keyword should not been seen more than once
         }
-        var titlePieces = title.trim().split(/[\s.!?&\/\[\]\{\}]+/);
+        var titlePieces = stripHtml(title).replace(strip, '').split(separator);
         for (j = titlePieces.length; j--;) {
-          k = 't ' + titlePieces[j];
+          k = 't ' + titlePieces[j].toLowerCase();
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
-        var summaryPieces = stripHtml(summary).split(/[\s.!?&\/\[\]\{\}]+/);
+        var summaryPieces = stripHtml(summary).replace(strip, '').split(separator);
         // TODO need to extract stem words, drop stop words
         for (j = summaryPieces.length; j--;) {
-          k = 's ' + summaryPieces[j];
+          k = 's ' + summaryPieces[j].toLowerCase();
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
-
-        console.log(featureVector);
-        item.estCategory = scw.test(featureVector);
+        featureVector.img = /(<[^>]*img[^>]*>)/im.test(summary) | 0; // 0 or 1
+        item.estCategory = +scw.test(featureVector); // +change to number
       }
       items.sort(function(a, b) {
         return a.estCategory - b.estCategory || b.published - a.published;
