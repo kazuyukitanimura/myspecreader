@@ -84,8 +84,20 @@ app.get('/', function(req, res) {
   }
 });
 
-app.get('/recommends', function() {
+app.get('/recommends', function(req, res) {
   req.msr.getRecommends(function(err, data, response) {
+    if (err) {
+      console.error(err);
+      req.msrCookie.reset();
+      res.send(500);
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+app.post('/recommends', function(req, res) {
+  req.msr.postRecommends(function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();

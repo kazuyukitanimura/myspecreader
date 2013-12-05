@@ -87,7 +87,7 @@ var Datum = function(category, featureVector) {
   this.featureVector = featureVector;
 };
 
-var SCW = module.exports.SCW = function(phi, C, mode, options) {
+var SCW = module.exports = function(phi, C, mode, options) {
   if (!C) {
     C = 1.0;
   }
@@ -280,7 +280,6 @@ var main = function() {
     testSize = 0;
     test(testCallback);
   });
-
 
   var eta = 10.0; // 100.0;
   for (var i = 5; i--;) {

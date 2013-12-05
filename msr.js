@@ -27,7 +27,7 @@ var Msr = module.exports = function(options) {
   Feedly.call(this, options);
   this._initScw(options);
 };
-Msr.prototype = Object.create(Msr.prototype);
+Msr.prototype = Object.create(Feedly.prototype);
 
 Msr.prototype._initScw = function(options) {
   if (options.id && (!this.scw || options.forceScw)) { // update covarianceMatrix and weightMatrix from DB by options.id
@@ -37,7 +37,7 @@ Msr.prototype._initScw = function(options) {
     };
     // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
     // fetch matrices asynchronously
-    this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C.SCW_PARAMS.MODE, scwOptions);
+    this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C, SCW_PARAMS.MODE, scwOptions);
   }
 };
 
@@ -59,13 +59,14 @@ Msr.prototype.getAccessToken = function(code, params, callback) {
  * @params callback {Function}
  */
 Msr.prototype.getRecommends = function(callback) {
-  if (!callback) {
+  if (!callback || ! this.scw) {
+    callback(new Error());
     return;
   }
   this.getStreams(function(err, data, response) {
     if (!err) {
       var now = Date.now();
-      var items = data.itmes;
+      var items = data.items;
       var scw = this.scw;
       for (var i = items.length; i--;) {
         var j = 0;
@@ -84,15 +85,20 @@ Msr.prototype.getRecommends = function(callback) {
         //      "origin": {
         //        "streamId": "...",
         //      },
-        var keywords = item.keywords; // key prefix: k
-        var title = item.title; // key prefix: t
-        var summary = item.summary.content; // key prefix: s
-        var featureVector = { // key: word, val:frequency
-          ago: now - item.published,
+        var keywords = item.keywords || []; // key prefix: k
+        var title = item.title || ''; // key prefix: t
+        var summary = item.summary.content || ''; // key prefix: s
+        var featureVector = {}; // key: word, val:frequency
+        if (item.published) {
           // nomoralize how old it is from the time the user sees it
-          originId: item.origin.streamId,
-          lang: item.language
-        };
+          featureVector.ago = now - item.published;
+        }
+        if (item.origin && item.origin.streamId) {
+          featureVector.originId = item.origin.streamId;
+        }
+        if (item.language) {
+          featureVector.lang = item.language;
+        }
 
         for (j = keywords.length; j--;) {
           k = 'k ' + keywords[j].trim();
@@ -110,6 +116,7 @@ Msr.prototype.getRecommends = function(callback) {
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
 
+        console.log(featureVector);
         item.estCategory = scw.test(featureVector);
       }
       items.sort(function(a, b) {
@@ -118,7 +125,7 @@ Msr.prototype.getRecommends = function(callback) {
       // TODO send only required data
     }
     callback(err, data, response);
-  });
+  }.bind(this));
 };
 
 /**
@@ -127,16 +134,20 @@ Msr.prototype.getRecommends = function(callback) {
  * @params callback {Function}
  */
 Msr.prototype.postRecommends = function(postBody, callback) {
-  if (!callback && !this.scw) {
+  if (!callback || ! this.scw) {
+    callback(new Error());
     return;
   }
-  var featureVector = {};
-  this.scw.train(function(callback) {
-    if(!callback) {
+  this.scw.train(function(trainCallback) {
+    if (!trainCallback) {
+      callback(new Error());
       return;
     }
-    var datum;
-    callback(datum);
+    var data = postBody.data;
+    for (var i = data.length; i--;) {
+      trainCallback(data[i]);
+    }
   });
-  callback(err, data, response);
+  callback(null, {});
 };
+
