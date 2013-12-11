@@ -182,32 +182,33 @@ Bkv.prototype._compaction = function(l) {
       return;
     }
     var newLen = vals.length + addKeysL - removeKeys.length;
-    var newKeys = new Uint8Array(newLen);
-    var newVals = new this._Values(newLen);
-    var newKey = '';
+    var newKeys = _bkv[k] = new Uint8Array(newLen * l);
+    var newVals = _bkv[v] = new this._Values(newLen);
     var rmKey = '';
     var addKey = '';
-    newLen -= 1;
+    var nextKey = '';
     for (var x = 0, y = 0, z = 0; x + y - z < newLen;) { // 3-way merge sort
       rmKey = removeKeys[z] || '';
       var xl = x * l;
       key = String.fromCharCode.apply(null, keys.slice(xl, xl + l));
-      console.log(key);
-      if (key === rmKey) {
+      if (key === rmKey && key) {
         z += 1;
         x += 1;
         continue;
       }
-      addKey = addKeys[y];
+      addKey = addKeys[y] || '';
       pos = x + y - z;
-      if (key < addKey) {
-        newKeys[pos] = key;
+      if ((key < addKey && key) || !addKey) {
+        nextKey = key;
         newVals[pos] = vals[x];
         x += 1;
       } else {
-        newKeys[pos] = addKey;
+        nextKey = addKey;
         newVals[pos] = addVals[y];
         y += 1;
+      }
+      for (i = nextKey.length; i--;) {
+        newKeys[pos + i] = nextKey.charCodeAt(i);
       }
     }
   }

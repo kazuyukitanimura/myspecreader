@@ -1,0 +1,15 @@
+var assert = require('assert');
+var B = require('../bkv');
+var b = new B(Uint32Array, 2);
+b.set('c', 1);
+b.set('c', 2);
+b.set('b', 1);
+b.set('a', 1);
+b.del('b');
+b.set('d', 1);
+b.set('e', 1);
+assert.deepEqual(b.get('a'), 1);
+assert.deepEqual(b.get('b'), undefined);
+assert.deepEqual(b.get('c'), 1);
+assert.deepEqual(b.get('d'), 1);
+assert.deepEqual(b.get('e'), 1);
