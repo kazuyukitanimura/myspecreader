@@ -36,7 +36,7 @@ var tokenize = function(text) {
   }
   return tokens;
   //return stripHtml(text).tokenizeAndStem();
-}
+};
 
 var Msr = module.exports = function(options) {
   if (!options) {
