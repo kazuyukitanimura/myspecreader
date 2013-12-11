@@ -31,7 +31,7 @@ var Bkv = module.exports = function(Values, maxCacheSize) {
   //      ...
   //     },
   //  ...
-  this._maxCacheSize = maxCacheSize || 512;
+  this._maxCacheSize = maxCacheSize || 1024;
   this._cacheSizes = {};
 };
 
