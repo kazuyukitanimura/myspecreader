@@ -130,8 +130,8 @@ Bkv.prototype.compaction = function(l) {
   var _cacheKv = this._cacheKv;
   if (_cacheSizes[l] >= this._maxCacheSize) {
     this._compaction(l);
-    _cacheKv[l] = {};
-    _cacheSizes[l] = 0;
+    delete _cacheKv[l];
+    delete _cacheSizes[l];
   }
 };
 Bkv.prototype._compaction = function(l) {
@@ -172,9 +172,9 @@ Bkv.prototype._compaction = function(l) {
       addVals[i] = cacheKv[addKeys[i]];
     }
     if (!_bkv.hasOwnProperty(k)) {
-      var addKeyArray = new Uint8Array(addKeysL);
+      var addKeyArray = new Uint8Array(addKeysL * l);
       var addKeyStr = addKeys.join('');
-      for (i = addKeysL; i--;) {
+      for (i = addKeyArray.length; i--;) {
         addKeyArray[i] = addKeyStr.charCodeAt(i);
       }
       _bkv[k] = addKeyArray;
