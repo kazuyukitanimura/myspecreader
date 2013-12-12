@@ -10,6 +10,6 @@ b.set('d', 1);
 b.set('e', 1);
 assert.deepEqual(b.get('a'), 1);
 assert.deepEqual(b.get('b'), undefined);
-assert.deepEqual(b.get('c'), 1);
+assert.deepEqual(b.get('c'), 2);
 assert.deepEqual(b.get('d'), 1);
 assert.deepEqual(b.get('e'), 1);

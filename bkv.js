@@ -31,7 +31,7 @@ var Bkv = module.exports = function(Values, maxCacheSize) {
   //      ...
   //     },
   //  ...
-  this._maxCacheSize = maxCacheSize || 1024 * 1024;
+  this._maxCacheSize = maxCacheSize || 1024;
   this._cacheSizes = {};
 };
 
@@ -51,18 +51,18 @@ Bkv.prototype._search = function(key) {
   var found = '';
   var hi = keys.length / l - 1;
   var lo = 0;
-  var mid = hi >> 1;
+  var mid = hi >>> 1;
   while (hi >= lo) {
     found = keys.substr(mid * l, l);
     if (key === found) {
-      return lo;
+      return mid;
     }
     if (key < found) {
       hi = mid - 1;
     } else {
       lo = mid + 1;
     }
-    mid = lo + ((hi - lo) > 1);
+    mid = lo + ((hi - lo) >>> 1);
   }
   return - 1;
 };
@@ -141,66 +141,54 @@ Bkv.prototype._compaction = function(l) {
     var v = l + 'v';
     var vals = _bkv[v];
     var _maxCacheSize = this._maxCacheSize;
-    var addKeys = [];
-    var removeKeys = [];
     var key = '';
-    var pos = 0;
-    var val;
-    console.log('AAA');
-    for (key in cacheKv) {
-      if (cacheKv.hasOwnProperty(key)) {
-        val = cacheKv[key];
-        pos = this._search(key);
-        if (pos !== - 1) {
-          if (val === null) {
-            removeKeys.push(key);
-          } else {
-            vals[pos] = val;
-          }
-        } else {
-          addKeys.push(key);
+    var addKeys = Object.keys(cacheKv).sort();
+    var addKeysL = addKeys.length;
+    if (!_bkv.hasOwnProperty(k)) {
+      var addKeysBuf = _bkv[k] = new Buffer(addKeysL * l);
+      var addVals = _bkv[v] = new this._Values(addKeysL);
+      for (var i = addKeysL, j = 0; i--;) {
+        key = addKeys[i];
+        var val = cacheKv[key];
+        if (val !== null) {
+          addKeysBuf.write(key, j * l);
+          addVals[j] = val;
+          j += 1;
         }
       }
-    }
-    console.log('BBB');
-    removeKeys.sort();
-    addKeys.sort();
-    console.log('CCC');
-    var addKeysL = addKeys.length;
-    var addVals = new this._Values(addKeysL);
-    for (var i = addKeysL; i--;) {
-      addVals[i] = cacheKv[addKeys[i]];
-    }
-    if (!_bkv.hasOwnProperty(k)) {
-      _bkv[k] = new Buffer(addKeys.join(''));
-      _bkv[v] = addVals;
-      return;
-    }
-    var keys = _bkv[k].toString();
-    var newLen = vals.length + addKeysL - removeKeys.length;
-    var newKeys = _bkv[k] = new Buffer(newLen * l);
-    var newVals = _bkv[v] = new this._Values(newLen);
-    var rmKey = '';
-    var addKey = '';
-    for (var x = 0, y = 0, z = 0; x + y - z < newLen;) { // 3-way merge sort
-      rmKey = removeKeys[z] || '';
-      key = keys.substr(x * l, l);
-      if (key === rmKey && key) {
-        z += 1;
-        x += 1;
-        continue;
+      addKeysBuf.length = j;
+    } else {
+      var keys = _bkv[k].toString();
+      var newLen = (keys.length / l | 0) + addKeysL;
+      var newKeys = _bkv[k] = new Buffer(newLen * l);
+      var newVals = _bkv[v] = new this._Values(newLen);
+      key = keys.substr(0, l);
+      var addKey = addKeys[0] || '';
+      var delKey;
+      for (var x = 0, y = 0, z = 0; x + y < newLen;) { // merging
+        var addVal = cacheKv[addKey];
+        if (addVal === null) {
+          delKey = addKey;
+          y += 1;
+          addKey = addKeys[y] || '';
+        } else if (key === delKey) {
+          x += 1;
+          key = keys.substr(x * l, l);
+        } else if ((key < addKey && key) || !addKey) {
+          newKeys.write(key, z * l);
+          newVals[z] = vals[x];
+          x += 1;
+          key = keys.substr(x * l, l);
+          z += 1;
+        } else {
+          newKeys.write(addKey, z * l);
+          newVals[z] = addVal;
+          y += 1;
+          addKey = addKeys[y] || '';
+          z += 1;
+        }
       }
-      addKey = addKeys[y] || '';
-      pos = x + y - z;
-      if ((key < addKey && key) || !addKey) {
-        newKeys.write(key, pos);
-        newVals[pos] = vals[x];
-        x += 1;
-      } else {
-        newKeys.write(addKey, pos);
-        newVals[pos] = addVals[y];
-        y += 1;
-      }
+      newKeys.length = z;
     }
   }
 };
