@@ -31,7 +31,7 @@ var Bkv = module.exports = function(Values, maxCacheSize) {
   //      ...
   //     },
   //  ...
-  this._maxCacheSize = maxCacheSize || 1024;
+  this._maxCacheSize = maxCacheSize || 512;
   this._cacheSizes = {};
 };
 
@@ -44,7 +44,7 @@ Bkv.prototype._search = function(key) {
   var l = key.length;
   var k = l + 'k';
   var _bkv = this._bkv;
-  if (!_bkv.hasOwnProperty(k)) {
+  if (_bkv[k] === undefined) {
     return - 1;
   }
   var keys = _bkv[k].toString();
@@ -75,7 +75,7 @@ Bkv.prototype._search = function(key) {
 Bkv.prototype.get = function(key) {
   var l = key.length;
   var cacheKv = this._cacheKv[l];
-  if (cacheKv && cacheKv.hasOwnProperty(key)) {
+  if (cacheKv && cacheKv[key] !== undefined) {
     return cacheKv[key];
   }
   var k = l + 'k';
@@ -99,7 +99,7 @@ Bkv.prototype.set = function(key, val) {
     cacheKv = this._cacheKv[l] = {};
     _cacheSizes[l] = 0;
   }
-  if (!cacheKv.hasOwnProperty(key)) {
+  if (cacheKv[key] === undefined) {
     _cacheSizes[l] += 1;
   }
   cacheKv[key] = val;
@@ -135,7 +135,7 @@ Bkv.prototype.compaction = function(l) {
 Bkv.prototype._compaction = function(l) {
   var _cacheKv = this._cacheKv;
   var _bkv = this._bkv;
-  if (_cacheKv.hasOwnProperty(l)) {
+  if (_cacheKv[l] !== undefined) {
     var cacheKv = _cacheKv[l];
     var k = l + 'k';
     var v = l + 'v';
@@ -144,7 +144,7 @@ Bkv.prototype._compaction = function(l) {
     var key = '';
     var addKeys = Object.keys(cacheKv).sort();
     var addKeysL = addKeys.length;
-    if (!_bkv.hasOwnProperty(k)) {
+    if (_bkv[k] === undefined) {
       var addKeysBuf = _bkv[k] = new Buffer(addKeysL * l);
       var addVals = _bkv[v] = new this._Values(addKeysL);
       for (var i = addKeysL, j = 0; i--;) {
@@ -158,35 +158,69 @@ Bkv.prototype._compaction = function(l) {
       }
       addKeysBuf.length = j;
     } else {
+      var bkvk = _bkv[k];
       var keys = _bkv[k].toString();
       var newLen = (keys.length / l | 0) + addKeysL;
       var newKeys = _bkv[k] = new Buffer(newLen * l);
       var newVals = _bkv[v] = new this._Values(newLen);
       key = keys.substr(0, l);
+      var addKeyBuf = new Buffer(addKeys.join(''));
       var addKey = addKeys[0] || '';
+      var addVal = cacheKv[addKey];
+      var xWrite = false;
+      var yWrite = false;
       var delKey;
-      for (var x = 0, y = 0, z = 0; x + y < newLen;) { // merging
-        var addVal = cacheKv[addKey];
+      for (var x = 0, y = 0, z = 0, xStart = 0, yStart = 0, zStart = 0; x + y < newLen;) { // merging
         if (addVal === null) {
+          if (y !== yStart) { // write previous y
+            addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+            yStart = y;
+            zStart = z;
+          }
           delKey = addKey;
           y += 1;
           addKey = addKeys[y] || '';
+          addVal = cacheKv[addKey];
         } else if (key === delKey) {
+          if (x !== xStart) { // write previous x
+            bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+            xStart = x;
+            zStart = z;
+          }
           x += 1;
           key = keys.substr(x * l, l);
-        } else if ((key < addKey && key) || !addKey) {
-          newKeys.write(key, z * l);
+        } else if (!addKey || (key < addKey && key)) {
+          if (y !== yStart) { // write previous y
+            addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+            yStart = y;
+            zStart = z;
+          }
           newVals[z] = vals[x];
           x += 1;
           key = keys.substr(x * l, l);
           z += 1;
         } else {
-          newKeys.write(addKey, z * l);
+          if (x !== xStart) { // write previous x
+            bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+            xStart = x;
+            zStart = z;
+          }
           newVals[z] = addVal;
           y += 1;
           addKey = addKeys[y] || '';
+          addVal = cacheKv[addKey];
           z += 1;
         }
+      }
+      if (y !== yStart) { // write previous y
+        addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+        yStart = y;
+        zStart = z;
+      }
+      if (x !== xStart) { // write previous x
+        bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+        xStart = x;
+        zStart = z;
       }
       newKeys.length = z;
     }
