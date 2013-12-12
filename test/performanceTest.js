@@ -42,4 +42,42 @@ for (var i = 0; i < cl; i++) {
   console.log('Memory:', process.memoryUsage().heapUsed / (1024 * 1024), 'M');
 }
 var elapsed = Date.now() - start;
-console.log('Time:', elapsed);
+console.log('Set Time:', elapsed);
+
+var v;
+start = Date.now();
+for (var i = 0; i < cl; i++) {
+  key = chars[i];
+  v = data.get(key);
+  console.log('Memory:', process.memoryUsage().heapUsed / (1024 * 1024), 'M');
+}
+for (var i = 0; i < cl; i++) {
+  for (var j = 0; j < cl; j++) {
+    key = chars[i] + chars[j];
+    v = data.get(key);
+  }
+  console.log('Memory:', process.memoryUsage().heapUsed / (1024 * 1024), 'M');
+}
+for (var i = 0; i < cl; i++) {
+  for (var j = 0; j < cl; j++) {
+    for (var k = 0; k < cl; k++) {
+      key = chars[i] + chars[j] + chars[k];
+      v = data.get(key);
+    }
+  }
+  console.log('Memory:', process.memoryUsage().heapUsed / (1024 * 1024), 'M');
+}
+for (var i = 0; i < cl; i++) {
+  for (var j = 0; j < cl; j++) {
+    for (var k = 0; k < cl; k++) {
+      for (var l = 0; l < cl; l++) {
+        key = chars[i] + chars[j] + chars[k] + chars[l];
+        v = data.get(key);
+      }
+    }
+  }
+  console.log('Memory:', process.memoryUsage().heapUsed / (1024 * 1024), 'M');
+}
+
+elapsed = Date.now() - start;
+console.log('Get Time:', elapsed);

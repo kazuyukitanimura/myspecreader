@@ -95,11 +95,10 @@ Bkv.prototype.set = function(key, val) {
   var l = key.length;
   var cacheKv = this._cacheKv[l];
   var _cacheSizes = this._cacheSizes;
-  if (!cacheKv) {
+  if (cacheKv === undefined) {
     cacheKv = this._cacheKv[l] = {};
-    _cacheSizes[l] = 0;
-  }
-  if (cacheKv[key] === undefined) {
+    _cacheSizes[l] = 1;
+  } else if (cacheKv[key] === undefined) {
     _cacheSizes[l] += 1;
   }
   cacheKv[key] = val;
@@ -125,105 +124,101 @@ Bkv.prototype.del = function(key) {
  */
 Bkv.prototype.compaction = function(l) {
   var _cacheSizes = this._cacheSizes;
-  var _cacheKv = this._cacheKv;
   if (_cacheSizes[l] >= this._maxCacheSize) {
     this._compaction(l);
-    delete _cacheKv[l];
+    delete this._cacheKv[l];
     delete _cacheSizes[l];
   }
 };
 Bkv.prototype._compaction = function(l) {
-  var _cacheKv = this._cacheKv;
   var _bkv = this._bkv;
-  if (_cacheKv[l] !== undefined) {
-    var cacheKv = _cacheKv[l];
-    var k = l + 'k';
-    var v = l + 'v';
-    var vals = _bkv[v];
-    var _maxCacheSize = this._maxCacheSize;
-    var key = '';
-    var addKeys = Object.keys(cacheKv).sort();
-    var addKeysL = addKeys.length;
-    if (_bkv[k] === undefined) {
-      var addKeysBuf = _bkv[k] = new Buffer(addKeysL * l);
-      var addVals = _bkv[v] = new this._Values(addKeysL);
-      for (var i = addKeysL, j = 0; i--;) {
-        key = addKeys[i];
-        var val = cacheKv[key];
-        if (val !== null) {
-          addKeysBuf.write(key, j * l);
-          addVals[j] = val;
-          j += 1;
-        }
+  var cacheKv = this._cacheKv[l];
+  var k = l + 'k';
+  var v = l + 'v';
+  var vals = _bkv[v];
+  var _maxCacheSize = this._maxCacheSize;
+  var key = '';
+  var addKeys = Object.keys(cacheKv).sort();
+  var addKeysL = addKeys.length;
+  if (_bkv[k] === undefined) {
+    var addKeysBuf = _bkv[k] = new Buffer(addKeysL * l);
+    var addVals = _bkv[v] = new this._Values(addKeysL);
+    for (var i = addKeysL, j = 0; i--;) {
+      key = addKeys[i];
+      var val = cacheKv[key];
+      if (val !== null) {
+        addKeysBuf.write(key, j * l);
+        addVals[j] = val;
+        j += 1;
       }
-      addKeysBuf.length = j;
-    } else {
-      var bkvk = _bkv[k];
-      var keys = _bkv[k].toString();
-      var newLen = (keys.length / l | 0) + addKeysL;
-      var newKeys = _bkv[k] = new Buffer(newLen * l);
-      var newVals = _bkv[v] = new this._Values(newLen);
-      key = keys.substr(0, l);
-      var addKeyBuf = new Buffer(addKeys.join(''));
-      var addKey = addKeys[0] || '';
-      var addVal = cacheKv[addKey];
-      var xWrite = false;
-      var yWrite = false;
-      var delKey;
-      for (var x = 0, y = 0, z = 0, xStart = 0, yStart = 0, zStart = 0; x + y < newLen;) { // merging
-        if (addVal === null) {
-          if (y !== yStart) { // write previous y
-            addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
-            yStart = y;
-            zStart = z;
-          }
-          delKey = addKey;
-          y += 1;
-          addKey = addKeys[y] || '';
-          addVal = cacheKv[addKey];
-        } else if (key === delKey) {
-          if (x !== xStart) { // write previous x
-            bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
-            xStart = x;
-            zStart = z;
-          }
-          x += 1;
-          key = keys.substr(x * l, l);
-        } else if (!addKey || (key < addKey && key)) {
-          if (y !== yStart) { // write previous y
-            addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
-            yStart = y;
-            zStart = z;
-          }
-          newVals[z] = vals[x];
-          x += 1;
-          key = keys.substr(x * l, l);
-          z += 1;
-        } else {
-          if (x !== xStart) { // write previous x
-            bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
-            xStart = x;
-            zStart = z;
-          }
-          newVals[z] = addVal;
-          y += 1;
-          addKey = addKeys[y] || '';
-          addVal = cacheKv[addKey];
-          z += 1;
-        }
-      }
-      if (y !== yStart) { // write previous y
-        addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
-        yStart = y;
-        zStart = z;
-      }
-      if (x !== xStart) { // write previous x
-        bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
-        xStart = x;
-        zStart = z;
-      }
-      newKeys.length = z;
     }
+    addKeysBuf.length = j;
+  } else {
+    var bkvk = _bkv[k];
+    var keys = bkvk.toString();
+    var newLen = (keys.length / l | 0) + addKeysL;
+    var newKeys = _bkv[k] = new Buffer(newLen * l);
+    var newVals = _bkv[v] = new this._Values(newLen);
+    key = keys.substr(0, l);
+    var addKeyBuf = new Buffer(addKeys.join(''));
+    var addKey = addKeys[0] || '';
+    var addVal = cacheKv[addKey];
+    var xWrite = false;
+    var yWrite = false;
+    var delKey;
+    for (var x = 0, y = 0, z = 0, xStart = 0, yStart = 0, zStart = 0; x + y < newLen;) { // merging
+      if (addVal === null) {
+        if (y !== yStart) { // write previous y
+          addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+          yStart = y;
+          zStart = z;
+        }
+        delKey = addKey;
+        y += 1;
+        addKey = addKeys[y] || '';
+        addVal = cacheKv[addKey];
+      } else if (key === delKey) {
+        if (x !== xStart) { // write previous x
+          bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+          xStart = x;
+          zStart = z;
+        }
+        x += 1;
+        key = keys.substr(x * l, l);
+      } else if (!addKey || (key < addKey && key)) {
+        if (y !== yStart) { // write previous y
+          addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+          yStart = y;
+          zStart = z;
+        }
+        newVals[z] = vals[x];
+        x += 1;
+        key = keys.substr(x * l, l);
+        z += 1;
+      } else {
+        if (x !== xStart) { // write previous x
+          bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+          xStart = x;
+          zStart = z;
+        }
+        newVals[z] = addVal;
+        y += 1;
+        addKey = addKeys[y] || '';
+        addVal = cacheKv[addKey];
+        z += 1;
+      }
+    }
+    if (y !== yStart) { // write previous y
+      addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
+      yStart = y;
+      zStart = z;
+    }
+    if (x !== xStart) { // write previous x
+      bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
+      xStart = x;
+      zStart = z;
+    }
+    newKeys.length = z;
   }
 };
 
