@@ -31,7 +31,7 @@ var Bkv = module.exports = function(Values, maxCacheSize) {
   //      ...
   //     },
   //  ...
-  this._maxCacheSize = maxCacheSize || 1024;
+  this._maxCacheSize = maxCacheSize || 1024 * 1024;
   this._cacheSizes = {};
 };
 
@@ -47,15 +47,13 @@ Bkv.prototype._search = function(key) {
   if (!_bkv.hasOwnProperty(k)) {
     return - 1;
   }
-  var keys = _bkv[k];
+  var keys = _bkv[k].toString();
   var found = '';
   var hi = keys.length / l - 1;
   var lo = 0;
-  var lmid = 0;
   var mid = hi >> 1;
   while (hi >= lo) {
-    lmid = l * mid;
-    found = String.fromCharCode.apply(null, keys.slice(lmid, lmid + l));
+    found = keys.substr(mid * l, l);
     if (key === found) {
       return lo;
     }
@@ -141,7 +139,6 @@ Bkv.prototype._compaction = function(l) {
     var cacheKv = _cacheKv[l];
     var k = l + 'k';
     var v = l + 'v';
-    var keys = _bkv[k];
     var vals = _bkv[v];
     var _maxCacheSize = this._maxCacheSize;
     var addKeys = [];
@@ -149,6 +146,7 @@ Bkv.prototype._compaction = function(l) {
     var key = '';
     var pos = 0;
     var val;
+    console.log('AAA');
     for (key in cacheKv) {
       if (cacheKv.hasOwnProperty(key)) {
         val = cacheKv[key];
@@ -164,33 +162,29 @@ Bkv.prototype._compaction = function(l) {
         }
       }
     }
+    console.log('BBB');
     removeKeys.sort();
     addKeys.sort();
+    console.log('CCC');
     var addKeysL = addKeys.length;
     var addVals = new this._Values(addKeysL);
     for (var i = addKeysL; i--;) {
       addVals[i] = cacheKv[addKeys[i]];
     }
     if (!_bkv.hasOwnProperty(k)) {
-      var addKeyArray = new Uint8Array(addKeysL * l);
-      var addKeyStr = addKeys.join('');
-      for (i = addKeyArray.length; i--;) {
-        addKeyArray[i] = addKeyStr.charCodeAt(i);
-      }
-      _bkv[k] = addKeyArray;
+      _bkv[k] = new Buffer(addKeys.join(''));
       _bkv[v] = addVals;
       return;
     }
+    var keys = _bkv[k].toString();
     var newLen = vals.length + addKeysL - removeKeys.length;
-    var newKeys = _bkv[k] = new Uint8Array(newLen * l);
+    var newKeys = _bkv[k] = new Buffer(newLen * l);
     var newVals = _bkv[v] = new this._Values(newLen);
     var rmKey = '';
     var addKey = '';
-    var nextKey = '';
     for (var x = 0, y = 0, z = 0; x + y - z < newLen;) { // 3-way merge sort
       rmKey = removeKeys[z] || '';
-      var xl = x * l;
-      key = String.fromCharCode.apply(null, keys.slice(xl, xl + l));
+      key = keys.substr(x * l, l);
       if (key === rmKey && key) {
         z += 1;
         x += 1;
@@ -199,16 +193,13 @@ Bkv.prototype._compaction = function(l) {
       addKey = addKeys[y] || '';
       pos = x + y - z;
       if ((key < addKey && key) || !addKey) {
-        nextKey = key;
+        newKeys.write(key, pos);
         newVals[pos] = vals[x];
         x += 1;
       } else {
-        nextKey = addKey;
+        newKeys.write(addKey, pos);
         newVals[pos] = addVals[y];
         y += 1;
-      }
-      for (i = nextKey.length; i--;) {
-        newKeys[pos + i] = nextKey.charCodeAt(i);
       }
     }
   }
