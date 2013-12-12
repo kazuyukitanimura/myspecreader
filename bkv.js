@@ -43,15 +43,17 @@ var Bkv = module.exports = function(Values, maxCacheSize) {
 Bkv.prototype._search = function(key) {
   var l = key.length;
   var k = l + 'k';
-  var _bkv = this._bkv;
-  if (_bkv[k] === undefined) {
+  var bkvk = this._bkv[k];
+  if (bkvk === undefined) {
     return - 1;
   }
-  var keys = _bkv[k].toString();
+  var keys = bkvk.toString();
   var found = '';
   var hi = keys.length / l - 1;
   var lo = 0;
   var mid = hi >>> 1;
+  var count = 0;
+  var w = hi;
   while (hi >= lo) {
     found = keys.substr(mid * l, l);
     if (key === found) {
@@ -62,8 +64,10 @@ Bkv.prototype._search = function(key) {
     } else {
       lo = mid + 1;
     }
-    mid = lo + ((hi - lo) >>> 1);
+    mid = (hi + lo) >>> 1;
+    count ++;
   }
+  console.log(w, count, keys.length, l);
   return - 1;
 };
 
@@ -78,11 +82,9 @@ Bkv.prototype.get = function(key) {
   if (cacheKv && cacheKv[key] !== undefined) {
     return cacheKv[key];
   }
-  var k = l + 'k';
   var v = l + 'v';
-  var _bkv = this._bkv;
   var pos = this._search(key);
-  return pos === - 1 ? undefined: _bkv[v][pos];
+  return pos === - 1 ? undefined: this._bkv[v][pos];
 };
 
 /**
@@ -152,7 +154,7 @@ Bkv.prototype._compaction = function(l) {
         j += 1;
       }
     }
-    addKeysBuf.length = j;
+    addKeysBuf.length = j * l;
   } else {
     var bkvk = _bkv[k];
     var keys = bkvk.toString();
@@ -218,7 +220,7 @@ Bkv.prototype._compaction = function(l) {
       xStart = x;
       zStart = z;
     }
-    newKeys.length = z;
+    newKeys.length = z * l;
   }
 };
 
