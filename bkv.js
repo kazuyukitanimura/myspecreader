@@ -177,8 +177,13 @@ Bkv.prototype._compaction = function(l) {
         }
         delKey = addKey;
         y += 1;
-        addKey = addKeys[y] || '';
-        addVal = cacheKv[addKey];
+        if (y === addKeysL) {
+          addKey = undefined;
+          addVal = undefined;
+        } else {
+          addKey = addKeys[y];
+          addVal = cacheKv[addKey];
+        }
       } else if (key === delKey) {
         if (x !== xStart) { // write previous x
           bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
@@ -205,19 +210,22 @@ Bkv.prototype._compaction = function(l) {
         }
         newVals[z] = addVal;
         y += 1;
-        addKey = addKeys[y] || '';
-        addVal = cacheKv[addKey];
+        if (y === addKeysL) {
+          addKey = undefined;
+          addVal = undefined;
+        } else {
+          addKey = addKeys[y];
+          addVal = cacheKv[addKey];
+        }
         z += 1;
       }
     }
     if (y !== yStart) { // write previous y
       addKeyBuf.copy(newKeys, zStart * l, yStart * l, y * l); // faster than buf.write()
-      yStart = y;
       zStart = z;
     }
     if (x !== xStart) { // write previous x
       bkvk.copy(newKeys, zStart * l, xStart * l, x * l); // faster than buf.write()
-      xStart = x;
       zStart = z;
     }
     newKeys.length = z * l;
