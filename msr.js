@@ -1,6 +1,9 @@
 var natural = require('natural');
 var treebankWordTokenizer = new natural.TreebankWordTokenizer();
 //natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
+var redis = require('redis').createClient().on('error', function(err) {
+  console.error('Redis:', err);
+});
 var Feedly = require('./feedly');
 var Scw = require('./scw');
 
