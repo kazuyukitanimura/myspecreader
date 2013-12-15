@@ -1,9 +1,7 @@
 var natural = require('natural');
 var treebankWordTokenizer = new natural.TreebankWordTokenizer();
 //natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
-var redis = require('redis').createClient().on('error', function(err) {
-  console.error('Redis:', err);
-});
+var redis = require('./redis');
 var Feedly = require('./feedly');
 var Scw = require('./scw');
 
@@ -14,6 +12,12 @@ var SCW_PARAMS = {
   MODE: 2 // 0, 1, or 2
 };
 
+var CATEGORIES = [Scw.NON_CATEGORY, 'through', 'summary', 'original', 'star'];
+// undefined: none of the categories
+// through: was not opend by showing only title
+// summary: summary was read by clicking title but the original contents were not viewed
+// original: summary was read and original contents were opened
+// star: starred
 /**
  * Convenient functions
  */
@@ -54,14 +58,17 @@ var Msr = module.exports = function(options) {
 Msr.prototype = Object.create(Feedly.prototype);
 
 Msr.prototype._initScw = function(options) {
-  if (options.id && (!this.scw || options.forceScw)) { // update covarianceMatrix and weightMatrix from DB by options.id
-    var scwOptions = {
-      covarianceMatrix: undefined,
-      weightMatrix: undefined
-    };
+  var userId = options.id;
+  if (userId && (!this.scw || options.forceScw)) {
     // TODO use https://github.com/caolan/async#parallel or https://github.com/tildeio/rsvp.js
     // fetch matrices asynchronously
-    this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C, SCW_PARAMS.MODE, scwOptions);
+    redis.loadMatricies(userId, CATEGORIES, function(err, scwOptions) {
+      if (err) {
+        console.error(err); // TODO think what to do with the errors, retry?
+      } else {
+        this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C, SCW_PARAMS.MODE, scwOptions);
+      }
+    });
   }
 };
 
@@ -84,7 +91,7 @@ Msr.prototype.getAccessToken = function(code, params, callback) {
  */
 Msr.prototype.getRecommends = function(callback) {
   if (!callback || ! this.scw) {
-    callback(new Error());
+    callback(new Error('Msr.getRecommends Error'));
     return;
   }
   this.getStreams(
@@ -162,11 +169,12 @@ Msr.prototype.getRecommends = function(callback) {
  * @params callback {Function}
  */
 Msr.prototype.postRecommends = function(postBody, callback) {
-  if (!callback || ! this.scw) {
-    callback(new Error());
+  var scw = this.scw;
+  if (!callback || ! scw) {
+    callback(new Error('Msr.postRecommends Error'));
     return;
   }
-  this.scw.train(function(trainCallback) {
+  scw.train(function(trainCallback) {
     if (!trainCallback) {
       callback(new Error());
       return;
@@ -175,6 +183,9 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     for (var i = data.length; i--;) {
       trainCallback(data[i]);
     }
+  });
+  redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function() {
+    // TODO update Feedly read
   });
   callback(null, {});
 };

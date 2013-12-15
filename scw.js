@@ -20,7 +20,7 @@ var calcLossScore = function(scores, correct, margin) {
   if (!margin) {
     margin = 0.0;
   }
-  var nonCorrectPredict = NON_CATEGORY;
+  var nonCorrectPredict = SCW.NON_CATEGORY;
   var correctDone = false;
   var predictDone = false;
   var lossScore = margin;
@@ -32,7 +32,7 @@ var calcLossScore = function(scores, correct, margin) {
         correctDone = true;
       } else if (!predictDone) {
         nonCorrectPredict = category;
-        if (nonCorrectPredict !== NON_CATEGORY) {
+        if (nonCorrectPredict !== SCW.NON_CATEGORY) {
           lossScore += score;
           predictDone = true;
         }
@@ -45,14 +45,19 @@ var calcLossScore = function(scores, correct, margin) {
   return [ - lossScore, nonCorrectPredict];
 };
 
-var Vector = function(defaultVal) {
+var Vector = function(defaultVal, existing) {
   if (! (this instanceof Vector)) { // enforcing new
-    return new Vector(defaultVal);
+    return new Vector(defaultVal, existing);
   }
   Object.defineProperty(this, 'defaultVal', {
     value: defaultVal,
     enumerable: false // do not show during for-in
   });
+  for (var key in existing) {
+    if(existing.hasOwnProperty(key)) {
+      this[key] = existing[key];
+    }
+  }
 };
 
 Vector.prototype.getOrDefault = function(key) {
@@ -62,14 +67,19 @@ Vector.prototype.getOrDefault = function(key) {
   return this[key];
 };
 
-var Matrix = function(defaultVal) {
+var Matrix = function(defaultVal, existing) {
   if (! (this instanceof Matrix)) { // enforcing new
-    return new Matrix(defaultVal);
+    return new Matrix(defaultVal, existing);
   }
   Object.defineProperty(this, 'defaultVal', {
     value: defaultVal,
     enumerable: false // do not show during for-in
   });
+  for (var key in existing) {
+    if(existing.hasOwnProperty(key)) {
+      this[key] = new Vector(defaultVal, existing[key]);
+    }
+  }
 };
 
 Matrix.prototype.getOrDefault = function(key) {
@@ -105,9 +115,10 @@ var SCW = module.exports = function(phi, C, mode, options) {
   this.phi4 = Math.pow(phi, 4);
   this.mode = mode;
   this.C = C;
-  this.covarianceMatrix = options.covarianceMatrix || new Matrix(1.0); // key: category, value covarianceVector;
-  this.weightMatrix = options.weightMatrix || new Matrix(0.0); // key: category, value weightVector;
+  this.covarianceMatrix = new Matrix(1.0, options.covarianceMatrix); // key: category, value covarianceVector;
+  this.weightMatrix = new Matrix(0.0, options.weightMatrix); // key: category, value weightVector;
 };
+SCW.NON_CATEGORY = NON_CATEGORY;
 
 SCW.prototype.train = function(dataGen, maxIteration) {
   if (!maxIteration) {
@@ -125,7 +136,7 @@ SCW.prototype.train = function(dataGen, maxIteration) {
 SCW.prototype.test = function(featureVector) {
   var scores = this.calcScores(featureVector);
   var maxScore = NON_CATEGORY_SCORE;
-  var maxCategory = NON_CATEGORY;
+  var maxCategory = SCW.NON_CATEGORY;
   for (var category in scores) {
     if (scores.hasOwnProperty(category)) {
       var value = scores[category];
@@ -140,7 +151,7 @@ SCW.prototype.test = function(featureVector) {
 
 SCW.prototype.calcScores = function(featureVector) {
   var scores = {};
-  scores[NON_CATEGORY] = NON_CATEGORY_SCORE;
+  scores[SCW.NON_CATEGORY] = NON_CATEGORY_SCORE;
   var weightMatrix = this.weightMatrix;
   for (var category in weightMatrix) {
     if (weightMatrix.hasOwnProperty(category)) {
@@ -161,7 +172,7 @@ SCW.prototype.calcV = function(datum, nonCorrectPredict) {
     }
   }
 
-  if (nonCorrectPredict === NON_CATEGORY) {
+  if (nonCorrectPredict === SCW.NON_CATEGORY) {
     return v;
   }
 
@@ -224,7 +235,7 @@ SCW.prototype.update = function(datum, scores) {
       }
     }
 
-    if (nonCorrectPredict === NON_CATEGORY) {
+    if (nonCorrectPredict === SCW.NON_CATEGORY) {
       return;
     }
 
@@ -300,4 +311,3 @@ var main = function() {
 if (require.main === module) {
   main();
 }
-
