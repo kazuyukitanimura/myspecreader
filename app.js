@@ -32,7 +32,8 @@ var auth_middleware = function(req, res, next) {
       res.redirect('/');
     } else {
       console.log(msrOptions);
-      req.msr = new Msr(msrOptions);
+      req.msr = new Msr(msrOptions); // TODO pool MSRs use https://github.com/isaacs/node-lru-cache
+      // FIXME use EventEmitter to check req.msr.scw
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {

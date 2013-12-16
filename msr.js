@@ -68,7 +68,7 @@ Msr.prototype._initScw = function(options) {
       } else {
         this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C, SCW_PARAMS.MODE, scwOptions);
       }
-    });
+    }.bind(this));
   }
 };
 
@@ -94,7 +94,8 @@ Msr.prototype.getRecommends = function(callback) {
     callback(new Error('Msr.getRecommends Error'));
     return;
   } else if (!this.scw) {
-    process.nextTick(this.getRecommends.bind(this, callback));
+    setImmediate(this.getRecommends.bind(this, callback)); // XXXX do this check in the middleware
+    return;
   }
   this.getStreams(
   /*{
@@ -154,10 +155,10 @@ Msr.prototype.getRecommends = function(callback) {
         }
         featureVector.img = /(<[^>]*img[^>]*>)/im.test(summary) | 0; // 0 or 1
         item.featureVector = featureVector;
-        item.estCategory = + scw.test(featureVector); // +change to number
+        item.estCategory = scw.test(featureVector); // +change to number
       }
       items.sort(function(a, b) {
-        return a.estCategory - b.estCategory || b.published - a.published;
+        return CATEGORIES.indexOf(a.estCategory) - CATEGORIES.indexOf(b.estCategory) || b.published - a.published; // TODO do not use infexOf
       });
       // TODO send only required data
     }
