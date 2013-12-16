@@ -90,9 +90,11 @@ Msr.prototype.getAccessToken = function(code, params, callback) {
  * @params callback {Function}
  */
 Msr.prototype.getRecommends = function(callback) {
-  if (!callback || ! this.scw) {
+  if (!callback) {
     callback(new Error('Msr.getRecommends Error'));
     return;
+  } else if (!this.scw) {
+    process.nextTick(this.getRecommends.bind(this, callback));
   }
   this.getStreams(
   /*{

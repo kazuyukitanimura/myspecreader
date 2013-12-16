@@ -7,7 +7,7 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
-find . -path ./node_modules -prune -o -type f -name \*.js -print | xargs -J% readyjs % --no-compile --no-aggregate --keep >/dev/null || exit $?
+find . \( -path ./node_modules -o -path ./client \) -prune -o -type f -name \*.js -print | xargs -J% readyjs % --no-compile --no-aggregate --keep >/dev/null || exit $?
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
