@@ -18,6 +18,11 @@ var CATEGORIES = [Scw.NON_CATEGORY, 'through', 'summary', 'original', 'star'];
 // summary: summary was read by clicking title but the original contents were not viewed
 // original: summary was read and original contents were opened
 // star: starred
+var CATEGORY_LOOKUP = {};
+for (var i = CATEGORIES.length; i--;) {
+  CATEGORY_LOOKUP[CATEGORIES[i]] = i;
+}
+
 /**
  * Convenient functions
  */
@@ -93,9 +98,6 @@ Msr.prototype.getRecommends = function(callback) {
   if (!callback) {
     callback(new Error('Msr.getRecommends Error'));
     return;
-  } else if (!this.scw) {
-    setImmediate(this.getRecommends.bind(this, callback)); // XXXX do this check in the middleware
-    return;
   }
   this.getStreams(
   /*{
@@ -128,10 +130,8 @@ Msr.prototype.getRecommends = function(callback) {
         var title = item.title || ''; // key prefix: t
         var summary = (item.summary && item.summary.content) || ''; // key prefix: s
         var featureVector = {}; // key: word, val:frequency
-        if (item.published) {
-          // nomoralize how old it is from the time the user sees it
-          featureVector.ago = now - item.published;
-        }
+        // nomoralize how old it is from the time the user sees it
+        featureVector.ago = now - item.published; // if item.published is undefined this becomes NaN
         if (item.origin && item.origin.streamId) {
           featureVector.originId = item.origin.streamId;
         }
@@ -155,10 +155,19 @@ Msr.prototype.getRecommends = function(callback) {
         }
         featureVector.img = /(<[^>]*img[^>]*>)/im.test(summary) | 0; // 0 or 1
         item.featureVector = featureVector;
-        item.estCategory = scw.test(featureVector); // +change to number
+        //if (!scw) {
+        //  setImmediate(function() {
+        //    item.estCategory = scw.test(featureVector);
+        //  });
+        //}
+        if (scw) {
+          item.estCategory = scw.test(featureVector); // This might fail
+        } else {
+          console.error('Msr.getRecommends, this.scw is not defined yet');
+        }
       }
       items.sort(function(a, b) {
-        return CATEGORIES.indexOf(a.estCategory) - CATEGORIES.indexOf(b.estCategory) || b.published - a.published; // TODO do not use infexOf
+        return CATEGORY_LOOKUP[b.estCategory] - CATEGORY_LOOKUP[a.estCategory] || a.ago - b.ago;
       });
       // TODO send only required data
     }
