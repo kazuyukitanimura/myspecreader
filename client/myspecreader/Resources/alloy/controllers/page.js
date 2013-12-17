@@ -12,7 +12,7 @@ function Controller() {
     $.__views.page && $.addTopLevelView($.__views.page);
     $.__views.webview = Ti.UI.createWebView({
         id: "webview",
-        url: "http://localhost"
+        url: "http://localhost/auth"
     });
     $.__views.page.add($.__views.webview);
     exports.destroy = function() {};

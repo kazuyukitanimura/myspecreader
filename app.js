@@ -48,7 +48,7 @@ var auth_middleware = function(req, res, next) {
       } else {
         // setting a property will automatically cause a Set-Cookie response to be sent
         req.msrCookie.msrOptions = results;
-        res.redirect('/recommends');
+        res.send(201);
       }
     });
   } else {
@@ -79,9 +79,9 @@ app.get('/auth', function(req, res) {
 app.get('/', function(req, res) {
   var loggedin = req.loggedin;
   if (loggedin) {
-    res.redirect('/recommends');
+    res.send(200);
   } else {
-    res.redirect('/auth');
+    res.send('Welcome!');
   }
 });
 

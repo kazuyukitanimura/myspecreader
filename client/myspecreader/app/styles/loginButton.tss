@@ -1,0 +1,5 @@
+'Button': {
+  font: {
+    fontSize: '20dp'
+  }
+}

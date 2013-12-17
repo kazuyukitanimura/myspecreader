@@ -1,0 +1,3 @@
+<Alloy>
+  <Button id="loginButton" onClick="doClick">Login with Feedly</Button>
+</Alloy>
