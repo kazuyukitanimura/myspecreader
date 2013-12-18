@@ -1,6 +1,6 @@
 function Controller() {
     function doClick() {
-        var controller = Alloy.createController("page");
+        var controller = Alloy.createController("webpage", url);
         controller.getView().open();
     }
     require("alloy/controllers/BaseController").apply(this, Array.prototype.slice.call(arguments));
@@ -22,6 +22,7 @@ function Controller() {
     doClick ? $.__views.loginButton.addEventListener("click", doClick) : __defers["$.__views.loginButton!click!doClick"] = true;
     exports.destroy = function() {};
     _.extend($, $.__views);
+    var url = arguments[0] || "/auth";
     __defers["$.__views.loginButton!click!doClick"] && $.__views.loginButton.addEventListener("click", doClick);
     _.extend($, exports);
 }

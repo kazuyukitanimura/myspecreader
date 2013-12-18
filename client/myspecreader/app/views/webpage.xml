@@ -1,5 +1,5 @@
 <Alloy>
   <Window class="container">
-    <WebView id="webview" url="http://localhost/auth" />
+    <WebView id="webview" />
   </Window>
 </Alloy>
