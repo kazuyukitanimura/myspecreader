@@ -12,7 +12,7 @@ var SCW_PARAMS = {
   MODE: 2 // 0, 1, or 2
 };
 
-var CATEGORIES = [Scw.NON_CATEGORY, 'through', 'summary', 'original', 'star'];
+var CATEGORIES = [Scw.NON_CATEGORY, 'pass', 'viewSummary', 'viewOriginal', 'markAsUnread', 'star'];
 // undefined: none of the categories
 // through: was not opend by showing only title
 // summary: summary was read by clicking title but the original contents were not viewed

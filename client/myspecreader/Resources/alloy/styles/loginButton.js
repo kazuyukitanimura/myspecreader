@@ -1,1 +1,0 @@
-module.exports = [{"isApi":true,"priority":1000.0005,"key":"Button","style":{font:{fontSize:"20dp",},}}];

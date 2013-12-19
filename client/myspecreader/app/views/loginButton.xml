@@ -1,3 +1,5 @@
 <Alloy>
+  <!--<Label>Welcome Message</Label>-->
   <Button id="loginButton" onClick="doClick">Login with Feedly</Button>
+  <!--<Label>Learn More</Label>-->
 </Alloy>

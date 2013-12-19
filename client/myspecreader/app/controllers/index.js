@@ -3,6 +3,7 @@ var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 1000 // in milliseconds
 });
+client.clearCookies('http://localhost'); // for test
 // Prepare the connection.
 client.open('HEAD', authUrl);
 // Send the request.
@@ -12,7 +13,7 @@ client.setOnload(function() { // on success
   //Ti.API.info("headers: " + JSON.stringify(this.getResponseHeaders()));
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
-    var loginButton = Alloy.createController('loginButton', resLocation).getView();
+    var loginButton = Alloy.createController('loginButton', resLocation, 'index').getView();
     $.index.add(loginButton);
   }
   // TODO go to news view
