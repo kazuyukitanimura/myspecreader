@@ -51,5 +51,5 @@ webview.addEventListener("load", function(e) {
     backButton.title = 'X Close';
   }
   //backButton.show();
-  webview.evalJS("document.cookie = '';") // for test
+  //webview.evalJS("document.cookie = '';") // for test
 });
