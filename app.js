@@ -51,8 +51,10 @@ var auth_middleware = function(req, res, next) {
         res.send(201);
       }
     });
-  } else {
+  } else if (url_pathname === '/' || url_pathname === '/auth') {
     next();
+  } else {
+    res.send(401);
   }
 };
 

@@ -4,6 +4,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var url = protocol + '://' + domain + '/recommends';
+var Alloy = require('alloy');
 var recommends = Alloy.Models.instance('recommends');
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
@@ -11,15 +12,20 @@ var client = Ti.Network.createHTTPClient({
 });
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
-  var items = JSON.parse(this.responseText).items;
-  for (var i = 0, l = items.length; i < l; i++) {
-    var item = items[i];
-    var recommend = Alloy.createModel('recommends', {
-      id: item.id,
-      data: JSON.stringify(item)
-    });
-    recommends.add(recommend);
-    recommend.save();
+  try {
+    var items = JSON.parse(this.responseText).items;
+    for (var i = 0, l = items.length; i < l; i++) {
+      var item = items[i];
+      var recommend = Alloy.createModel('recommends', {
+        id: item.id,
+        data: JSON.stringify(item)
+      });
+      recommends.add(recommend);
+      recommend.save();
+    }
+  } catch (e) {
+    Ti.API.error(e);
+    //Ti.API.debug(this.responseText);
   }
 });
 client.setOnerror(function(e) { // on error including a timeout
