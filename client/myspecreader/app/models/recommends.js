@@ -2,15 +2,15 @@ exports.definition = {
   config: {
     'columns': {
       'data': 'TEXT',
-      'read': 'Boolean',
-      'viewOriginal': 'Boolean',
-      'star': 'Boolean',
-      'id': 'INTEGER PRIMARY KEY AUTOINCREMENT'
+      //'read': 'INTEGER',
+      //'viewOriginal': 'INTEGER',
+      //'star': 'INTEGER',
+      'id': 'TEXT NOT NULL PRIMARY KEY'
     },
     'adapter': {
       'type': 'sql',
       'collection_name': 'recommends',
-      'db_file': '/recommends.sqlite', // preload
+      'db_name': 'recommends',
       'idAttribute': 'id'
     }
   },

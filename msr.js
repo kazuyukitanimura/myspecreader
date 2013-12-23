@@ -165,6 +165,11 @@ Msr.prototype.getRecommends = function(callback) {
         } else {
           console.error('Msr.getRecommends, this.scw is not defined yet');
         }
+        delete item.fingerprint;
+        delete item.originId;
+        delete item.author;
+        delete item.crawled;
+        delete item.sid;
       }
       items.sort(function(a, b) {
         return CATEGORY_LOOKUP[b.estCategory] - CATEGORY_LOOKUP[a.estCategory] || a.ago - b.ago;

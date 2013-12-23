@@ -7,3 +7,6 @@ tmp
 Resources/alloy/controllers/
 Resources/alloy/styles/
 Resources/alloy/models/
+Resources/iphone/alloy/controllers/
+Resources/iphone/alloy/styles/
+Resources/iphone/alloy/models/

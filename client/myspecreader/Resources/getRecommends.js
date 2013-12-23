@@ -6,6 +6,8 @@ var domain = "domain.com";
 
 var url = protocol + "://" + domain + "/recommends";
 
+var recommends = Alloy.Collections.recommends;
+
 var client = Ti.Network.createHTTPClient({
     autoRedirect: false,
     timeout: 4e3
@@ -14,15 +16,15 @@ var client = Ti.Network.createHTTPClient({
 client.setOnload(function() {
     Ti.API.debug("sucess getReccomends");
     var items = JSON.parse(this.responseText).items;
-    var recommends = Alloy.createCollection("recommends");
     for (var i = 0, l = items.length; l > i; i++) {
         var item = items[i];
-        recommends.push({
+        var recommend = Alloy.createModel("recommends", {
             id: item.id,
             data: JSON.stringify(item)
         });
+        recommends.add(recommend);
+        recommend.save();
     }
-    recommends.create();
 });
 
 client.setOnerror(function(e) {

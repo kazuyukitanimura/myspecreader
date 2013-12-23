@@ -4,6 +4,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var url = protocol + '://' + domain + '/recommends';
+var recommends = Alloy.Models.instance('recommends');
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 4000 // in milliseconds
@@ -11,16 +12,15 @@ var client = Ti.Network.createHTTPClient({
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
   var items = JSON.parse(this.responseText).items;
-  //var recommends = Alloy.Collections.instance('recommends');
-  var recommends = Alloy.createCollection('recommends'); // TODO use singleton instead of blowing away all data
   for (var i = 0, l = items.length; i < l; i++) {
     var item = items[i];
-    recommends.push({
+    var recommend = Alloy.createModel('recommends', {
       id: item.id,
       data: JSON.stringify(item)
     });
+    recommends.add(recommend);
+    recommend.save();
   }
-  recommends.create();
 });
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
