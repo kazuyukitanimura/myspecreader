@@ -30,7 +30,12 @@ client.setOnload(function() { // on success
     service.start();
   } else {
     if (OS_IOS) {
-      Ti.App.iOS.registerBackgroundService(bgOptions);
+      //Ti.App.iOS.registerBackgroundService(bgOptions);
+      // HACK
+      // fake the background job to run setInterval, once background service gets awake
+      // the setInterval of this (foreground) context also gets awake and executed
+      // so that require('getRecommends'); can access global Alloy
+      Ti.App.iOS.registerBackgroundService({url: 'fake.js'});
     }
     require('getRecommends');
   }
