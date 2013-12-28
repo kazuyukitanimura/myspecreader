@@ -1,6 +1,6 @@
-var arg = arguments[0];
-var url = arg.resLocation || '/auth';
-var currentWindow = arg.currentWindow;
+var args = arguments[0] || {};
+var url = args.resLocation || '/auth';
+var currentWindow = args.currentWindow;
 
 var webpage = Alloy.createController('webpage', url).getView();
 webpage.addEventListener('close', function(e) {
