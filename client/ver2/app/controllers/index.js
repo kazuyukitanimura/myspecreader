@@ -16,10 +16,13 @@ client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
-    var loginButton = Alloy.createController('loginButton', resLocation, 'index').getView();
+    var loginButton = Alloy.createController('loginButton', {
+      resLocation: resLocation,
+      currentWindow: index
+    }).getView();
     index.add(loginButton);
   } else {
-    Ti.App.fireEvent('openRows');
+    index.fireEvent('openRows');
   }
   // setup background jobs
   var bgOptions = {
@@ -54,8 +57,9 @@ client.setOnerror(function(e) { // on error including a timeout
   client.timeout); // wait the same amount of time as client.timeout and retry
 });
 
-Ti.App.addEventListener('openRows', function(e){
+index.addEventListener('openRows', function(e){
   Ti.API.debug('openRows');
+  index.removeAllChildren();
 });
 
 index.open();
