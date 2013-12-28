@@ -2,9 +2,7 @@ exports.definition = {
   config: {
     'columns': {
       'data': 'TEXT',
-      //'read': 'INTEGER',
-      //'viewOriginal': 'INTEGER',
-      //'star': 'INTEGER',
+      'state': 'INTEGER', // 0: unread, 1: passed, 2: viewSummary, 3: viewOriginal, 4: markAsUnread, 5: star
       'id': 'TEXT NOT NULL PRIMARY KEY'
     },
     'adapter': {

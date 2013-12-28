@@ -1,8 +1,4 @@
 var url = arguments[0] || '/';
-var previousWin = arguments[1] || 'index';
-var openWin = function(winName) {
-  Alloy.createController(winName).getView().open();
-};
 
 var webview = $.webview;
 var webpage = $.webpage;
@@ -27,7 +23,6 @@ var backButton = Ti.UI.createButton({
 });
 webview.addEventListener('beforeload', function(e) {
   actInd.show();
-  //backButton.hide();
 });
 webview.setUrl(url);
 webpage.add(backButton);
@@ -35,7 +30,7 @@ backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
     webview.goBack();
   } else {
-    openWin(previousWin);
+    webpage.close()
   }
 });
 webview.addEventListener("load", function(e) {
@@ -43,13 +38,13 @@ webview.addEventListener("load", function(e) {
   //Ti.API.info('info'+ JSON.stringify(e));
   //Ti.API.info('url'+ webview.url);
   if (webview.url.indexOf('http://localhost') === 0) { // FIXME we should not hard code like this
-    openWin(previousWin);
+    $.trigger('authenticated');
+    webpage.close()
   }
   if (webview.canGoBack()) {
     backButton.title = '< Back';
   } else {
     backButton.title = 'X Close';
   }
-  //backButton.show();
   //webview.evalJS("document.cookie = '';") // for test
 });
