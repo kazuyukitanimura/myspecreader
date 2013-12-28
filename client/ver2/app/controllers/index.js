@@ -4,6 +4,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var authUrl = protocol + '://' + domain + '/auth';
+var index = $.index;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 1000 // in milliseconds
@@ -16,7 +17,9 @@ client.setOnload(function() { // on success
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
     var loginButton = Alloy.createController('loginButton', resLocation, 'index').getView();
-    $.index.add(loginButton);
+    index.add(loginButton);
+  } else {
+    Ti.App.fireEvent('openRows');
   }
   // setup background jobs
   var bgOptions = {
@@ -24,9 +27,9 @@ client.setOnload(function() { // on success
   };
   if (OS_ANDROID) {
     // TODO debug this
-    var intent = Titanium.Android.createServiceIntent(bgOptions);
+    var intent = Ti.Android.createServiceIntent(bgOptions);
     intent.putExtra('interval', 10 * 60 * 1000); // every 10 min
-    var service = Titanium.Android.createService(intent);
+    var service = Ti.Android.createService(intent);
     service.start();
   } else {
     if (OS_IOS) {
@@ -39,7 +42,6 @@ client.setOnload(function() { // on success
     }
     require('getRecommends');
   }
-  // TODO go to news view
 });
 
 client.setOnerror(function(e) { // on error including a timeout
@@ -52,4 +54,8 @@ client.setOnerror(function(e) { // on error including a timeout
   client.timeout); // wait the same amount of time as client.timeout and retry
 });
 
-$.index.open();
+Ti.App.addEventListener('openRows', function(e){
+  Ti.API.debug('openRows');
+});
+
+index.open();

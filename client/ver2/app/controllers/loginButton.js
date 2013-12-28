@@ -6,7 +6,8 @@ function doClick(e) {
   webpage.addEventListener('close', function(e) {
     Ti.API.debug('closed');
   });
-  webpage.addEventListener('authenticated', function(e) {
+  Ti.App.addEventListener('authenticated', function(e) {
+    Ti.App.fireEvent('openRows');
     Ti.API.debug('authenticated');
   });
 }

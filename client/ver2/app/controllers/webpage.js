@@ -38,7 +38,7 @@ webview.addEventListener("load", function(e) {
   //Ti.API.info('info'+ JSON.stringify(e));
   //Ti.API.info('url'+ webview.url);
   if (webview.url.indexOf('http://localhost') === 0) { // FIXME we should not hard code like this
-    $.trigger('authenticated');
+    Ti.App.fireEvent('authenticated');
     webpage.close()
   }
   if (webview.canGoBack()) {
