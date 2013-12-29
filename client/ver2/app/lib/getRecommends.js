@@ -12,6 +12,7 @@ var client = Ti.Network.createHTTPClient({
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
   try {
+    recommends.reset(); // blow away everything
     var items = JSON.parse(this.responseText).items;
     for (var i = 0, l = items.length; i < l; i++) {
       var item = items[i];
@@ -20,9 +21,8 @@ client.setOnload(function() { // on success
         data: JSON.stringify(item)
       });
       recommends.add(recommend);
-      recommends.save(); // save the model to persistent storage
-      recommends.fetch(); // reload the tasks
     }
+    recommends.save(); // save the model to persistent storage
   } catch (e) {
     Ti.API.error(e);
     //Ti.API.debug(this.responseText);

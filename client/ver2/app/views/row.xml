@@ -1,9 +1,9 @@
 <Alloy>
   <TableViewRow onClick="openSummary">
     <View id="cell">
-      <ImageView id="image"/>
+      <ImageView id="image" image="{img}"/>
       <Label id="title" text="{title}"/>
-      <Label id="snippet"/>
+      <Label id="summary" text="{summary}"/>
       <Label id="ago"/>
     </View>
   </TableViewRow>

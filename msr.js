@@ -1,3 +1,4 @@
+var cheerio = require('cheerio');
 var natural = require('natural');
 var treebankWordTokenizer = new natural.TreebankWordTokenizer();
 //natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
@@ -36,7 +37,8 @@ var stripHtml = function(text) {
 var ignores = ['\'s', '\'re', '\'ll', '\'ve', '..', '&quot', '--'];
 var tokenize = function(text) {
   //return stripHtml(text).replace(strip, '').split(separator);
-  var tokens = treebankWordTokenizer.tokenize(stripHtml(text));
+  //var tokens = treebankWordTokenizer.tokenize(stripHtml(text));
+  var tokens = treebankWordTokenizer.tokenize(text);
   for (var i = tokens.length; i--;) {
     var token = tokens[i];
     if ((token.length < 2 && ! /[\d$]+/.test(token)) || ignores.indexOf(token) !== - 1) {
@@ -129,9 +131,11 @@ Msr.prototype.getRecommends = function(callback) {
         var keywords = item.keywords || []; // key prefix: k
         var title = item.title || ''; // key prefix: t
         var summary = (item.summary && item.summary.content) || ''; // key prefix: s
-        var featureVector = {}; // key: word, val:frequency
-        // nomoralize how old it is from the time the user sees it
-        featureVector.ago = now - item.published; // if item.published is undefined this becomes NaN
+        var featureVector = {
+          // nomoralize how old it is from the time the user sees it
+          ago: now - item.published, // if item.published is undefined this becomes NaN
+          img: 0 // 0 or 1
+        }; // key: word, val:frequency
         if (item.origin && item.origin.streamId) {
           featureVector.originId = item.origin.streamId;
         }
@@ -148,12 +152,18 @@ Msr.prototype.getRecommends = function(callback) {
           k = 't ' + titlePieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
+        var $ = cheerio.load(summary);
+        var $img = $('img').first();
+        if ($img.length) {
+          item.img = $img.attr('src');
+          featureVector.img = 1;
+        }
+        summary = item.summary = stripHtml(summary);
         var summaryPieces = tokenize(summary);
         for (j = summaryPieces.length; j--;) {
           k = 's ' + summaryPieces[j];
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
-        featureVector.img = /(<[^>]*img[^>]*>)/im.test(summary) | 0; // 0 or 1
         item.featureVector = featureVector;
         //if (!scw) {
         //  setImmediate(function() {
@@ -170,6 +180,7 @@ Msr.prototype.getRecommends = function(callback) {
         delete item.author;
         delete item.crawled;
         delete item.sid;
+        delete item.visual;
       }
       items.sort(function(a, b) {
         return CATEGORY_LOOKUP[b.estCategory] - CATEGORY_LOOKUP[a.estCategory] || a.ago - b.ago;

@@ -1,39 +1,49 @@
-"#row": {
-  backgroundColor: "transparent",
-  height: '84dp',
+'#row': {
+  backgroundColor: 'transparent',
+  height: '92dp',
   className: 'itemRow'
 }
 
-"#cell": {
-  backgroundColor: "#fff",
-  left: '6dp',
-  bottom: '4dp',
-  right: '6dp',
+'#cell': {
+  backgroundColor: '#fff',
+  left: '5dp',
+  bottom: '0dp',
+  right: '5dp',
   top: '4dp',
-  borderColor: '#BDBEC2',
+  borderColor: '#8E8E93',
   borderWidth: 1,
   color: '#1F1F21'
 }
 
-"#image": {
-  height: '78dp',
-  width: '78dp',
-  left: '2dp',
-  top: '3dp',
+'#image': {
+  height: '90dp',
+  width: '90dp',
+  left: '0dp',
+  top: '0dp',
   touchEnabled: false
 }
 
-"#title": {
+'#title': {
   font: {
-    fontSize: '18dp'
+    fontSize: '14dp'
   },
-  top: '3dp',
-  left: '83dp',
-  right: '3dp',
+  top: '2dp',
+  left: '92dp',
+  right: '2dp',
+  height: '34dp',
   touchEnabled: false
 }
 
-"#date": {
+'#summary': {
+  font: {
+    fontSize: '11dp'
+  },
+  top: '36dp',
+  left: '92dp',
+  touchEnabled: false
+}
+
+'#date': {
   height: Ti.UI.SIZE,
   width: '68dp',
   left: '5dp',

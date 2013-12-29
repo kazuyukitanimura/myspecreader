@@ -5,7 +5,8 @@
     "start": "node app"
   }
 , "dependencies": {
-    "client-sessions": "*"
+    "cheerio": "*"
+  , "client-sessions": "*"
   , "express": "*"
   , "ejs": "*"
   , "fussy": "*"

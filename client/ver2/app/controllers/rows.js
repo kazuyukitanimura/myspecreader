@@ -7,7 +7,12 @@ recommends && recommends.fetch();
 // but instead return an array of models that you would like to render.
 function whereFunction(collection) {
   var models = collection.models;
-  return models.slice(models.length - 10);
+  //models = _.filter(models, function(model){
+  //  var state = model.get('state');
+  //  Ti.API.debug(state);
+  //  return state === 0 || state === 4;
+  //});
+  return models.slice(0, 6);
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
@@ -16,8 +21,10 @@ function whereFunction(collection) {
 function transformFunction(model) {
   var transform = model.toJSON();
   var data = JSON.parse(transform.data);
-  Ti.API.debug(data.title);
+  Ti.API.debug(data.img);
   transform.title = data.title;
+  transform.img = data.img;
+  transform.summary = data.summary;
   return transform;
 }
 //var data = [{title: 'abc'}]
