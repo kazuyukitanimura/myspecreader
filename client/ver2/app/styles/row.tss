@@ -1,23 +1,33 @@
 "#row": {
+  backgroundColor: "transparent",
+  height: '84dp',
+  className: 'itemRow'
+}
+
+"#cell": {
   backgroundColor: "#fff",
-  height: '70dp',
-  className: 'itemRow',
-  hasChild: true
+  left: '6dp',
+  bottom: '4dp',
+  right: '6dp',
+  top: '4dp',
+  borderColor: '#BDBEC2',
+  borderWidth: 1,
+  color: '#1F1F21',
 }
 
 "#image": {
-  height: '42dp',
-  width: '68dp',
-  left: '5dp',
+  height: '78dp',
+  width: '78dp',
+  left: '2dp',
   top: '3dp',
   touchEnabled: false
 }
 
 "#title": {
-  height: '70dp',
   font: {
-    fontSize: '16dp'
+    fontSize: '18dp'
   },
+  top: '3dp',
   left: '83dp',
   right: '3dp',
   touchEnabled: false
@@ -28,7 +38,6 @@
   width: '68dp',
   left: '5dp',
   bottom: '3dp',
-  color: '#444',
   font: {
     fontSize: '12dp'
   },

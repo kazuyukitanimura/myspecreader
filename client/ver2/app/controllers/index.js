@@ -65,3 +65,6 @@ index.addEventListener('openRows', function(e){
 });
 
 index.open();
+index.addEventListener("close", function(){
+  $.destroy();
+}

@@ -4,7 +4,6 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var url = protocol + '://' + domain + '/recommends';
-//var Alloy = require('alloy'), _ = require("alloy/underscore")._, Backbone = require("alloy/backbone");
 var recommends = Alloy.Models.instance('recommends');
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
