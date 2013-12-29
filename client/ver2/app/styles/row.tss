@@ -12,7 +12,7 @@
   top: '4dp',
   borderColor: '#BDBEC2',
   borderWidth: 1,
-  color: '#1F1F21',
+  color: '#1F1F21'
 }
 
 "#image": {

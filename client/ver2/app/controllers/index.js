@@ -66,5 +66,6 @@ index.addEventListener('openRows', function(e){
 
 index.open();
 index.addEventListener("close", function(){
+  Ti.API.debug('index close');
   $.destroy();
-}
+});

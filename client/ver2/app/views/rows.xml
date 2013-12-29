@@ -1,4 +1,5 @@
 <Alloy>
-  <TableView id="table">
+  <TableView id="table" dataCollection="recommends" dataFilter="whereFunction" dataTransform="transformFunction">
+    <Require src="row"/>
   </TableView>
 </Alloy>
