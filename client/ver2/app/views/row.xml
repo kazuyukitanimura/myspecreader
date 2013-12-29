@@ -2,10 +2,9 @@
   <TableViewRow onClick="openSummary">
     <View id="cell">
       <ImageView id="image"/>
-      <Label id="title"/>
+      <Label id="title" text="{title}"/>
       <Label id="snippet"/>
       <Label id="ago"/>
-      <Label id="task" text="{item}"/>
     </View>
   </TableViewRow>
 </Alloy>
