@@ -4,7 +4,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var url = protocol + '://' + domain + '/recommends';
-var recommends = Alloy.Models.instance('recommends');
+var recommends = Alloy.Collections.instance('recommends');
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 4000 // in milliseconds
@@ -20,7 +20,8 @@ client.setOnload(function() { // on success
         data: JSON.stringify(item)
       });
       recommends.add(recommend);
-      recommend.save();
+      recommends.save(); // save the model to persistent storage
+      recommends.fetch(); // reload the tasks
     }
   } catch (e) {
     Ti.API.error(e);

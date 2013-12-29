@@ -15,6 +15,7 @@ function whereFunction(collection) {
 // attributes with the toJSON() function.
 function transformFunction(model) {
   var transform = model.toJSON();
+  Ti.API.debug(transform);
   transform.item = '[' + transform.item + ']';
   return transform;
 }
