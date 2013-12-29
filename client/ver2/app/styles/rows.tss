@@ -1,6 +1,6 @@
 "#table" : {
   scrollable: false,
-  backgroundImage: './011-subtle-light-patterns.jpg',
+  backgroundImage: '/011-subtle-light-patterns.jpg',
   separatorColor: 'transparent',
   top: "18dp"
 }
