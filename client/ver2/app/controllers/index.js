@@ -62,7 +62,9 @@ client.setOnerror(function(e) { // on error including a timeout
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
-  var rows = Alloy.createController('rows').getView();
+  var rows = Alloy.createController('rows', {
+    currentWindow: index
+  }).getView();
   index.add(rows);
 });
 

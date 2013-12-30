@@ -1,4 +1,5 @@
 var args = arguments[0] || {};
+var currentWindow = args.currentWindow;
 var moment = require('alloy/moment');
 var slideOut = require('slideOut');
 var table = $.table;
@@ -32,9 +33,13 @@ function transformFunction(model) {
   return transform;
 }
 
+function getNextPage() {
+  currentWindow.fireEvent('openRows');
+}
+
 table.addEventListener('swipe', function(e) {
   Ti.API.debug(e.direction);
   if (e.direction === 'up') {
-    slideOut(table);
+    slideOut(table, getNextPage);
   }
 });

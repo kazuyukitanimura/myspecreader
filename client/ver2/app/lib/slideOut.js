@@ -3,6 +3,10 @@ exports = function(view, duration, finishCallback) {
   //  view.transform = Ti.UI.create2DMatrix();
   //  return;
   //}
+  if (typeof duration === 'function') {
+    finishCallback = duration;
+    duration = null;
+  }
 
   var animation = Ti.UI.createAnimation({
     opacity: 0.7,
