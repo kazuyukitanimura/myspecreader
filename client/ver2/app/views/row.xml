@@ -4,7 +4,8 @@
       <ImageView id="image" image="{img}"/>
       <Label id="title" text="{title}"/>
       <Label id="summary" text="{summary}"/>
-      <Label id="ago"/>
+      <Label id="ago" text="{ago}"/>
+      <Label id="origin" text="{origin}"/>
     </View>
   </TableViewRow>
 </Alloy>

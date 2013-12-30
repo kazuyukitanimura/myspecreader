@@ -41,7 +41,9 @@ client.setOnload(function() { // on success
       // fake the background job to run setInterval, once background service gets awake
       // the setInterval of this (foreground) context also gets awake and executed
       // so that require('getRecommends'); can access global Alloy
-      Ti.App.iOS.registerBackgroundService({url: 'fake.js'});
+      Ti.App.iOS.registerBackgroundService({
+        url: 'fake.js'
+      });
     }
     require('getRecommends');
   }
@@ -57,7 +59,7 @@ client.setOnerror(function(e) { // on error including a timeout
   client.timeout); // wait the same amount of time as client.timeout and retry
 });
 
-index.addEventListener('openRows', function(e){
+index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
   var rows = Alloy.createController('rows').getView();
@@ -65,7 +67,12 @@ index.addEventListener('openRows', function(e){
 });
 
 index.open();
-index.addEventListener("close", function(){
+index.addEventListener("close", function() {
   Ti.API.debug('index close');
   $.destroy();
+});
+
+// Handling Orientation Changes
+Ti.Gesture.addEventListener('orientationchange', function(e) {
+  index.fireEvent('openRows');
 });

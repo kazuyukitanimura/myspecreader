@@ -40,17 +40,29 @@
   },
   top: '36dp',
   left: '92dp',
+  height: '34dp',
   touchEnabled: false
 }
 
-'#date': {
-  height: Ti.UI.SIZE,
+'#ago': {
   width: '68dp',
-  left: '5dp',
-  bottom: '3dp',
+  right: '2dp',
+  bottom: '2dp',
   font: {
-    fontSize: '12dp'
+    fontSize: '9dp'
   },
-  textAlign: 'center',
+  color: '#8E8E93',
+  textAlign : 'right',
+  touchEnabled: false
+}
+
+'#origin': {
+  width: '128dp',
+  left: '92dp',
+  bottom: '2dp',
+  font: {
+    fontSize: '9dp'
+  },
+  color: '#8E8E93',
   touchEnabled: false
 }

@@ -1,4 +1,5 @@
 var args = arguments[0] || {};
+var moment = require('alloy/moment');
 var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
@@ -21,10 +22,12 @@ function whereFunction(collection) {
 function transformFunction(model) {
   var transform = model.toJSON();
   var data = JSON.parse(transform.data);
-  Ti.API.debug(data.img);
+  //Ti.API.debug(data);
   transform.title = data.title;
   transform.img = data.img;
   transform.summary = data.summary;
+  transform.ago = moment(data.published).fromNow();
+  transform.origin = data.origin.title;
   return transform;
 }
 //var data = [{title: 'abc'}]
