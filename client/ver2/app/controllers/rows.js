@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 var moment = require('alloy/moment');
+var slideOut = require('slideOut');
 var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
@@ -8,12 +9,12 @@ recommends && recommends.fetch();
 // but instead return an array of models that you would like to render.
 function whereFunction(collection) {
   var models = collection.models;
-  //models = _.filter(models, function(model){
+  //models = collection.filter(function(model) {
+  //  Ti.API.debug(model);
   //  var state = model.get('state');
-  //  Ti.API.debug(state);
   //  return state === 0 || state === 4;
   //});
-  return models.slice(0, 6);
+  return models.slice(0, 6); // TODO change the number of items dpending on the height
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
@@ -30,3 +31,10 @@ function transformFunction(model) {
   transform.origin = data.origin.title;
   return transform;
 }
+
+table.addEventListener('swipe', function(e) {
+  Ti.API.debug(e.direction);
+  if (e.direction === 'up') {
+    slideOut(table);
+  }
+});

@@ -74,6 +74,6 @@ index.addEventListener("close", function() {
 });
 
 // Handling Orientation Changes
-Ti.Gesture.addEventListener('orientationchange', function(e) {
-  index.fireEvent('openRows');
-});
+//Ti.Gesture.addEventListener('orientationchange', function(e) {
+//  index.fireEvent('openRows');
+//});
