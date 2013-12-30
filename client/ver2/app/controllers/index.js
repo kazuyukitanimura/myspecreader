@@ -66,6 +66,11 @@ index.addEventListener('openRows', function(e) {
   index.add(rows);
 });
 
+var recommends = Alloy.Collections.instance('recommends');
+recommends.on('sync', function(e) {
+  index.fireEvent('openRows');
+});
+
 index.orientationModes = [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];
 index.open();
 index.addEventListener("close", function() {

@@ -2,5 +2,5 @@
   scrollable: false,
   backgroundColor: '#BDBEC2',
   separatorColor: 'transparent',
-  top: '18dp'
+  top: '14dp'
 }

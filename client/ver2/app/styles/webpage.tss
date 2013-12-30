@@ -1,3 +1,7 @@
+'.container': {
+  backgroundColor: 'white'
+}
+
 '#webview': {
   top: '40dp'
 }

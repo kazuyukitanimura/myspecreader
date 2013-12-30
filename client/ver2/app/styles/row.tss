@@ -10,9 +10,8 @@
   bottom: '0dp',
   right: '5dp',
   top: '4dp',
-  borderColor: '#8E8E93',
-  borderWidth: 1,
-  color: '#1F1F21'
+  color: '#1F1F21',
+  touchEnabled: false
 }
 
 '#image': {

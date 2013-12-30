@@ -3,14 +3,12 @@ exports = function(view, duration, finishCallback) {
   //  view.transform = Ti.UI.create2DMatrix();
   //  return;
   //}
-  duration = duration || 500;
-  finishCallback = finishCallback || function() {};
 
   var animation = Ti.UI.createAnimation({
     opacity: 0.7,
-    transform: Ti.UI.create2DMatrix(),
-    top: '-100%',
-    duration: duration
+    transform: Ti.UI.create2DMatrix().translate(0, - Ti.Platform.displayCaps.platformHeight),
+    //top: '-100%',
+    duration: duration || 300
   });
-  view.animate(animation, finishCallback);
+  view.animate(animation, finishCallback || function() {});
 };

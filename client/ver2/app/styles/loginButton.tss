@@ -1,5 +1,6 @@
 'Button': {
   font: {
     fontSize: '20dp'
-  }
+  },
+  backgroundColor: 'white'
 }
