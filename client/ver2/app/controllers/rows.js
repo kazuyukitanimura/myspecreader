@@ -30,14 +30,3 @@ function transformFunction(model) {
   transform.origin = data.origin.title;
   return transform;
 }
-//var data = [{title: 'abc'}]
-//var rows = [];
-//_.each(data, function(item) {
-//  rows.push(Alloy.createController('row', {
-//    //articleUrl: item.link,
-//    //image: item.image,
-//    title: item.title//,
-//    //date: item.pubDate
-//  }).getView());
-//});
-//table.setData(rows);
