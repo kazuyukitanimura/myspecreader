@@ -18,7 +18,7 @@ client.setOnload(function() { // on success
   try {
     recommends.reset(); // blow away everything
     var items = JSON.parse(this.responseText).items;
-    for (var i = 0, l = items.length; i < l; i++) {
+    for (var i = items.length; i--;) {
       var item = items[i];
       var recommend = Alloy.createModel('recommends', {
         id: item.id,
@@ -27,8 +27,8 @@ client.setOnload(function() { // on success
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
       recommends.add(recommend);
+      recommend.save(); // save the model to persistent storage
     }
-    recommends.save(); // save the model to persistent storage
   } catch(e) {
     Ti.API.error(e);
     //Ti.API.debug(this.responseText);

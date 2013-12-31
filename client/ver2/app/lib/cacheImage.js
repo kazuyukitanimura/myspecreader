@@ -1,7 +1,6 @@
 // Related Codes
 // https://github.com/FokkeZB/nl.fokkezb.cachedImageView/blob/master/controllers/widget.js
 // https://gist.github.com/skypanther/1901680
-var extend = require('extend');
 
 function _getExtension(path) {
   // from http://stackoverflow.com/a/680982/292947
