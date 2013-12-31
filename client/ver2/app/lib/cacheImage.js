@@ -36,8 +36,22 @@ function getImage(url, ver) {
 function setImage(url, ver, as) {
   var file = _getFile(url, ver);
   if (file && ! file.exists()) { // need to save
-    var blob = _getBlob(url);
-    file.write(as? as(blob): blob);
+    if (Ti.Network.online) {
+      var client = Ti.Network.createHTTPClient({
+        onload: function(e) {
+          if (this.responseData) {
+            try {
+              var blob = _getBlob(this.responseData);
+              file.write(as ? as(blob) : blob);
+            } catch (e) {
+              Ti.API.error(e);
+            }
+          }
+        }
+      });
+      client.open('GET', url);
+      client.send();
+    }
   }
 }
 
