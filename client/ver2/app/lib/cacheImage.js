@@ -10,15 +10,15 @@ function _getExtension(path) {
   return (ext) ? ext: '';
 }
 
-function _getFile(url) {
+function _getFile(url, ver) {
   if (!url || ! _.isString(url) || (OS_IOS && ! Ti.Platform.canOpenURL(url))) {
     return;
   }
-  var md5 = Ti.Utils.md5HexDigest(url) + _getExtension(url);
-  return Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, md5);
+  var md5 = Ti.Utils.md5HexDigest(url + (ver || '')) + _getExtension(url);
+  return Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory, md5);
 }
 
-function _loadImage(image) {
+function _getBlob(image) {
   return Ti.UI.createImageView({
     backgroundColor: 'white',
     image: image,
@@ -28,15 +28,16 @@ function _loadImage(image) {
   }).toImage();
 };
 
-function getImage(url) {
-  var file = _getFile(url);
-  return file ? _loadImage(file.exists() ? file: url) : file;
+function getImage(url, ver) {
+  var file = _getFile(url, ver);
+  return file ? (file.exists() ? file: url) : file;
 }
 
-function setImage(url) {
-  var file = _getFile(url);
+function setImage(url, ver, as) {
+  var file = _getFile(url, ver);
   if (file && ! file.exists()) { // need to save
-    file.write(_loadImage(url));
+    var blob = _getBlob(url);
+    file.write(as? as(blob): blob);
   }
 }
 

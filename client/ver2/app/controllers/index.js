@@ -1,3 +1,4 @@
+var getRecommends =  require('getRecommends');
 var protocol = 'http';
 var domain = 'domain.com';
 if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
@@ -45,7 +46,10 @@ client.setOnload(function() { // on success
         url: 'fake.js'
       });
     }
-    require('getRecommends');
+    //require('getRecommends');
+    getRecommends();
+    setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
+    //setInterval(getRecommends, 5 * 1000); // for test
   }
 });
 

@@ -16,10 +16,10 @@ function whereFunction(collection) {
   //  var state = model.get('state');
   //  return state === 0 || state === 4;
   //});
-  //return models.slice(0, 6); // TODO change the number of items dpending on the height
-  return models.sort(function(a, b) {
-    return ((Math.random() * 3) | 0) - 1;
-  }).slice(0, 6); // TODO change the number of items dpending on the height
+  return models.slice(0, 6); // TODO change the number of items dpending on the height
+  //return models.sort(function(a, b) {
+  //  return ((Math.random() * 3) | 0) - 1;
+  //}).slice(0, 6); // TODO change the number of items dpending on the height
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
@@ -31,9 +31,9 @@ function transformFunction(model) {
   //Ti.API.debug(data);
   transform.title = data.title;
   //transform.img = data.img;
-  var blob = getImage(data.img);
-  if (blob) {
-    transform.img = blob.imageAsThumbnail(90, 0, 0);
+  var img = getImage(data.img, 'thumb');
+  if (img) {
+    transform.img = img;
   }
   transform.summary = data.summary;
   transform.ago = moment(data.published).fromNow();
