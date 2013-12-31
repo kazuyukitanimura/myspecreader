@@ -15,10 +15,12 @@
 }
 
 '#image': {
+  backgroundColor: 'white',
   height: '90dp',
   width: '90dp',
   left: '0dp',
   top: '0dp',
+  preventDefaultImage: true,
   touchEnabled: false
 }
 

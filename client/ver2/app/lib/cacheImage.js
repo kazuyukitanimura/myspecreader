@@ -18,7 +18,6 @@ function cacheImage(url, props, callback) {
   },
   props);
   var image = Ti.UI.createImageView(props);
-  Ti.API.debug(url);
   function imageLoaded(e) {
     image.removeEventListener('load', imageLoaded);
     Ti.API.debug(url);
