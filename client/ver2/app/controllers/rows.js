@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
+var getImage = require('cacheImage').getImage;
 var moment = require('alloy/moment');
 var slideOut = require('slideOut');
 var table = $.table;
@@ -29,14 +30,11 @@ function transformFunction(model) {
   var data = JSON.parse(transform.data);
   //Ti.API.debug(data);
   transform.title = data.title;
-  var placeholder = Ti.UI.createImageView({
-    height: Ti.UI.SIZE,
-    image: data.img,
-    width: Ti.UI.SIZE,
-    preventDefaultImage: true
-  });
-  transform.img = placeholder.toImage().imageAsThumbnail(90, 0, 0);
   //transform.img = data.img;
+  var blob = getImage(data.img);
+  if (blob) {
+    transform.img = blob.imageAsThumbnail(90, 0, 0);
+  }
   transform.summary = data.summary;
   transform.ago = moment(data.published).fromNow();
   transform.origin = data.origin.title;
