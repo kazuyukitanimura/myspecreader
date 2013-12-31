@@ -1,7 +1,7 @@
 <Alloy>
   <TableViewRow onClick="openSummary">
     <View id="cell">
-      <Widget src="nl.fokkezb.cachedImageView" id="image" image="{img}"/>
+      <ImageView id="image" image="{img}"/>
       <Label id="title" text="{title}"/>
       <Label id="summary" text="{summary}"/>
       <Label id="ago" text="{ago}"/>

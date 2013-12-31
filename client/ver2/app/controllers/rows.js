@@ -15,7 +15,8 @@ function whereFunction(collection) {
   //  var state = model.get('state');
   //  return state === 0 || state === 4;
   //});
-  return models.slice(0, 6); // TODO change the number of items dpending on the height
+  //return models.slice(0, 6); // TODO change the number of items dpending on the height
+  return models.sort(function(a,b) {return ((Math.random() * 3) | 0) - 1;}).slice(0, 6); // TODO change the number of items dpending on the height
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the

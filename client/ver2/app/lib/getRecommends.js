@@ -1,3 +1,4 @@
+var cacheImage = require('cacheImage');
 var protocol = 'http';
 var domain = 'domain.com';
 if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
@@ -20,6 +21,7 @@ client.setOnload(function() { // on success
         id: item.id,
         data: JSON.stringify(item)
       });
+      cacheImage(item.img);
       recommends.add(recommend);
     }
     recommends.save(); // save the model to persistent storage

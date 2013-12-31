@@ -7,7 +7,5 @@
   "os:blackberry": {},
   "os:ios": {},
   "os:mobileweb": {},
-  "dependencies": {
-    "nl.fokkezb.cachedImageView": "1.4"
-  }
+  "dependencies": {}
 }
