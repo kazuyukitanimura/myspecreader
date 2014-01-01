@@ -42,6 +42,3 @@ table.addEventListener('swipe', function(e) {
     slideOut(table, getNextPage);
   }
 });
-
-// Handling Orientation Changes
-Ti.Gesture.addEventListener('orientationchange', getNextPage);

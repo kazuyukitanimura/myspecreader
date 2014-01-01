@@ -6,7 +6,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
 }
 var authUrl = protocol + '://' + domain + '/auth';
 var index = $.index;
-var client = Ti.Network.createHTTPClient({
+var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
   timeout: 1000 // in milliseconds
 });
@@ -50,6 +50,11 @@ client.setOnload(function() { // on success
     setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
     //setInterval(getRecommends, 5 * 1000); // for test
   }
+  // Handling Orientation Changes
+  Ti.Gesture.addEventListener('orientationchange', function(e) {
+    // TODO remove the previous event to prevent firing multiple times
+    index.fireEvent('openRows');
+  });
 });
 
 client.setOnerror(function(e) { // on error including a timeout
