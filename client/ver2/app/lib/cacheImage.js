@@ -25,7 +25,7 @@ function _getBlob(image) {
     width: Ti.UI.SIZE,
     preventDefaultImage: true
   }).toImage();
-};
+}
 
 function getImage(url, ver) {
   var file = _getFile(url, ver);
@@ -42,8 +42,8 @@ function setImage(url, ver, as) {
             try {
               var blob = _getBlob(this.responseData);
               file.write(as ? as(blob) : blob);
-            } catch (e) {
-              Ti.API.error(e);
+            } catch (err) {
+              Ti.API.error(err);
             }
           }
         }

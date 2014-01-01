@@ -3,4 +3,4 @@ $.row.articleUrl = args.articleUrl;
 
 function openSummary() {
 
-};
+}

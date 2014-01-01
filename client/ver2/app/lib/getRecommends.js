@@ -5,7 +5,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 
   domain = 'localhost';
 }
 var url = protocol + '://' + domain + '/recommends';
-var recommends = Alloy.Collections.instance('recommends');
+var recommends = Alloy.Collections.instance('recommends'); // this needs to stay here for controllers/rows.js
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 4000 // in milliseconds
@@ -16,7 +16,6 @@ function toThumb(blob) {
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
   try {
-    recommends.reset(); // blow away everything
     var items = JSON.parse(this.responseText).items;
     for (var i = items.length; i--;) {
       var item = items[i];
@@ -26,9 +25,10 @@ client.setOnload(function() { // on success
       });
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
-      recommends.add(recommend);
+      //recommends.add(recommend);
       recommend.save(); // save the model to persistent storage
     }
+    //recommends.fetch();
   } catch(e) {
     Ti.API.error(e);
     //Ti.API.debug(this.responseText);

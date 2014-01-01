@@ -30,7 +30,7 @@ backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
     webview.goBack();
   } else {
-    webpage.close()
+    webpage.close();
   }
 });
 webview.addEventListener("load", function(e) {
@@ -39,7 +39,7 @@ webview.addEventListener("load", function(e) {
   //Ti.API.debug('url'+ webview.url);
   if (webview.url.indexOf('http://localhost') === 0) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
-    webpage.close()
+    webpage.close();
   }
   if (webview.canGoBack()) {
     backButton.title = '< Back';

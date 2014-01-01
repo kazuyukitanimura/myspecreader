@@ -6,20 +6,11 @@ var slideOut = require('slideOut');
 var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
-recommends && recommends.fetch();
-// Filter the fetched collection before rendering. Don't return the collection itself,
-// but instead return an array of models that you would like to render.
-function whereFunction(collection) {
-  var models = collection.models;
-  //models = collection.filter(function(model) {
-  //  Ti.API.debug(model);
-  //  var state = model.get('state');
-  //  return state === 0 || state === 4;
-  //});
-  return models.slice(models.length - 6).reverse(); // TODO change the number of items dpending on the height
-  //return models.sort(function(a, b) {
-  //  return ((Math.random() * 3) | 0) - 1;
-  //}).slice(0, 6); // TODO change the number of items dpending on the height
+if (recommends) {
+  recommends.fetch({
+    // TODO change the number of items dpending on the height
+    query: 'SELECT data from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT 6'
+  });
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
