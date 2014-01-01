@@ -12,6 +12,10 @@ if (recommends) {
     query: 'SELECT data from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT 6'
   });
 }
+// Handling Orientation Changes
+//Ti.Gesture.addEventListener('orientationchange', function(e) {
+//  index.fireEvent('openRows');
+//});
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
 // fields you want to use in your bindings. The easiest way to do that is to clone the model and return its

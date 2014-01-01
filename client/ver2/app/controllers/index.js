@@ -46,7 +46,6 @@ client.setOnload(function() { // on success
         url: 'fake.js'
       });
     }
-    //require('getRecommends');
     getRecommends();
     setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
     //setInterval(getRecommends, 5 * 1000); // for test
@@ -78,8 +77,3 @@ index.addEventListener("close", function() {
   Ti.API.debug('index close');
   $.destroy();
 });
-
-// Handling Orientation Changes
-//Ti.Gesture.addEventListener('orientationchange', function(e) {
-//  index.fireEvent('openRows');
-//});

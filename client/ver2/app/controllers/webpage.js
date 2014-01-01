@@ -35,8 +35,6 @@ backButton.addEventListener('click', function(e) {
 });
 webview.addEventListener("load", function(e) {
   actInd.hide();
-  //Ti.API.debug('info'+ JSON.stringify(e));
-  //Ti.API.debug('url'+ webview.url);
   if (webview.url.indexOf('http://localhost') === 0) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
     webpage.close();

@@ -23,15 +23,12 @@ client.setOnload(function() { // on success
         id: item.id,
         data: JSON.stringify(item)
       });
-      setImage(item.img);
+      //setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
-      //recommends.add(recommend);
       recommend.save(); // save the model to persistent storage
     }
-    //recommends.fetch();
   } catch(e) {
     Ti.API.error(e);
-    //Ti.API.debug(this.responseText);
   }
 });
 client.setOnerror(function(e) { // on error including a timeout
@@ -49,14 +46,4 @@ var getRecommends = function() {
   client.send();
 };
 
-//// For Android, the service runs all the time anyway, don't use setInterval
-//// For iOS, setInterval shouldn't be used as a background job.
-//// Once this file is read as a background job, the foreground setInterval
-//// also gets fired, resulting in doubly firing
-//if (!OS_ANDROID && ! (OS_IOS && Ti.App.currentService)) {
-//  setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
-//  //setInterval(getRecommends, 5 * 1000); // for test
-//}
-//
-//getRecommends(); // execute once
 exports = getRecommends;
