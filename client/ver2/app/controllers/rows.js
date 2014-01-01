@@ -37,6 +37,8 @@ function getNextPage(e) {
 }
 
 table.addEventListener('swipe', function(e) {
+  // prevent bubbling up to the row
+  e.cancelBubble = true;
   Ti.API.debug(e.direction);
   if (e.direction === 'up') {
     slideOut(table, getNextPage);

@@ -25,6 +25,9 @@ client.setOnload(function() { // on success
       });
       //setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
+      // the order of saving to sqlite is important
+      // the larger rowid, the newer (higher priority)
+      // FIXME The save does not guarantee reorder the old entries
       recommend.save(); // save the model to persistent storage
     }
   } catch(e) {
