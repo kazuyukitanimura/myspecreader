@@ -9,13 +9,9 @@ var recommends = Alloy.Collections.instance('recommends');
 if (recommends) {
   recommends.fetch({
     // TODO change the number of items dpending on the height
-    query: 'SELECT data from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT 6'
+    query: 'SELECT data from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
 }
-// Handling Orientation Changes
-//Ti.Gesture.addEventListener('orientationchange', function(e) {
-//  index.fireEvent('openRows');
-//});
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
 // fields you want to use in your bindings. The easiest way to do that is to clone the model and return its
@@ -36,7 +32,7 @@ function transformFunction(model) {
   return transform;
 }
 
-function getNextPage() {
+function getNextPage(e) {
   currentWindow.fireEvent('openRows');
 }
 
@@ -46,3 +42,6 @@ table.addEventListener('swipe', function(e) {
     slideOut(table, getNextPage);
   }
 });
+
+// Handling Orientation Changes
+Ti.Gesture.addEventListener('orientationchange', getNextPage);
