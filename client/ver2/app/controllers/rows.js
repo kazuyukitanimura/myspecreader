@@ -10,7 +10,7 @@ var recommends = Alloy.Collections.instance('recommends');
 if (recommends) {
   recommends.fetch({
     // TODO change the number of items dpending on the height
-    query: 'SELECT * from ' + recommends.config.adapter.collection_name + ' where state ' + hasRead ? 'NOT ': '' + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
+    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
