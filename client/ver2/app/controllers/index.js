@@ -1,4 +1,5 @@
 var getRecommends =  require('getRecommends');
+var slideIn = require('slideIn');
 var protocol = 'http';
 var domain = 'domain.com';
 if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
@@ -71,9 +72,14 @@ index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
   var rows = Alloy.createController('rows', {
-    currentWindow: index
+    currentWindow: index,
+    hasRead: e.hasRead
   }).getView();
-  index.add(rows);
+  if (e.hasRead) {
+    index.add(slideIn(rows));
+  } else {
+    index.add(rows);
+  }
 });
 
 index.orientationModes = [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];

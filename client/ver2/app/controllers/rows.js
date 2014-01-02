@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
+var hasRead = args.hasRead;
 var getImage = require('cacheImage').getImage;
 var moment = require('alloy/moment');
 var slideOut = require('slideOut');
@@ -9,7 +10,7 @@ var recommends = Alloy.Collections.instance('recommends');
 if (recommends) {
   recommends.fetch({
     // TODO change the number of items dpending on the height
-    query: 'SELECT * from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
+    query: 'SELECT * from ' + recommends.config.adapter.collection_name + ' where state ' + hasRead ? 'NOT ': '' + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
@@ -34,14 +35,15 @@ function transformFunction(model) {
 
 function getNextPage(e) {
   table = null;
-  currentWindow.fireEvent('openRows');
+  currentWindow.fireEvent('openRows', e);
 }
 
 table.addEventListener('swipe', function(e) {
   // prevent bubbling up to the row
   e.cancelBubble = true;
   Ti.API.debug(e.direction);
-  if (e.direction === 'up') {
+  var direction = e.direction;
+  if (direction === 'up') {
     recommends.each(function(recommend) {
       var state = recommend.get('state');
       if (state === 0 || state === 4) {
@@ -51,5 +53,9 @@ table.addEventListener('swipe', function(e) {
       }
     });
     slideOut(table, getNextPage);
+  } else if (direction === 'down') {
+    getNextPage({
+      hasRead: true
+    });
   }
 });
