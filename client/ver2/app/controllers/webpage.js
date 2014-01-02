@@ -35,7 +35,8 @@ backButton.addEventListener('click', function(e) {
 });
 webview.addEventListener("load", function(e) {
   actInd.hide();
-  if (webview.url.indexOf('http://localhost') === 0) { // FIXME we should not hard code like this
+  var url = webview.url;
+  if (url.indexOf('http://localhost') === 0 && url.indexOf('state=auth') !== -1) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
     webpage.close();
   }

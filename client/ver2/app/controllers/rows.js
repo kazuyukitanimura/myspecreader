@@ -9,7 +9,7 @@ var recommends = Alloy.Collections.instance('recommends');
 if (recommends) {
   recommends.fetch({
     // TODO change the number of items dpending on the height
-    query: 'SELECT data from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
+    query: 'SELECT * from ' + recommends.config.adapter.collection_name + ' where state IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
@@ -33,6 +33,7 @@ function transformFunction(model) {
 }
 
 function getNextPage(e) {
+  table = null;
   currentWindow.fireEvent('openRows');
 }
 
@@ -41,6 +42,14 @@ table.addEventListener('swipe', function(e) {
   e.cancelBubble = true;
   Ti.API.debug(e.direction);
   if (e.direction === 'up') {
+    recommends.each(function(recommend) {
+      var state = recommend.get('state');
+      if (state === 0 || state === 4) {
+        recommend.set({
+          state: 1 // read
+        }).save();
+      }
+    });
     slideOut(table, getNextPage);
   }
 });
