@@ -209,7 +209,9 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     }
     var data = postBody.data;
     for (var i = data.length; i--;) {
-      trainCallback(data[i]);
+      var datum = data[i];
+      datum.category = CATEGORY_LOOKUP[datum.state];
+      trainCallback(datum);
     }
   });
   redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function() {

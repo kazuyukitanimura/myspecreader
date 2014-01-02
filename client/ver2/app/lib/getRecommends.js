@@ -42,7 +42,7 @@ client.setOnerror(function(e) { // on error including a timeout
 var getRecommends = function() {
   //Ti.API.debug('getRecommends invoked!');
   // silently ignore this if there's no network connection
-  if (!Titanium.Network.online) {
+  if (!Ti.Network.online) {
     return;
   }
   client.open('GET', url);

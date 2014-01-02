@@ -71,6 +71,11 @@ client.setOnerror(function(e) { // on error including a timeout
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
+  if (Ti.Network.online && index.needAuth) {
+    client.open('HEAD', authUrl);
+    client.send();
+    return;
+  }
   var rows = Alloy.createController('rows', {
     currentWindow: index,
     hasRead: e.hasRead
