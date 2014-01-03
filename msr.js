@@ -13,7 +13,8 @@ var SCW_PARAMS = {
   MODE: 2 // 0, 1, or 2
 };
 
-var CATEGORIES = [Scw.NON_CATEGORY, 'pass', 'viewSummary', 'viewOriginal', 'markAsUnread', 'star'];
+var CATEGORIES = [Scw.NON_CATEGORY, 'pass', 'viewSummary', 'viewOriginal', 'keepUnread', 'star'];
+// DO NOT CHANGE THE ORDER OR DELETE MEMBERS
 // undefined: none of the categories
 // through: was not opend by showing only title
 // summary: summary was read by clicking title but the original contents were not viewed
@@ -207,16 +208,45 @@ Msr.prototype.postRecommends = function(postBody, callback) {
       callback(new Error());
       return;
     }
+    var reads = [];
+    var unreads = [];
+    var stars = [];
     var data = postBody.data;
     for (var i = data.length; i--;) {
       var datum = data[i];
-      datum.category = CATEGORY_LOOKUP[datum.state];
+      var category = datum.category = CATEGORY_LOOKUP[datum.state];
+      if (category === Scw.NON_CATEGORY || category === 'keepUnread') {
+        unreads.push(datum.id);
+      } else {
+        reads.push(datum.id);
+      }
+      if (category === 'star') {
+        stars.push(data.id);
+      }
       trainCallback(datum);
     }
   });
-  redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function() {
-    // TODO update Feedly read
+  var self = this;
+  redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function(err) {
+    if (!err && reads && reads.length) {
+      self.postMarkAsRead(reads, function(err) { // FIXME use rsvp.js instead of callback nesting
+        if (!err && unreads && unreads.length) {
+          self.postKeepUnread(unreads, function(err) { // XXXX this does not work if there are starts but not unreads
+            if (!err && stars && stars.length) {
+              self.putSaved(stars, function(err) {
+                callback(err, {});
+              });
+            } else {
+              callback(err, {});
+            }
+          });
+        } else {
+          callback(err, {});
+        }
+      });
+    } else {
+      callback(err, {});
+    }
   });
-  callback(null, {});
 };
 

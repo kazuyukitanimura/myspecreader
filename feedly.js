@@ -6,6 +6,7 @@ var API_VERSION = 'v3';
 var API_SUBDOMAIN = 'sandbox'; // 'cloud';
 var ID_ALL = 'global.all';
 var ID_UNCATEGORIZED = 'global.uncategorized';
+var ID_SAVED = 'global.saved';
 var OAuth2 = require('./oauth2');
 var extend = require('node.extend');
 var querystring = require('querystring');
@@ -198,6 +199,21 @@ Feedly.prototype._post = function(api_url, postBody, callback) {
 };
 
 /**
+ * Internal function to perfrom http put
+ *
+ * @param url {String} http put url including http...
+ * @param putBody {String} or {Object} http put body
+ * @params callback {Function}
+ */
+Feedly.prototype._put = function(api_url, putBody, callback) {
+  if (isObject(putBody)) {
+    putBody = JSON.stringify(putBody);
+  }
+  console.log(api_url, putBody);
+  this._oa.put(api_url, this._token, putBody, this._createResponseHandler(callback));
+};
+
+/**
  *
  *
  * @param options {Object}
@@ -266,3 +282,66 @@ Feedly.prototype.getSearch = function(options, callback) {
   this._get(this._buildUrl(api_path, api_action, params), callback);
 };
 
+/**
+ *
+ * @param ids {Array} or {String} of entries
+ * @param action {String} 'markAsRead' or 'keepUnread'
+ * @params callback {Function}
+ */
+Feedly.prototype.postMarkers = function(ids, action, callback) {
+  if (!Array.isArray(ids)) {
+    ids = [ids];
+  }
+  var api_path = 'markers';
+  var postBody = {
+    'action': action,
+    'type': 'entries',
+    'entryIds': ids
+  };
+  this._post(this._buildUrl(api_path), postBody, callback);
+};
+
+/**
+ *
+ * @param ids {Array} or {String} of entries to mark as read
+ * @params callback {Function}
+ */
+Feedly.prototype.postMarkAsRead = function(ids, callback) {
+  this.postMarkers(ids, 'markAsRead', callback);
+};
+
+/**
+ *
+ * @param ids {Array} or {String} of entries to keep unread
+ * @params callback {Function}
+ */
+Feedly.prototype.postKeepUnread = function(ids, callback) {
+  this.postMarkers(ids, 'keepUnread', callback);
+};
+
+/**
+ *
+ * @param ids {Array} or {String} of entries to tag
+ * @param tagId {String} to tag
+ * @params callback {Function}
+ */
+Feedly.prototype.putTags = function(ids, tagId, callback) {
+  if (!Array.isArray(ids)) {
+    ids = [ids];
+  }
+  var api_path = url.join('tags', tagId);
+  var putBody = {
+    'entryIds': ids
+  };
+  this._put(this._buildUrl(api_path), putBody, callback);
+};
+
+/**
+ *
+ * @param ids {Array} or {String} of entries to mark as read
+ * @params callback {Function}
+ */
+Feedly.prototype.putSaved = function(ids, callback) {
+  var tagId = url.join('user', this._results.id, 'tag', ID_SAVED);
+  this.putTags(ids, tagId, callback);
+};

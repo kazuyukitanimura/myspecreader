@@ -53,7 +53,7 @@ function uploadData() {
   var recommends = Alloy.Collections.instance('recommends');
   if (recommends) {
     recommends.fetch({
-      query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0, 4)'
+      query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0)'
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
@@ -66,6 +66,11 @@ function uploadData() {
       client.open('POST', postUrl);
       client.send({
         data: data
+      });
+      client.setOnload(function(e) {
+        recommends.each(function(recommend) {
+          recommend.destroy(); // delete from persistance
+        });
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
