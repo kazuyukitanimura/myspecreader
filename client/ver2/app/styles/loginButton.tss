@@ -9,5 +9,5 @@
   backgroundColor: '#4CD964', // iOS 7 color
   top: '60%',
   width: '60%',
-  opacity: 1
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER//'center'
 }

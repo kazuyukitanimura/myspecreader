@@ -24,6 +24,8 @@ client.setOnload(function() { // on success
       currentWindow: index
     }).getView();
     index.add(loginButton);
+    var learnMore = Alloy.createController('learnMore').getView();
+    index.add(learnMore);
   } else {
     index.setBackgroundImage('');
     index.needAuth = false;
