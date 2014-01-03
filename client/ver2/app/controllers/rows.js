@@ -23,7 +23,7 @@ if (recommends) {
 // fields you want to use in your bindings. The easiest way to do that is to clone the model and return its
 // attributes with the toJSON() function.
 function transformFunction(model) {
-  var data = JSON.parse(transform.get('data'));
+  var data = JSON.parse(model.get('data'));
   var img = getImage(data.img, 'thumb');
   if (img) {
     data.img = img;
@@ -31,17 +31,6 @@ function transformFunction(model) {
   data.ago = moment(data.published).fromNow();
   data.origin = data.origin.title;
   return data;
-  //var transform = model.toJSON();
-  //var data = JSON.parse(transform.data);
-  //transform.title = data.title;
-  //var img = getImage(data.img, 'thumb');
-  //if (img) {
-  //  transform.img = img;
-  //}
-  //transform.summary = data.summary;
-  //transform.ago = moment(data.published).fromNow();
-  //transform.origin = data.origin.title;
-  //return transform;
 }
 
 function getNextPage(e) {
