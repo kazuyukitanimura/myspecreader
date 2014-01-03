@@ -1,6 +1,7 @@
 '.container': {
   //backgroundColor: 'white'
-  backgroundColor: '#BDBEC2'
+  backgroundColor: '#BDBEC2',
+  backgroundImage: 'Default.png'
 }
 
 'Label': {

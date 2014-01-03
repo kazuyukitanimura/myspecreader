@@ -9,6 +9,7 @@ webpage.addEventListener('close', function(e) {
 });
 webpage.addEventListener('authenticated', function(e) {
   getRecommends();
+  currentWindow.setBackgroundImage('');
   currentWindow.fireEvent('openRows');
   Ti.API.debug('authenticated');
 });

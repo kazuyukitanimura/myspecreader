@@ -2,5 +2,12 @@
   font: {
     fontSize: '20dp'
   },
-  backgroundColor: 'white'
+  //color: '#82BD1A',
+  color: 'white',
+  //backgroundColor: '#82BD1A', // feedly link color
+  //backgroundColor: '#6ABA45', // feedly color
+  backgroundColor: '#4CD964', // iOS 7 color
+  top: '60%',
+  width: '60%',
+  opacity: 1
 }
