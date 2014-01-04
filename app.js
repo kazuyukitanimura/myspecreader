@@ -1,6 +1,7 @@
 var fs = require('fs');
 var sessions = require("client-sessions");
 var express = require('express');
+var lruCache = require('lru-cache')();
 var app = express();
 
 var Msr = require('./msr');
@@ -32,8 +33,10 @@ var auth_middleware = function(req, res, next) {
       res.redirect('/');
     } else {
       console.log(msrOptions);
-      req.msr = new Msr(msrOptions); // TODO pool MSRs use https://github.com/isaacs/node-lru-cache
-      // FIXME use EventEmitter to check req.msr.scw
+      var id = msrOptions.id;
+      if (! (req.msr = lruCache.get(id))) {
+        lruCache.set(id, (req.msr = new Msr(msrOptions)));
+      }
       next();
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
@@ -100,7 +103,7 @@ app.get('/recommends', function(req, res) {
 });
 
 app.post('/recommends', function(req, res) {
-  req.msr.postRecommends(function(err, data, response) {
+  req.msr.postRecommends(req.body, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -170,4 +173,3 @@ app.listen(80, function() {
     process.setuid(stats.uid);
   }
 });
-

@@ -11,6 +11,7 @@
   , "fussy": "*"
   , "hiredis": "*"
   , "hogan.js": "*"
+  , "lru-cache": "*"
   , "natural": "*"
   , "node.extend": "*"
   , "oauth": "*"

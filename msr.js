@@ -1,5 +1,6 @@
 var cheerio = require('cheerio');
 var natural = require('natural');
+var RSVP = require('RSVP');
 var treebankWordTokenizer = new natural.TreebankWordTokenizer();
 //natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
 var redis = require('./redis');
@@ -166,11 +167,6 @@ Msr.prototype.getRecommends = function(callback) {
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
         item.featureVector = featureVector;
-        //if (!scw) {
-        //  setImmediate(function() {
-        //    item.estCategory = scw.test(featureVector);
-        //  });
-        //}
         if (scw) {
           item.estCategory = scw.test(featureVector); // This might fail
         } else {
