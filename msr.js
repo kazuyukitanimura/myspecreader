@@ -195,7 +195,7 @@ Msr.prototype.getRecommends = function(callback) {
  */
 Msr.prototype.postRecommends = function(postBody, callback) {
   var scw = this.scw;
-  if (!callback || ! scw) {
+  if (!postBody || !callback || ! scw) {
     callback(new Error('Msr.postRecommends Error'));
     return;
   }

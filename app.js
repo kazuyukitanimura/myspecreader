@@ -33,9 +33,9 @@ var auth_middleware = function(req, res, next) {
       res.redirect('/');
     } else {
       console.log(msrOptions);
-      var id = msrOptions.id;
-      if (! (req.msr = lruCache.get(id))) {
-        lruCache.set(id, (req.msr = new Msr(msrOptions)));
+      var userId = msrOptions.id;
+      if (! (req.msr = lruCache.get(userId))) {
+        lruCache.set(userId, (req.msr = new Msr(msrOptions)));
       }
       next();
     }
