@@ -30,8 +30,9 @@ client.setOnload(function() { // on success
       // FIXME The save does not guarantee reorder the old entries
       recommend.save(); // save the model to persistent storage
     }
-  } catch(e) {
-    Ti.API.error(e);
+  } catch(err) {
+    Ti.API.error(err);
+    Ti.API.debug(this.responseText);
   }
 });
 client.setOnerror(function(e) { // on error including a timeout

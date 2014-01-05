@@ -1,7 +1,6 @@
 // Related Codes
 // https://github.com/FokkeZB/nl.fokkezb.cachedImageView/blob/master/controllers/widget.js
 // https://gist.github.com/skypanther/1901680
-
 function _getExtension(path) {
   // from http://stackoverflow.com/a/680982/292947
   var re = /(?:(\.[^.]+))?$/;
@@ -27,9 +26,13 @@ function _getBlob(image) {
   }).toImage();
 }
 
+function _getSafeUrl(url) {
+  return (url || '').replace(/ /g, '%20'); // do not use encodeURI to avoide multiple encoding
+}
+
 function getImage(url, ver) {
   var file = _getFile(url, ver);
-  return file ? (file.exists() ? file: url) : file;
+  return file && file.exists() ? file: _getSafeUrl(url);
 }
 
 function setImage(url, ver, as) {
@@ -42,10 +45,13 @@ function setImage(url, ver, as) {
             try {
               var blob = _getBlob(this.responseData);
               file.write(as ? as(blob) : blob);
-            } catch (err) {
+            } catch(err) {
               Ti.API.error(err);
             }
           }
+        },
+        onerror: function(err) {
+          Ti.API.error(err);
         }
       });
       client.open('GET', url);

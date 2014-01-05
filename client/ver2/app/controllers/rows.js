@@ -24,10 +24,7 @@ if (recommends) {
 // attributes with the toJSON() function.
 function transformFunction(model) {
   var data = JSON.parse(model.get('data'));
-  var img = getImage(data.img, 'thumb');
-  if (img) {
-    data.img = img;
-  }
+  data.img = getImage(data.img, 'thumb');
   data.ago = moment(data.published).fromNow();
   data.origin = data.origin.title;
   return data;
