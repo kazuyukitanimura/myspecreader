@@ -23,7 +23,7 @@ Buffer.prototype.toFloat64Array = function() {
   for (var i = 0; i < length; ++i) {
     view[i] = this[i];
   }
-  return ab;
+  return new Float64Array(ab);
 };
 
 redis.saveMatricies = function(userId, categories, covarianceMatrix, weightMatrix, callback) {

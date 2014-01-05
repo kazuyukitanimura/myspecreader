@@ -75,6 +75,7 @@ Msr.prototype._initScw = function(options) {
     redis.loadMatricies(userId, CATEGORIES, function(err, scwOptions) {
       if (err) {
         console.error(err); // TODO think what to do with the errors, retry?
+        setImmediate(this._initScw, options); // retry
       } else {
         this.scw = new Scw(SCW_PARAMS.ETA, SCW_PARAMS.C, SCW_PARAMS.MODE, scwOptions);
       }
