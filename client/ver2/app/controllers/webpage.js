@@ -43,7 +43,7 @@ webview.addEventListener("load", function(e) {
   if (webview.canGoBack()) {
     backButton.title = '\u2329 Back'; //\u27E8 \u3008 \u2329 \u276C \u276E
   } else {
-    backButton.title = '\u2715 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2573
+    backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
   }
   //webview.evalJS("document.cookie = '';") // for test
 });
