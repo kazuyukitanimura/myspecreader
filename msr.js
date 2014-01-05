@@ -97,19 +97,19 @@ Msr.prototype.getAccessToken = function(code, params, callback) {
 
 /**
  *
+ * @param options {Object}
  * @params callback {Function}
  */
-Msr.prototype.getRecommends = function(callback) {
+Msr.prototype.getRecommends = function(options, callback) {
+  if (!options) {
+    options = {};
+    callback = function() {};
+  }
   if (!callback) {
     callback(new Error('Msr.getRecommends Error'));
     return;
   }
-  this.getStreams(
-  /*{
-    count: 40
-  }
-  , */
-  function streamsCb(err, data, response) {
+  this.getStreams(options, function streamsCb(err, data, response) {
     if (!err) {
       var now = Date.now();
       var items = data.items;

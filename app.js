@@ -91,7 +91,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/recommends', function(req, res) {
-  req.msr.getRecommends(function(err, data, response) {
+  req.msr.getRecommends(req.query, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -115,7 +115,7 @@ app.post('/recommends', function(req, res) {
 });
 
 app.get('/streams', function(req, res) {
-  req.msr.getStreams(function(err, data, response) {
+  req.msr.getStreams(req.query, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();
@@ -127,11 +127,7 @@ app.get('/streams', function(req, res) {
 });
 
 app.get('/search', function(req, res) {
-  var options = {
-    q: req.query.q,
-    n: req.query.n
-  };
-  req.msr.getSearch(options, function(err, data, response) {
+  req.msr.getSearch(req.query, function(err, data, response) {
     if (err) {
       console.error(err);
       req.msrCookie.reset();

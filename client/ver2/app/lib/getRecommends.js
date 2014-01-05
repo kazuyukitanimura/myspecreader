@@ -8,7 +8,7 @@ var url = protocol + '://' + domain + '/recommends';
 var recommends = Alloy.Collections.instance('recommends'); // this needs to stay here for controllers/rows.js
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
-  timeout: 4000 // in milliseconds
+  timeout: 64 * 1000 // in milliseconds
 });
 function toThumb(blob) {
   return blob.imageAsThumbnail(90, 0, 0);

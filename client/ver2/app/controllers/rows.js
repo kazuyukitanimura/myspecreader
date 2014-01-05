@@ -35,7 +35,7 @@ function getNextPage(e) {
   currentWindow.fireEvent('openRows', e);
 }
 
-function uploadData() {
+function uploadData(e) {
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
@@ -67,7 +67,7 @@ function uploadData() {
       });
     }
   }
-  getNextPage();
+  getNextPage(e);
 }
 
 table.addEventListener('swipe', function(e) {

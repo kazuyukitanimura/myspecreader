@@ -231,7 +231,7 @@ Feedly.prototype.getStreams = function(options, callback) {
   var api_path = 'streams';
   var api_action = 'contents';
   var params = {
-    count: options.count || 20,
+    count: options.count || 1000,
     ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
     streamId: options.streamId || url.join('user', this._results.id, 'category', ID_ALL),
