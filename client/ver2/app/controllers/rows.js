@@ -50,9 +50,10 @@ function uploadData() {
       });
       var client = Ti.Network.createHTTPClient();
       client.open('POST', postUrl);
-      client.send({
+      client.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+      client.send(JSON.stringify({ // explicit stringify is required to send JSON that includes arrays
         data: data
-      });
+      }));
       client.setOnload(function(e) {
         recommends.each(function(recommend) {
           recommend.destroy(); // delete from persistance

@@ -199,14 +199,14 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     callback(new Error('Msr.postRecommends Error'));
     return;
   }
+  var reads = [];
+  var unreads = [];
+  var stars = [];
   scw.train(function(trainCallback) {
     if (!trainCallback) {
       callback(new Error());
       return;
     }
-    var reads = [];
-    var unreads = [];
-    var stars = [];
     var data = postBody.data;
     for (var i = data.length; i--;) {
       var datum = data[i];
