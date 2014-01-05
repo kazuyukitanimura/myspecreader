@@ -43,8 +43,10 @@ function uploadData() {
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
+        var data = JSON.parse(recommend.get('data'));
         return {
-          featureVector: JSON.parse(recommend.get('data')).featureVector,
+          id: data.id,
+          featureVector: data.featureVector,
           state: recommend.get('state')
         };
       });

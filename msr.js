@@ -140,7 +140,8 @@ Msr.prototype.getRecommends = function(callback) {
         var summary = (item.summary && item.summary.content) || ''; // key prefix: s
         var featureVector = {
           // nomoralize how old it is from the time the user sees it
-          ago: now - item.published, // if item.published is undefined this becomes NaN
+          ago: now - item.published,
+          // if item.published is undefined this becomes NaN
           img: 0 // 0 or 1
         }; // key: word, val:frequency
         if (item.origin && item.origin.streamId) {
@@ -195,9 +196,14 @@ Msr.prototype.getRecommends = function(callback) {
  * @params callback {Function}
  */
 Msr.prototype.postRecommends = function(postBody, callback) {
-  var scw = this.scw;
-  if (!postBody || !callback || ! scw) {
+  if (!postBody || ! callback) {
     callback(new Error('Msr.postRecommends Error'));
+    return;
+  }
+  var scw = this.scw;
+  if (!scw) {
+    setImmediate(this.postRecommends, postBody, callback);
+    console.error('Msr.postRecommends, this.scw is not defined yet');
     return;
   }
   var reads = [];
@@ -246,4 +252,3 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     }
   });
 };
-
