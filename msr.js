@@ -108,11 +108,16 @@ Msr.prototype.getRecommends = function(callback) {
     count: 40
   }
   , */
-  function(err, data, response) {
+  function streamsCb(err, data, response) {
     if (!err) {
       var now = Date.now();
       var items = data.items;
       var scw = this.scw;
+      if (!scw) {
+        setImmediate(streamsCb, err, data, response);
+        console.error('Msr.getRecommends, this.scw is not defined yet');
+        return;
+      }
       for (var i = items.length; i--;) {
         var j = 0;
         var k = '';
@@ -167,11 +172,7 @@ Msr.prototype.getRecommends = function(callback) {
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
         item.featureVector = featureVector;
-        if (scw) {
-          item.estCategory = scw.test(featureVector); // This might fail
-        } else {
-          console.error('Msr.getRecommends, this.scw is not defined yet');
-        }
+        item.estCategory = scw.test(featureVector);
         delete item.fingerprint;
         delete item.originId;
         delete item.author;

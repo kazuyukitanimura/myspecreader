@@ -36,7 +36,7 @@ function getNextPage(e) {
 }
 
 function uploadData() {
-  var recommends = Alloy.Collections.instance('recommends');
+  var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
       query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0)'
