@@ -1,6 +1,7 @@
 var cheerio = require('cheerio');
 var natural = require('natural');
 var RSVP = require('RSVP');
+var rsvpHash = RSVP.hash;
 var treebankWordTokenizer = new natural.TreebankWordTokenizer();
 //natural.PorterStemmer.attach(); // String.stem() and String.tokenizeAndStem()
 var redis = require('./redis');
@@ -229,26 +230,48 @@ Msr.prototype.postRecommends = function(postBody, callback) {
       trainCallback(datum);
     }
   });
-  var self = this;
-  redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function(err) {
-    if (!err && reads && reads.length) {
-      self.postMarkAsRead(reads, function(err) { // FIXME use rsvp.js instead of callback nesting
-        if (!err && unreads && unreads.length) {
-          self.postKeepUnread(unreads, function(err) { // XXXX this does not work if there are starts but not unreads
-            if (!err && stars && stars.length) {
-              self.putSaved(stars, function(err) {
-                callback(err, {});
-              });
-            } else {
-              callback(err, {});
-            }
-          });
+  var promises = {
+    saveMatricies: new RSVP.Promise(function(resolve, reject) {
+      redis.saveMatricies(this._results.id, CATEGORIES, scw.covarianceMatrix, scw.weightMatrix, function(err) {
+        if (err) {
+          reject(err);
         } else {
-          callback(err, {});
+          resolve();
         }
       });
-    } else {
-      callback(err, {});
-    }
+    }.bind(this)),
+    markAsRead: new RSVP.Promise(function(resolve, reject) {
+      this.postMarkAsRead(reads, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    }.bind(this)),
+    keepUnread: new RSVP.Promise(function(resolve, reject) {
+      this.postKeepUnread(unreads, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    }.bind(this)),
+    saved: new RSVP.Promise(function(resolve, reject) {
+      this.putSaved(stars, function(err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    }.bind(this))
+  };
+  rsvpHash(promises).then(function(results) {
+    callback(null, results);
+  }).
+  catch(function(errors) {
+    callback(errors, {});
   });
 };

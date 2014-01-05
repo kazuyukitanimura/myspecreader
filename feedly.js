@@ -289,6 +289,10 @@ Feedly.prototype.getSearch = function(options, callback) {
  * @params callback {Function}
  */
 Feedly.prototype.postMarkers = function(ids, action, callback) {
+  if (!ids || !ids.length) {
+    callback();
+    return;
+  }
   if (!Array.isArray(ids)) {
     ids = [ids];
   }
@@ -326,6 +330,10 @@ Feedly.prototype.postKeepUnread = function(ids, callback) {
  * @params callback {Function}
  */
 Feedly.prototype.putTags = function(ids, tagId, callback) {
+  if (!ids || !ids.length) {
+    callback();
+    return;
+  }
   if (!Array.isArray(ids)) {
     ids = [ids];
   }
