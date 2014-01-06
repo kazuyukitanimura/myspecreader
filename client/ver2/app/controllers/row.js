@@ -26,7 +26,9 @@ function openSummary(e) {
     } else if (img.nativePath) {
       img = img.nativePath;
     }
-    var script = ['document.getElementById("summary").innerHTML = "', data.summary, '";', 'document.getElementById("title").innerHTML = "', data.title, '";', 'document.getElementById("img").src = "', img , '";'/*, 'document.getElementById("preview").src = "', data.alternate && data.alternate.href, '";'*/].join('');
+    var href = data.href || '';
+    Ti.API.debug(href);
+    var script = ['document.getElementById("summary").innerHTML = "', data.summary, '";', 'document.getElementById("title").innerHTML = "', data.title, '";', 'document.getElementById("img").src = "', img , '";', 'document.getElementById("original").href = "', href, '";'/*, 'document.getElementById("preview").src = "', href, '";'*/].join('');
     webview.evalJS(script);
   });
 }

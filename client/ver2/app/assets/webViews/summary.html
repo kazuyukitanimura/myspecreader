@@ -20,6 +20,11 @@
       }
       iframe {
         width: 100%;
+        border: none;
+        background-color: #FFF;
+        overflow: hidden;
+        pointer-events: none;
+        cursor: default;
       }
     </style>
   </head>
@@ -32,6 +37,8 @@
     <img id="img">
     <h1 id="title"></h1>
     <div id="summary"></div>
-    <button id="original">View website</button>
-    <iframe id="preview"></iframe>
+    <a id="original">
+      <button>View website</button>
+    </a>
+    <iframe id="preview" sandbox scrolling="no"></iframe>
   </body>

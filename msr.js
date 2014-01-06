@@ -176,6 +176,10 @@ Msr.prototype.getRecommends = function(options, callback) {
         }
         item.featureVector = featureVector;
         item.estCategory = scw.test(featureVector);
+        if (item.alternate && item.alternate.href) {
+          item.href = item.alternate.href;
+          delete item.alternate;
+        }
         delete item.fingerprint;
         delete item.originId;
         delete item.author;
