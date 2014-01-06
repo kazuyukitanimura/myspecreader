@@ -33,10 +33,10 @@ backButton.addEventListener('click', function(e) {
     webpage.close();
   }
 });
-webview.addEventListener("load", function(e) {
+webview.addEventListener('load', function(e) {
   actInd.hide();
   var url = webview.url;
-  if (url.indexOf('http://localhost') === 0 && url.indexOf('state=auth') !== -1) { // FIXME we should not hard code like this
+  if (url.indexOf('http://localhost') === 0 && url.indexOf('state=auth') !== - 1) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
     webpage.close();
   }
@@ -45,5 +45,5 @@ webview.addEventListener("load", function(e) {
   } else {
     backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
   }
-  //webview.evalJS("document.cookie = '';") // for test
+  //webview.evalJS("document.cookie = '';"); // for test
 });

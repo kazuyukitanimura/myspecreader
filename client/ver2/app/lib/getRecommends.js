@@ -23,7 +23,7 @@ client.setOnload(function() { // on success
         id: item.id,
         data: JSON.stringify(item)
       });
-      //setImage(item.img);
+      setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
       // the order of saving to sqlite is important
       // the larger rowid, the newer (higher priority)

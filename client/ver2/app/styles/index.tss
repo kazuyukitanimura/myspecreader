@@ -3,9 +3,3 @@
   backgroundColor: '#BDBEC2',
   backgroundImage: 'Default.png'
 }
-
-'Label': {
-  width: Ti.UI.SIZE,
-  height: Ti.UI.SIZE,
-  color: '#000'
-} 
