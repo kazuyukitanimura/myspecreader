@@ -3,11 +3,12 @@
     fontSize: '20dp'
   },
   //color: '#82BD1A',
-  color: 'white',
+  //color: 'white',
+  color: '#F7F7F7',
   //backgroundColor: '#82BD1A', // feedly link color
   //backgroundColor: '#6ABA45', // feedly color
   backgroundColor: '#4CD964', // iOS 7 color
   top: '60%',
-  width: '60%',
+  width: '54%',
   textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER//'center'
 }

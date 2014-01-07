@@ -2,10 +2,15 @@
   font: {
     fontSize: '17dp'
   },
-  color: 'white',
+  //color: 'white',
   //backgroundColor: '#007AFF', // iOS 7 color
-  backgroundColor: '#34AADC', // iOS 7 color
+  //backgroundColor: '#34AADC', // iOS 7 color
+  backgroundColor: '#F7F7F7',
+  //color: '#BDBEC2',
+  color: '#34AADC',
+  //borderColor: '#BDBEC2',
+  borderColor: '#34AADC',
   top: '70%',
-  width: '34%',
+  width: '54%',
   textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER//'center'
 }
