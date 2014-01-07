@@ -27,7 +27,6 @@ function openSummary(e) {
       img = img.nativePath;
     }
     var href = data.href || '';
-    Ti.API.debug(href);
     var script = ['document.getElementById("summary").innerHTML = "', data.summary, '";', 'document.getElementById("title").innerHTML = "', data.title, '";', 'document.getElementById("img").src = "', img , '";', 'document.getElementById("original").href = "', href, '";'/*, 'document.getElementById("preview").src = "', href, '";'*/].join('');
     webview.evalJS(script);
   });

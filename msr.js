@@ -176,10 +176,10 @@ Msr.prototype.getRecommends = function(options, callback) {
         }
         item.featureVector = featureVector;
         item.estCategory = scw.test(featureVector);
-        if (item.alternate && item.alternate.href) {
-          item.href = item.alternate.href;
-          delete item.alternate;
+        if (item.alternate && item.alternate.length && item.alternate[0].href) {
+          item.href = item.alternate[0].href;
         }
+        delete item.alternate;
         delete item.fingerprint;
         delete item.originId;
         delete item.author;

@@ -47,3 +47,6 @@ webview.addEventListener('load', function(e) {
   }
   //webview.evalJS("document.cookie = '';"); // for test
 });
+webview.addEventListener('error', function(e) {
+  actInd.hide();
+});
