@@ -2,6 +2,7 @@ var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
 var hasRead = args.hasRead;
 var getImage = require('cacheImage').getImage;
+var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
 var slideOut = require('slideOut');
 var protocol = 'http';
@@ -50,8 +51,10 @@ function uploadData(e) {
       query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0)'
     });
     if (recommends.length && Ti.Network.online) {
+      var imgs = [];
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
+        imgs.push(data.img);
         return {
           id: data.id,
           featureVector: data.featureVector,
@@ -68,6 +71,11 @@ function uploadData(e) {
         recommends.each(function(recommend) {
           recommend.destroy(); // delete from persistance
         });
+        for (var i = imgs.length; i--;) {
+          var img = imgs[i];
+          delImage(img);
+          delImage(img, 'thumb');
+        }
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);

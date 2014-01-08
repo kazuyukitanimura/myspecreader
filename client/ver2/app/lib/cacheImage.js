@@ -60,5 +60,13 @@ function setImage(url, ver, as) {
   }
 }
 
+function delImage(url, ver) {
+  var file = _getFile(url, ver);
+  if (file && file.exists()) {
+    file.deleteFile();
+  }
+}
+
 exports.getImage = getImage;
 exports.setImage = setImage;
+exports.delImage = delImage;
