@@ -9,9 +9,10 @@
         color: #1F1F21;
       }
       #img {
-        width: 100%;
+        max-width: 100%;
         padding: 0px;
-        margin: 0px;
+        margin: 0px auto;
+        display: block;
       }
       #title {
         font-size: 16px;
@@ -19,14 +20,6 @@
       }
       #summary {
         padding: 0px 4px;
-      }
-      iframe {
-        width: 100%;
-        border: none;
-        background-color: #FFF;
-        overflow: hidden;
-        pointer-events: none;
-        cursor: default;
       }
     </style>
   </head>
@@ -42,5 +35,4 @@
     <a id="original">
       <button>View website</button>
     </a>
-    <iframe id="preview" sandbox scrolling="no"></iframe>
   </body>

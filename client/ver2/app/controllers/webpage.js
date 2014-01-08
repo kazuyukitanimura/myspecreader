@@ -22,7 +22,9 @@ var backButton = Ti.UI.createButton({
   }
 });
 webview.addEventListener('beforeload', function(e) {
-  actInd.show();
+  if (!webpage.noInd) {
+    actInd.show();
+  }
 });
 webview.setUrl(url);
 webpage.add(backButton);

@@ -36,6 +36,14 @@ function getNextPage(e) {
 }
 
 function uploadData(e) {
+  Alloy.Collections.instance('recommends').each(function(recommend) {
+    var state = recommend.get('state');
+    if (state === 0 || state === 4) {
+      recommend.set({
+        state: 1 // read
+      }).save();
+    }
+  });
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
@@ -76,14 +84,6 @@ table.addEventListener('swipe', function(e) {
   Ti.API.debug(e.direction);
   var direction = e.direction;
   if (direction === 'up') {
-    recommends.each(function(recommend) {
-      var state = recommend.get('state');
-      if (state === 0 || state === 4) {
-        recommend.set({
-          state: 1 // read
-        }).save();
-      }
-    });
     slideOut(table, uploadData);
   } else if (direction === 'down') {
     getNextPage({
