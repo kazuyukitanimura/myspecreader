@@ -1,4 +1,10 @@
-var url = arguments[0] || '/';
+var options = arguments[0] || {};
+var url = '/';
+if (_.isString(options)) {
+  url = options;
+} else if (options.url) {
+  url = options.url;
+}
 
 var webview = $.webview;
 var webpage = $.webpage;
@@ -21,19 +27,66 @@ var backButton = Ti.UI.createButton({
     fontSize: '16dp'
   }
 });
-webview.addEventListener('beforeload', function(e) {
-  if (!webpage.noInd) {
-    actInd.show();
-  }
-});
-webview.setUrl(url);
-webpage.add(backButton);
 backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
     webview.goBack();
   } else {
     webpage.close();
   }
+});
+webpage.add(backButton);
+var unreadButton = Ti.UI.createButton({
+  top: '14dp',
+  right: '24dp',
+  width: '192dp',
+  font: {
+    fontSize: '16dp'
+  },
+  title: 'Keep Unread'
+});
+unreadButton.addEventListener('click', function(e) {
+  webpage.state = 4;
+  webpage.close();
+});
+if (options.unread) {
+  webpage.add(unreadButton);
+}
+var starButton = Ti.UI.createButton({
+  top: '14dp',
+  right: '4dp',
+  width: '20dp',
+  font: {
+    fontSize: '16dp'
+  }
+});
+starButton.addEventListener('click', function(e) {
+  var state = webpage.state;
+  if (state === 5) {
+    webpage.state = webpage.oldState;
+    if (options.unread) {
+      unreadButton.show();
+    }
+    this.title = '\u2606'; // white star
+  } else {
+    webpage.oldState = state;
+    webpage.state = 5;
+    if (options.unread) {
+      unreadButton.hide();
+    }
+    this.title = '\u2605'; // black star
+  }
+});
+if (options.star) {
+  webpage.add(starButton);
+}
+webview.setUrl(url);
+webview.addEventListener('beforeload', function(e) {
+  if (!webpage.noInd) {
+    actInd.show();
+  }
+if (options.star) {
+  starButton.title = (webpage.state === 5) ? '\u2605': '\u2606';
+}
 });
 webview.addEventListener('load', function(e) {
   actInd.hide();

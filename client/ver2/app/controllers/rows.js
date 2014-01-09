@@ -39,7 +39,7 @@ function getNextPage(e) {
 function uploadData(e) {
   Alloy.Collections.instance('recommends').each(function(recommend) {
     var state = recommend.get('state');
-    if (state === 0 || state === 4) {
+    if (state === 0) {
       recommend.set({
         state: 1 // read
       }).save();
@@ -54,11 +54,14 @@ function uploadData(e) {
       var imgs = [];
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
-        imgs.push(data.img);
+        var state = recommend.get('state');
+        if (state !== 4) {
+          imgs.push(data.img);
+        }
         return {
           id: data.id,
           featureVector: data.featureVector,
-          state: recommend.get('state')
+          state: state
         };
       });
       var client = Ti.Network.createHTTPClient();
@@ -69,7 +72,10 @@ function uploadData(e) {
       }));
       client.setOnload(function(e) {
         recommends.each(function(recommend) {
-          recommend.destroy(); // delete from persistance
+          var state = recommend.get('state');
+          if (state !== 4) {
+            recommend.destroy(); // delete from persistance
+          }
         });
         for (var i = imgs.length; i--;) {
           var img = imgs[i];

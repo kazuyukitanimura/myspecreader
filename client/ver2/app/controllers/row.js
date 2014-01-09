@@ -22,8 +22,14 @@ function escapeQuote(text) {
 
 function openSummary(e) {
   var summaryHtml = 'webViews/summary.html';
-  var webpage = Alloy.createController('webpage', summaryHtml).getView();
+  var options = {
+    url: summaryHtml,
+    unread: true,
+    star: true
+  };
+  var webpage = Alloy.createController('webpage', options).getView();
   webpage.noInd = true;
+  webpage.state = state; // FIXME state might not be updated yet from the close event if a user reopen webpage too quickly
   webpage.addEventListener('load', function(e) {
     var viewOriginal = e.url && e.url.indexOf(summaryHtml) === - 1;
     if ($model && (state === 0 || state === 4)) {
@@ -56,6 +62,13 @@ function openSummary(e) {
     });
     webpage.add(preload); // this is a fake wabview, we will never show it
     Ti.API.debug(script);
+  });
+  webpage.addEventListener('close', function(e) {
+    if (webpage.state && $model) {
+      state = webpage.state;
+      $model.set('state', state); // 4: keepUnread, 5: star
+      $model.save();
+    }
   });
   webpage.open();
 }

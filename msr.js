@@ -223,14 +223,14 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     var data = postBody.data;
     for (var i = data.length; i--;) {
       var datum = data[i];
-      var category = datum.category = CATEGORY_LOOKUP[datum.state];
+      var category = datum.category = CATEGORIES[datum.state];
       if (category === Scw.NON_CATEGORY || category === 'keepUnread') {
         unreads.push(datum.id);
       } else {
         reads.push(datum.id);
       }
       if (category === 'star') {
-        stars.push(data.id);
+        stars.push(datum.id);
       }
       trainCallback(datum);
     }
