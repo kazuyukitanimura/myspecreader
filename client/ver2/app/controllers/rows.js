@@ -18,6 +18,9 @@ if (recommends) {
   recommends.fetch({
     query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
+  if (!recommends.length) {
+    setTimeout(getNextPage, 1000); // FIXME call getNextPage on update of recommends isntead of polling
+  }
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
