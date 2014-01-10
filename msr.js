@@ -224,7 +224,7 @@ Msr.prototype.postRecommends = function(postBody, callback) {
   }
   var scw = this.scw;
   if (!scw) {
-    setImmediate(this.postRecommends, postBody, callback);
+    setImmediate(this.postRecommends.bind(this), postBody, callback);
     console.error('Msr.postRecommends, this.scw is not defined yet');
     return;
   }
