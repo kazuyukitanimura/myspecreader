@@ -112,6 +112,7 @@ Msr.prototype.getRecommends = function(options, callback) {
   }
   this.getStreams(options, function streamsCb(err, data, response) {
     if (!err) {
+      var l = CATEGORIES.length;
       var now = Date.now();
       var items = data.items;
       var scw = this.scw;
@@ -142,15 +143,17 @@ Msr.prototype.getRecommends = function(options, callback) {
         var summary = (item.summary && item.summary.content) || ''; // key prefix: s
         var featureVector = {
           // nomoralize how old it is from the time the user sees it
-          ago: now - item.published,
+          ago: now - item.published | 0,
           // if item.published is undefined this becomes NaN
           img: 0 // 0 or 1
         }; // key: word, val:frequency
         if (item.origin && item.origin.streamId) {
-          featureVector.originId = item.origin.streamId;
+          k = 'o ' + item.origin.streamId;
+          featureVector[k] = 1;
         }
         if (item.language) {
-          featureVector.lang = item.language;
+          k = 'l ' + item.language;
+          featureVector[k] = 1;
         }
 
         for (j = keywords.length; j--;) {
@@ -175,13 +178,26 @@ Msr.prototype.getRecommends = function(options, callback) {
           featureVector[k] = (featureVector[k] | 0) + 1;
         }
         item.featureVector = featureVector;
-        item.estCategory = scw.test(featureVector);
+        // scw.test() does not guarantee the order when the score is tie. The highest score has to be found in a specified order
+        var scores = scw.calcScores(featureVector);
+        var maxScore = Scw.NON_CATEGORY_SCORE;
+        var maxCategory = Scw.NON_CATEGORY;
+        for (j = 0; j < l; j++) {
+          var category = CATEGORIES[j];
+          if (scores.hasOwnProperty(category)) {
+            var value = scores[category];
+            if (maxScore < value) {
+              maxScore = value;
+              maxCategory = category;
+            }
+          }
+        }
+        item.estCategory = maxCategory;
         if (item.alternate && item.alternate.length && item.alternate[0].href) {
           item.href = item.alternate[0].href;
         }
         delete item.alternate;
         delete item.fingerprint;
-        delete item.originId;
         delete item.author;
         delete item.crawled;
         delete item.sid;

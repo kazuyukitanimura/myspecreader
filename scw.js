@@ -119,6 +119,7 @@ var SCW = module.exports = function(phi, C, mode, options) {
   this.weightMatrix = new Matrix(0.0, options.weightMatrix); // key: category, value weightVector;
 };
 SCW.NON_CATEGORY = NON_CATEGORY;
+SCW.NON_CATEGORY_SCORE = NON_CATEGORY_SCORE;
 
 SCW.prototype.train = function(dataGen, maxIteration) {
   if (!maxIteration) {
