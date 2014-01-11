@@ -1,0 +1,28 @@
+body {
+  background-color: white;
+  padding: 0px;
+  margin: 0px;
+  color: #1F1F21;
+}
+#img {
+  max-width: 100%;
+  padding: 0px;
+  margin: 0px auto;
+  display: block;
+}
+#title {
+  font-size: 16px;
+  padding: 0px 4px;
+}
+#summary {
+  padding: 0px 4px;
+}
+#original {
+  background-color: #E0FF00;
+  padding: 6px 30px;
+  margin: 10px auto 0px auto;
+  display: table;
+  color: #007AFF;
+  text-decoration: none;
+  text-align: center;
+}
