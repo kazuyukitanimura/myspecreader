@@ -1,45 +1,12 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <!--<link rel="stylesheet" type="text/css" href="webviews/webviews.css"/>-->
-    <style>
-      body {
-        background-color: white;
-        padding: 0px;
-        margin: 0px;
-        color: #1F1F21;
-      }
-      #img {
-        max-width: 100%;
-        padding: 0px;
-        margin: 0px auto;
-        display: block;
-      }
-      #title {
-        font-size: 16px;
-        padding: 0px 4px;
-      }
-      #summary {
-        padding: 0px 4px;
-      }
-      #original {
-        background-color: #E0FF00;
-        padding: 6px 30px;
-        margin: 10px auto 0px auto;
-        display: table;
-        color: #007AFF;
-        text-decoration: none;
-        text-align: center;
-      }
-    </style>
+    <link rel="stylesheet" href="webviews/summary.css"/>
   </head>
-  <!--<script>
-    Ti.App.addEventListener("setSummary", function(e) {
-      document.getElementById('summary').innerHTML = e.message;
-    });
-  </script>-->
   <body>
-    <img id="img">
-    <h1 id="title"></h1>
-    <div id="summary"></div>
-    <a id="original">View website</a>
+    <img id="img" src="{{img}}">
+    <h1 id="title">{{title}}</h1>
+    <div id="summary">{{summary}}</div>
+    <a id="original" href="{{href}}">View website</a>
   </body>
+</html>

@@ -21,9 +21,27 @@ function escapeQuote(text) {
 }
 
 function openSummary(e) {
-  var summaryHtml = 'webViews/summary.html';
+  var img = getImage(data.img);
+  if (img.resolve) {
+    img = img.resolve();
+  } else if (img.nativePath) {
+    img = img.nativePath;
+  }
+  var variables = {
+    '{{img}}': escapeQuote(img),
+    '{{summary}}': escapeQuote(data.summary),
+    '{{title}}': escapeQuote(data.title),
+    '{{href}}': escapeQuote(data.href)
+  };
+  var htmlPath = 'webViews/summary.html';
+  var html = Ti.Filesystem.getFile(htmlPath).read().text;
+  for (var k in variables) {
+    if (variables.hasOwnProperty(k)) {
+      html = html.replace(new RegExp(k, 'g'), variables[k]);
+    }
+  }
   var options = {
-    url: summaryHtml,
+    html: html,
     unread: true,
     star: true
   };
@@ -31,7 +49,7 @@ function openSummary(e) {
   webpage.noInd = true;
   webpage.state = state; // FIXME state might not be updated yet from the close event if a user reopen webpage too quickly
   webpage.addEventListener('load', function(e) {
-    var viewOriginal = e.url && e.url.indexOf(summaryHtml) === - 1;
+    var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
     if ($model && (state === 0 || state === 4)) {
       state = 2; // 2: viewSummary
       if (viewOriginal) {
@@ -43,25 +61,11 @@ function openSummary(e) {
     if (viewOriginal) {
       return; // the rest of the code is for showing summary.html
     }
-    var webview = e.source;
-    var img = getImage(data.img);
-    if (img.resolve) {
-      img = img.resolve();
-    } else if (img.nativePath) {
-      img = img.nativePath;
-    }
-    img = escapeQuote(img);
-    var summary = escapeQuote(data.summary);
-    var title = escapeQuote(data.title);
-    var href = escapeQuote(data.href);
-    var script = ['document.getElementById("summary").innerHTML = "', summary, '";', 'document.getElementById("title").innerHTML = "', title, '";', 'document.getElementById("img").src = "', img, '";', 'document.getElementById("original").href = "', href, '";'].join('');
-    webview.evalJS(script);
     var preload = Ti.UI.createWebView({
       url: href,
       visible: false
     });
     webpage.add(preload); // this is a fake wabview, we will never show it
-    Ti.API.debug(script);
   });
   webpage.addEventListener('close', function(e) {
     if (webpage.state && $model) {
