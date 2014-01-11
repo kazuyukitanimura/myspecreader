@@ -47,7 +47,6 @@ function openSummary(e) {
   };
   var webpage = Alloy.createController('webpage', options).getView();
   webpage.noInd = true;
-  webpage.state = state; // FIXME state might not be updated yet from the close event if a user reopen webpage too quickly
   webpage.addEventListener('load', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
     if ($model && (state === 0 || state === 4)) {
