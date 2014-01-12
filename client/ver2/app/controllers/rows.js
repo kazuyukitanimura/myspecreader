@@ -19,7 +19,15 @@ if (recommends) {
     query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
   if (!recommends.length) {
-    setTimeout(getNextPage, 1000); // FIXME call getNextPage on update of recommends isntead of polling
+    var allRead = Ti.UI.createLabel({
+      width: Ti.UI.FILL,
+      height: Ti.UI.FILL,
+      text: '\u2714 All Read',
+      color: '#1F1f21',
+      textAlign: 'center'
+    });
+    table.add(allRead);
+    setTimeout(getNextPage, 30 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
   }
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
