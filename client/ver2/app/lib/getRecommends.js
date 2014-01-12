@@ -27,7 +27,8 @@ client.setOnload(function() { // on success
       setImage(item.img, 'thumb', toThumb);
       // the order of saving to sqlite is important
       // the larger rowid, the newer (higher priority)
-      // FIXME The save does not guarantee reorder the old entries
+      // experimentally confirmed that the save() monotonically increase its rowid even for existing row
+      // by sorting by rowid, we can always get the newest sorted ranking
       recommend.save(); // save the model to persistent storage
     }
   } catch(err) {
