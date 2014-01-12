@@ -36,9 +36,11 @@ if (recommends) {
 // attributes with the toJSON() function.
 function transformFunction(model) {
   var data = JSON.parse(model.get('data'));
+  var state = model.get('state');
   data.img = getImage(data.img, 'thumb');
-  data.ago = moment(data.published).fromNow();
   data.origin = data.origin.title;
+  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': '';
+  data.ago = moment(data.published).fromNow();
   return data;
 }
 
