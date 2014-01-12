@@ -41,6 +41,7 @@ function openSummary(e) {
     }
   }
   var options = {
+    url: htmlPath,
     html: html,
     unread: true,
     star: true

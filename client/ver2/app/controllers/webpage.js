@@ -5,7 +5,8 @@ if (_.isString(options)) {
   url = options;
 } else if (options.url) {
   url = options.url;
-} else if (options.html) {
+}
+if (options.html) {
   html = options.html;
 }
 
@@ -82,10 +83,9 @@ starButton.addEventListener('click', function(e) {
 if (options.star) {
   webpage.add(starButton);
 }
+webview.setUrl(url);
 if (html) {
   webview.setHtml(html);
-} else {
-  webview.setUrl(url);
 }
 webview.addEventListener('beforeload', function(e) {
   if (!webpage.noInd) {

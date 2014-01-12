@@ -19,6 +19,7 @@ client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
+    index.setBackgroundImage('Default.png');
     var loginButton = Alloy.createController('loginButton', {
       resLocation: resLocation,
       currentWindow: index
@@ -27,7 +28,6 @@ client.setOnload(function() { // on success
     var learnMore = Alloy.createController('learnMore').getView();
     index.add(learnMore);
   } else {
-    index.setBackgroundImage('');
     index.needAuth = false;
     index.fireEvent('openRows');
   }
@@ -61,16 +61,21 @@ client.setOnload(function() { // on success
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
   client.timeout = Math.min(client.timeout * 2, 32 * 1000); // Max 32sec
-  setTimeout(function() {
-    client.open('HEAD', authUrl);
-    client.send();
-  },
-  client.timeout); // wait the same amount of time as client.timeout and retry
+  //setTimeout(function() {
+  //  client.open('HEAD', authUrl);
+  //  client.send();
+  //},
+  //client.timeout); // wait the same amount of time as client.timeout and retry
+  if (Ti.Network.online) {
+    index.needAuth = false;
+  }
+  index.fireEvent('openRows');
 });
 
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
+  index.setBackgroundImage('');
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
