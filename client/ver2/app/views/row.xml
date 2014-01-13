@@ -1,5 +1,5 @@
 <Alloy>
-  <TableViewRow onClick="openSummary">
+  <TableViewRow onSingletap="openSummary">
     <View id="cell">
       <ImageView id="image" image="{img}"/>
       <Label id="title" text="{title}"/>
