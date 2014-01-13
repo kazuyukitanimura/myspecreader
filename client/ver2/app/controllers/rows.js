@@ -23,7 +23,7 @@ if (recommends) {
       textAlign: 'center'
     });
     table.add(allRead);
-    setTimeout(getNextPage, 30 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
+    setTimeout(getNextPage, 5 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
   }
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
@@ -35,7 +35,7 @@ function transformFunction(model) {
   var state = model.get('state');
   data.img = getImage(data.img, 'thumb');
   data.origin = data.origin.title;
-  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': '';
+  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': state === -1 ? '\uE421': '';
   data.ago = moment(data.published).fromNow();
   return data;
 }

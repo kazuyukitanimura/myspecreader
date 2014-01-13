@@ -39,10 +39,26 @@ backButton.addEventListener('click', function(e) {
   }
 });
 webpage.add(backButton);
+var dislikeButton = Ti.UI.createButton({
+  top: '14dp',
+  left: '96dp',
+  width: '24dp',
+  font: {
+    fontSize: '16dp'
+  },
+  title: '\uE421'
+});
+dislikeButton.addEventListener('click', function(e) {
+  webpage.state = -1; // FIXME is this ok?
+  webpage.close();
+});
+if (options.dislike) {
+  webpage.add(dislikeButton);
+}
 var unreadButton = Ti.UI.createButton({
   top: '14dp',
   right: '24dp',
-  width: '192dp',
+  width: '152dp',
   font: {
     fontSize: '16dp'
   },
@@ -68,6 +84,7 @@ starButton.addEventListener('click', function(e) {
   if (state === 5) {
     webpage.state = webpage.oldState;
     if (options.unread) {
+      dislikeButton.show();
       unreadButton.show();
     }
     this.title = '\u2606'; // white star
@@ -75,6 +92,7 @@ starButton.addEventListener('click', function(e) {
     webpage.oldState = state;
     webpage.state = 5;
     if (options.unread) {
+      dislikeButton.hide();
       unreadButton.hide();
     }
     this.title = '\u2605'; // black star
