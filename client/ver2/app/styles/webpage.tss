@@ -4,5 +4,6 @@
 }
 
 '#webview': {
-  top: '40dp'
+  top: '40dp',
+  scalesPageToFit: true
 }
