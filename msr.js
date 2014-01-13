@@ -145,7 +145,8 @@ Msr.prototype.getRecommends = function(options, callback) {
           // nomoralize how old it is from the time the user sees it
           ago: now - item.published | 0,
           // if item.published is undefined this becomes NaN
-          img: 0 // 0 or 1
+          img: 0, // 0 or 1
+          engagement: item.engagement | 0
         }; // key: word, val:frequency
         if (item.origin && item.origin.streamId) {
           k = 'o ' + item.origin.streamId;
@@ -193,7 +194,9 @@ Msr.prototype.getRecommends = function(options, callback) {
           }
         }
         item.estCategory = maxCategory;
-        if (item.alternate && item.alternate.length && item.alternate[0].href) {
+        if (item.originId) {
+          item.href = item.originId;
+        } else if (item.alternate && item.alternate.length && item.alternate[0].href) {
           item.href = item.alternate[0].href;
         }
         delete item.alternate;
