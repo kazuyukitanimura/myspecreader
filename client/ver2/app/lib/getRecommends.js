@@ -1,10 +1,6 @@
 var setImage = require('cacheImage').setImage;
 var protocol = 'http';
-var domain = 'domain.com';
-if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-  domain = 'localhost';
-}
-var url = protocol + '://' + domain + '/recommends';
+var url = protocol + '://' + gDomain + '/recommends';
 var recommends = Alloy.Collections.instance('recommends'); // this needs to stay here for controllers/rows.js
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,

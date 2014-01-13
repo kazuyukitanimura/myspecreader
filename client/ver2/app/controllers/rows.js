@@ -6,11 +6,7 @@ var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
 var slideOut = require('slideOut');
 var protocol = 'http';
-var domain = 'domain.com';
-if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-  domain = 'localhost';
-}
-var postUrl = protocol + '://' + domain + '/recommends';
+var postUrl = protocol + '://' + gDomain + '/recommends';
 var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
@@ -121,6 +117,8 @@ table.addEventListener('swipe', function(e) {
       hasRead: true
     });
   } else if (direction === 'right') {
-    Alloy.createController('menu').getView().open();
+    Alloy.createController('menu', {
+      parentWindow: currentWindow
+    }).getView().open();
   }
 });

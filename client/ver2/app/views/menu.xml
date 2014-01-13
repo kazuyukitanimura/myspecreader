@@ -5,7 +5,7 @@
       <ListSection class="menuSection">
         <ListItem class="menuItem" title="\u1F50E Search & Add" />
         <ListItem class="menuItem" title="\u2B50 Stars" />
-        <ListItem class="menuItem" title="\u21BB Reload" />
+        <ListItem class="menuItem" title="\u21BB Refresh" />
         <ListItem class="menuItem" title="Settings" />
         <ListItem class="menuItem" title="About" />
         <ListItem class="menuItem" title="Logout" />

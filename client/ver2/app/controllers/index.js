@@ -1,18 +1,14 @@
-var getRecommends =  require('getRecommends');
+var getRecommends = require('getRecommends');
 var slideIn = require('slideIn');
 var protocol = 'http';
-var domain = 'domain.com';
-if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-  domain = 'localhost';
-}
-var authUrl = protocol + '://' + domain + '/auth';
+var authUrl = protocol + '://' + gDomain + '/auth';
 var index = $.index;
 index.needAuth = true;
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
   timeout: 1000 // in milliseconds
 });
-//client.clearCookies('http://localhost'); // for test
+//client.clearCookies('http://' + gDomain); // for test
 client.open('HEAD', authUrl); // Prepare the connection.
 client.send(); // Send the request.
 client.setOnload(function() { // on success
@@ -68,6 +64,9 @@ client.setOnerror(function(e) { // on error including a timeout
   //client.timeout); // wait the same amount of time as client.timeout and retry
   if (Ti.Network.online) {
     index.needAuth = false;
+    alert('There was a network issue. Will retry.');
+  } else {
+    alert('You are in offline mode until it gets back online!');
   }
   index.fireEvent('openRows');
 });
@@ -104,7 +103,9 @@ index.addEventListener('swipe', function(e) {
   Ti.API.debug(e.direction);
   var direction = e.direction;
   if (direction === 'right') {
-    Alloy.createController('menu').getView().open();
+    Alloy.createController('menu', {
+      parentWindow: index
+    }).getView().open();
   }
 });
 index.addEventListener("close", function() {
