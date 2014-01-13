@@ -1,0 +1,12 @@
+'.container': {
+  backgroundColor: '#1F1F21',
+  opacity: 0.7
+}
+
+'#menuList': {
+  width: '200dp',
+  left: '-200dp',
+  backgroundColor: '#fff',
+  color: '#000',
+  opacity: 1
+}

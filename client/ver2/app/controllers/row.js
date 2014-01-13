@@ -21,6 +21,7 @@ function escapeQuote(text) {
 }
 
 function openSummary(e) {
+  e.cancelBubble = true;
   var img = getImage(data.img);
   if (img.resolve) {
     img = img.resolve();

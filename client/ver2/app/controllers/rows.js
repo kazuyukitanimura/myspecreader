@@ -116,5 +116,7 @@ table.addEventListener('swipe', function(e) {
     getNextPage({
       hasRead: true
     });
+  } else if (direction === 'right') {
+    Alloy.createController('menu').getView().open();
   }
 });
