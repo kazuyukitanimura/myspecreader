@@ -24,6 +24,7 @@ client.setOnload(function() { // on success
     var learnMore = Alloy.createController('learnMore').getView();
     index.add(learnMore);
   } else {
+    index.setBackgroundImage('');
     index.needAuth = false;
     index.fireEvent('openRows');
   }
@@ -68,13 +69,13 @@ client.setOnerror(function(e) { // on error including a timeout
   } else {
     alert('You are in offline mode until it gets back online!');
   }
+  index.setBackgroundImage('');
   index.fireEvent('openRows');
 });
 
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   index.removeAllChildren();
-  index.setBackgroundImage('');
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();

@@ -54,6 +54,7 @@ function uploadData(e) {
       }).save();
     }
   });
+  getNextPage(e);
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
@@ -91,14 +92,15 @@ function uploadData(e) {
           delImage(img);
           delImage(img, 'thumb');
         }
+        table = null;
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
         currentWindow.needAuth = true;
+        table = null;
       });
     }
   }
-  getNextPage(e);
 }
 
 table.addEventListener('singletap', function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe

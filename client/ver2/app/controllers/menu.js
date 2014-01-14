@@ -50,7 +50,10 @@ function settings(e) {
 
 function about(e) {
   Ti.API.debug('about');
-  alert('Limily ver. 1.0');
+  Titanium.UI.createAlertDialog({
+    title:'Limily',
+    message:'ver. 1.0'
+  }).show();
 }
 
 function logout(e) {
