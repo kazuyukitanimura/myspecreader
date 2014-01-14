@@ -13,6 +13,8 @@ exports = function(view, duration, finishCallback) {
     transform: Ti.UI.create2DMatrix().translate(0, Ti.Platform.displayCaps.platformHeight),
     duration: duration || 300
   });
-  view.animate(animation, finishCallback || function() {});
+  view.addEventListener('postlayout', function(e) {
+    view.animate(animation, finishCallback || function() {});
+  });
   return view;
 };
