@@ -145,9 +145,11 @@ Msr.prototype.getRecommends = function(options, callback) {
           // nomoralize how old it is from the time the user sees it
           ago: now - item.published | 0,
           // if item.published is undefined this becomes NaN
-          img: 0, // 0 or 1
-          engagement: item.engagement | 0
+          img: 0 // 0 or 1
         }; // key: word, val:frequency
+        if (typeof item.engagement === 'number') {
+          featureVector.engagement = item.engagement | 0;
+        }
         if (item.origin && item.origin.streamId) {
           k = 'o ' + item.origin.streamId;
           featureVector[k] = 1;
