@@ -147,8 +147,11 @@ Msr.prototype.getRecommends = function(options, callback) {
           // if item.published is undefined this becomes NaN
           img: 0 // 0 or 1
         }; // key: word, val:frequency
-        if (typeof item.engagement === 'number') {
+        if ((typeof item.engagement) === 'number') {
           featureVector.engagement = item.engagement | 0;
+        }
+        if ((typeof item.engagementRate) === 'number') {
+          featureVector.engagementRate = item.engagementRate;
         }
         if (item.origin && item.origin.streamId) {
           k = 'o ' + item.origin.streamId;
