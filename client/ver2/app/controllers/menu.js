@@ -29,26 +29,44 @@ menu.addEventListener('swipe', function(e) {
 });
 menu.addEventListener('postlayout', openMenu);
 
-function search(e) {}
+function search(e) {
+  Ti.API.debug('search');
+}
 
-function stars(e) {}
+function stars(e) {
+  Ti.API.debug('stars');
+}
 
-function refresh(e) {}
-
-function settings(e) {}
-
-function about(e) {}
-
-function logout(e) {
-  Ti.API.debug('logout');
-  Ti.Network.createHTTPClient().clearCookies('http://' + gDomain);
+function refresh(e) {
+  Ti.API.debug('refresh');
   parentWindow.needAuth = true;
   parentWindow.fireEvent('openRows');
   closeMenu();
 }
 
+function settings(e) {
+  Ti.API.debug('settings');
+}
+
+function about(e) {
+  Ti.API.debug('about');
+  alert('Limily ver. 1.0');
+}
+
+function logout(e) {
+  Ti.API.debug('logout');
+  Ti.Network.createHTTPClient().clearCookies('http://' + gDomain);
+  refresh(e);
+}
+
 var itemClicks = [search, stars, refresh, settings, about, logout];
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
+  e.cancelBubble = true;
   itemClicks[e.itemIndex](e);
+});
+
+$.background.addEventListener('singletap', function(e) {
+  e.cancelBubble = true;
+  closeMenu();
 });

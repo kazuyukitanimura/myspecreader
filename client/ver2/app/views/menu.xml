@@ -6,9 +6,9 @@
         <ListItem class="menuItem" title="\uE114 Search & Add" />
         <ListItem class="menuItem" title="\u2B50 Stars" />
         <ListItem class="menuItem" title="\u21BB Refresh" />
-        <ListItem class="menuItem" title="Settings" />
-        <ListItem class="menuItem" title="About" />
-        <ListItem class="menuItem" title="Logout" />
+        <ListItem class="menuItem" title="\uE718 Settings" />
+        <ListItem class="menuItem" title="\u2139 About" />
+        <ListItem class="menuItem" title="\uE41E Logout" />
       </ListSection>
     </ListView>
   </Window>
