@@ -104,7 +104,10 @@ function uploadData(e) {
 }
 
 table.addEventListener('singletap', function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
-  e.row.fireEvent('singletap', e);
+  var row = e.row;
+  if (row) {
+    row.fireEvent('singletap', e);
+  }
 });
 
 table.addEventListener('swipe', function(e) {
