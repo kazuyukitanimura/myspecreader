@@ -11,6 +11,7 @@ var client = Ti.Network.createHTTPClient({ // cookies should be manually managed
 //client.clearCookies('http://' + gDomain); // for test
 client.open('HEAD', authUrl); // Prepare the connection.
 client.send(); // Send the request.
+var intervalId = 0;
 client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
   var resLocation = this.getResponseHeader('Location');
@@ -50,8 +51,9 @@ client.setOnload(function() { // on success
       });
     }
     getRecommends();
-    setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
-    //setInterval(getRecommends, 5 * 1000); // for test
+    clearInterval(intervalId);
+    intervalId = setInterval(getRecommends, 10 * 60 * 1000); // every 10 min
+    //intervalId = setInterval(getRecommends, 5 * 1000); // for test
   }
 });
 

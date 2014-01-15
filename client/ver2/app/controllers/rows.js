@@ -35,7 +35,7 @@ function transformFunction(model) {
   var state = model.get('state');
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
-  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': state === -1 ? '\uE421': '';
+  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': state === - 1 ? '\uE421': '';
   data.ago = moment(data.published).fromNow();
   return data;
 }

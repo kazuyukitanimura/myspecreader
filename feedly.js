@@ -231,7 +231,7 @@ Feedly.prototype.getStreams = function(options, callback) {
   var api_path = 'streams';
   var api_action = 'contents';
   var params = {
-    count: options.count || 100,
+    count: options.count || 200,
     ranked: options.ranked || 'newest',
     //continuation: options.continuation || 'abc',
     streamId: options.streamId || url.join('user', this._results.id, 'category', ID_ALL),
@@ -289,7 +289,7 @@ Feedly.prototype.getSearch = function(options, callback) {
  * @params callback {Function}
  */
 Feedly.prototype.postMarkers = function(ids, action, callback) {
-  if (!ids || !ids.length) {
+  if (!ids || ! ids.length) {
     callback();
     return;
   }
@@ -330,7 +330,7 @@ Feedly.prototype.postKeepUnread = function(ids, callback) {
  * @params callback {Function}
  */
 Feedly.prototype.putTags = function(ids, tagId, callback) {
-  if (!ids || !ids.length) {
+  if (!ids || ! ids.length) {
     callback();
     return;
   }
