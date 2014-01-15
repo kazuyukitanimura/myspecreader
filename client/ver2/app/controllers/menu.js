@@ -51,8 +51,8 @@ function settings(e) {
 function about(e) {
   Ti.API.debug('about');
   Titanium.UI.createAlertDialog({
-    title:'Limily',
-    message:'ver. 1.0'
+    title: 'Limily',
+    message: 'ver. 1.0'
   }).show();
 }
 

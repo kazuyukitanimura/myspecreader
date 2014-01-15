@@ -16,7 +16,11 @@ client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
-    index.setBackgroundImage('Default.png');
+    if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
+      index.setBackgroundImage('Default.png');
+    } else {
+      index.setBackgroundImage('Default-Landscape.png');
+    }
     var loginButton = Alloy.createController('loginButton', {
       resLocation: resLocation,
       currentWindow: index
@@ -67,9 +71,15 @@ client.setOnerror(function(e) { // on error including a timeout
   //client.timeout); // wait the same amount of time as client.timeout and retry
   if (Ti.Network.online) {
     index.needAuth = false;
-    alert('There was a network issue. Will retry.');
+    Titanium.UI.createAlertDialog({
+      title: 'There was a network issue',
+      message: 'Limily will automatically retry later'
+    }).show();
   } else {
-    alert('You are in offline mode until it gets back online!');
+    Titanium.UI.createAlertDialog({
+      title: 'Offline Mode',
+      message: 'until Limily gets back online!'
+    }).show();
   }
   index.setBackgroundImage('');
   index.fireEvent('openRows');
