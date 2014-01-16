@@ -6,7 +6,7 @@ exports.definition = {
       // 0: unread, 1: passed, 2: viewSummary, 3: viewOriginal, 4: keepUnread, 5: star
       'id': 'TEXT NOT NULL PRIMARY KEY'
     },
-    "defaults": {
+    'defaults': {
       'state': 0,
     },
     'adapter': {

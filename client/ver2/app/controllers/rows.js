@@ -65,7 +65,7 @@ function uploadData(e) {
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
         var state = recommend.get('state');
-        if (state !== 4) {
+        if (state !== 4 && data.img) {
           imgs.push(data.img);
         }
         return {
