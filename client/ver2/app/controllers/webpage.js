@@ -50,7 +50,7 @@ var dislikeButton = Ti.UI.createButton({
   title: '\uE421'
 });
 dislikeButton.addEventListener('click', function(e) {
-  webpage.state = -1; // FIXME is this ok?
+  webpage.state = - 1; // FIXME is this ok?
   webpage.close();
 });
 if (options.dislike) {
@@ -110,9 +110,14 @@ webview.addEventListener('beforeload', function(e) {
   if (!webpage.noInd) {
     actInd.show();
   }
-if (options.star) {
-  starButton.title = (webpage.state === 5) ? '\u2605': '\u2606';
-}
+  if (options.star) {
+    starButton.title = (webpage.state === 5) ? '\u2605': '\u2606';
+  }
+  if (webview.canGoBack()) {
+    backButton.title = '\u2329 Back'; //\u27E8 \u3008 \u2329 \u276C \u276E
+  } else {
+    backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
+  }
 });
 webview.addEventListener('load', function(e) {
   actInd.hide();
@@ -120,11 +125,6 @@ webview.addEventListener('load', function(e) {
   if (url.indexOf('http://' + gDomain) === 0 && url.indexOf('state=auth') !== - 1) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
     webpage.close();
-  }
-  if (webview.canGoBack()) {
-    backButton.title = '\u2329 Back'; //\u27E8 \u3008 \u2329 \u276C \u276E
-  } else {
-    backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
   }
   //webview.evalJS("document.cookie = '';"); // for test
 });
