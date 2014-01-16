@@ -26,3 +26,7 @@ body {
   text-decoration: none;
   text-align: center;
 }
+iframe {
+  height: 0px;
+  border: 0;
+}

@@ -50,7 +50,7 @@ function openSummary(e) {
   };
   var webpage = Alloy.createController('webpage', options).getView();
   webpage.noInd = true;
-  webpage.addEventListener('load', function(e) {
+  webpage.addEventListener('beforeload', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
     if ($model && (state === 0 || state === 4)) {
       state = 2; // 2: viewSummary
@@ -60,14 +60,6 @@ function openSummary(e) {
       $model.set('state', state);
       $model.save();
     }
-    if (viewOriginal) {
-      return; // the rest of the code is for showing summary.html
-    }
-    var preload = Ti.UI.createWebView({
-      url: href,
-      visible: false
-    });
-    webpage.add(preload); // this is a fake wabview, we will never show it
   });
   webpage.addEventListener('close', function(e) {
     if (webpage.state && $model) {
@@ -75,6 +67,7 @@ function openSummary(e) {
       $model.set('state', state); // 4: keepUnread, 5: star
       $model.save();
     }
+    webpage = null;
   });
   webpage.open();
 }

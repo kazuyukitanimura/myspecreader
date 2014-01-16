@@ -29,7 +29,8 @@ var backButton = Ti.UI.createButton({
   width: '70dp',
   font: {
     fontSize: '16dp'
-  }
+  },
+  title: '\u2573 Close'
 });
 backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
@@ -129,4 +130,7 @@ webview.addEventListener('load', function(e) {
 });
 webview.addEventListener('error', function(e) {
   actInd.hide();
+});
+webpage.addEventListener('close', function() {
+  $.destroy();
 });

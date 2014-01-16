@@ -73,3 +73,6 @@ $.background.addEventListener('singletap', function(e) {
   e.cancelBubble = true;
   closeMenu();
 });
+menu.addEventListener('close', function() {
+  $.destroy();
+});
