@@ -77,8 +77,8 @@ client.setOnerror(function(e) { // on error including a timeout
     }).show();
   } else {
     Titanium.UI.createAlertDialog({
-      title: 'Offline Mode',
-      message: 'until Limily gets back online!'
+      title: 'Your device is offline',
+      message: 'You can still read pre-loaded articles'
     }).show();
   }
   index.setBackgroundImage('');

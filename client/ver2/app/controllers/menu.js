@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 var parentWindow = args.parentWindow;
+var argStars = args.stars;
 var menu = $.menu;
 var menuList = $.menuList;
 
@@ -47,7 +48,9 @@ function stars(e) {
 function refresh(e) {
   Ti.API.debug('refresh');
   parentWindow.needAuth = true;
-  parentWindow.fireEvent('openRows');
+  parentWindow.fireEvent('openRows', {
+    stars: argStars
+  });
   closeMenu();
 }
 

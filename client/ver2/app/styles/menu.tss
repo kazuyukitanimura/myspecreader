@@ -10,12 +10,17 @@
   left: '-200dp',
   backgroundColor: '#F7F7F7',
   color: '#1F1f21',
-  height: '264dp',
+  height: '286dp', // 44 * 6 + 22
   opacity: 1
 }
 
 '.menuSection': {
   opacity: 1
+}
+
+'.sectionHeader': {
+  backgroundColor: '#D7D7D7',
+  height: Ti.UI.Size
 }
 
 '.menuItem': {

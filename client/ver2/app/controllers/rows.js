@@ -12,8 +12,9 @@ var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
 if (recommends) {
+  var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0) - (stars ? 1: 0);
   recommends.fetch({
-    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (' + stars ? '5': '0, 4' + ') ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
+    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (' + (stars ? '5': '0, 4') + ') ORDER BY rowid DESC LIMIT ' + limit
   });
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({
@@ -26,6 +27,10 @@ if (recommends) {
     table.add(allRead);
     setTimeout(getNextPage, 5 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
   }
+}
+if (stars) {
+  //var section = Titanium.UI.createTableViewSection();
+  //table.add(section);
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
@@ -62,13 +67,9 @@ function uploadData(e) {
       query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0)'
     });
     if (recommends.length && Ti.Network.online) {
-      var imgs = [];
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
         var state = recommend.get('state');
-        if (state !== 4 && data.img) {
-          imgs.push(data.img);
-        }
         return {
           id: data.id,
           featureVector: data.featureVector,
@@ -83,16 +84,17 @@ function uploadData(e) {
       }));
       client.setOnload(function(e) {
         recommends.each(function(recommend) {
+          var data = JSON.parse(recommend.get('data'));
           var state = recommend.get('state');
-          if (state !== 4) {
+          if (state !== 4 && state !== 5) { // do not delete markAsUnread and star
             recommend.destroy(); // delete from persistance
+            var img = data.img;
+            if (img) {
+              delImage(img);
+              delImage(img, 'thumb');
+            }
           }
         });
-        for (var i = imgs.length; i--;) {
-          var img = imgs[i];
-          delImage(img);
-          delImage(img, 'thumb');
-        }
         table = null;
       });
       client.setOnerror(function(e) { // on error including a timeout
@@ -124,7 +126,8 @@ table.addEventListener('swipe', function(e) {
     });
   } else if (direction === 'right') {
     Alloy.createController('menu', {
-      parentWindow: currentWindow
+      parentWindow: currentWindow,
+      stars: stars
     }).getView().open();
   }
 });
