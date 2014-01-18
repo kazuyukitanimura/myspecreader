@@ -1,6 +1,7 @@
 var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
 var hasRead = args.hasRead;
+var stars = args.stars;
 var getImage = require('cacheImage').getImage;
 var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
@@ -12,7 +13,7 @@ var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
 if (recommends) {
   recommends.fetch({
-    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (0, 4) ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
+    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (' + stars ? '5': '0, 4' + ') ORDER BY rowid DESC LIMIT ' + ((Ti.Platform.displayCaps.platformHeight / 92) | 0)
   });
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({

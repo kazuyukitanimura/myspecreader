@@ -17,6 +17,9 @@ function closeMenu(e) {
   },
   function(e) {
     menu.close();
+    menu = null;
+    menuList = null;
+    $.destroy();
   });
 }
 
@@ -35,6 +38,10 @@ function search(e) {
 
 function stars(e) {
   Ti.API.debug('stars');
+  parentWindow.fireEvent('openRows', {
+    stars: true
+  });
+  closeMenu();
 }
 
 function refresh(e) {
@@ -72,7 +79,4 @@ menuList.addEventListener('itemclick', function(e) { // ListItem does not fire i
 $.background.addEventListener('singletap', function(e) {
   e.cancelBubble = true;
   closeMenu();
-});
-menu.addEventListener('close', function() {
-  $.destroy();
 });

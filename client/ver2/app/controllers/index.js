@@ -95,7 +95,8 @@ index.addEventListener('openRows', function(e) {
   }
   var rows = Alloy.createController('rows', {
     currentWindow: index,
-    hasRead: e.hasRead
+    hasRead: e.hasRead,
+    stars: e.stars
   }).getView();
   if (e.hasRead) {
     index.add(slideIn(rows));
