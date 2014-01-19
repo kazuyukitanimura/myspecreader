@@ -207,7 +207,7 @@ Msr.prototype.getRecommends = function(options, callback) {
           delete item.visual;
         }
         items.sort(function(a, b) {
-          return CATEGORY_LOOKUP[b.estCategory] - CATEGORY_LOOKUP[a.estCategory] || a.ago - b.ago;
+          return CATEGORY_LOOKUP[b.estCategory] - CATEGORY_LOOKUP[a.estCategory] || b.engagement - a.engagement || a.ago - b.ago;
         });
         // TODO send only required data
       }
