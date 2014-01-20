@@ -1,0 +1,7 @@
+'#menuIcon': {
+  scrollable: false,
+  backgroundColor: '#F7F7F7',
+  height: Ti.UI.Size,
+  left: '-5dp',
+  color: '#1F1F21'
+}

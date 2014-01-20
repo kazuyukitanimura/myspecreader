@@ -103,6 +103,11 @@ index.addEventListener('openRows', function(e) {
   } else {
     index.add(rows);
   }
+  var menuIcon = Alloy.createController('menuIcon', {
+    currentWindow: index,
+    stars: e.stars
+  }).getView();
+  index.add(menuIcon);
 });
 
 index.orientationModes = [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];
