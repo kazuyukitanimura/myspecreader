@@ -14,7 +14,7 @@ var recommends = Alloy.Collections.instance('recommends');
 if (recommends) {
   var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0) - (stars ? 1: 0);
   recommends.fetch({
-    query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state ' + (hasRead ? 'NOT ': '') + 'IN (' + (stars ? '5': '0, 4') + ') ORDER BY rowid DESC LIMIT ' + limit
+    query: ['SELECT * FROM ', recommends.config.adapter.collection_name, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? '5': '0, 4'), ') ORDER BY rowid DESC LIMIT ', limit].join('')
   });
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({

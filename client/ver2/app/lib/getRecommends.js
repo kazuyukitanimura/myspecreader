@@ -12,21 +12,28 @@ function toThumb(blob) {
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
   try {
+    var db = Ti.Database.open('recommends');
     var items = JSON.parse(this.responseText).items;
     for (var i = items.length; i--;) {
       var item = items[i];
-      var recommend = Alloy.createModel('recommends', {
-        id: item.id,
-        data: JSON.stringify(item)
-      });
-      setImage(item.img);
-      setImage(item.img, 'thumb', toThumb);
+      var id = item.id;
+      var table = recommends.config.adapter.collection_name;
+      var defaultState = recommends.config.defaults.state;
+      // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
       // the order of saving to sqlite is important
       // the larger rowid, the newer (higher priority)
       // experimentally confirmed that the save() monotonically increase its rowid even for existing row
       // by sorting by rowid, we can always get the newest sorted ranking
-      recommend.save(); // save the model to persistent storage
+      db.execute(['INSERT OR REPLACE INTO ', table, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', table, ' WHERE id = ?), ', defaultState , '), ?)'].join(''), id, id, JSON.stringify(item));
+      setImage(item.img);
+      setImage(item.img, 'thumb', toThumb);
     }
+    // TODO delte this test code
+    //var rr = Alloy.createCollection('recommends');
+    //rr.fetch({query: 'SELECT id, rowid, state, data FROM ' + recommends.config.adapter.collection_name});
+    //rr.each(function(r){
+    //  console.log(r.get('id'), r.get('rowid'), r.get('state'), r.get('data'));
+    //});
   } catch(err) {
     Ti.API.error(err);
     Ti.API.debug(this.responseText);
