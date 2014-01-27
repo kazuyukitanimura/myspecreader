@@ -2,6 +2,7 @@ var fs = require('fs');
 var sessions = require("client-sessions");
 var express = require('express');
 var lruCache = require('lru-cache')();
+var toobusy = require('toobusy');
 var app = express();
 
 var Msr = require('./msr');
@@ -61,6 +62,13 @@ var auth_middleware = function(req, res, next) {
   }
 };
 
+app.use(function(req, res, next) { // middleware which blocks requests when we're too busy
+  if (toobusy()) {
+    res.send(503, 'I\'m busy right now, sorry.');
+  } else {
+    next();
+  }
+});
 app.use(express.logger());
 app.use(express.compress());
 app.use(express.json());
@@ -162,10 +170,17 @@ app.post('/subscriptions', function(req, res) {
   });
 });
 
-app.listen(80, function() {
+var server = app.listen(80, function() {
   // if run as root, downgrade to the owner of this file
   if (process.getuid() === 0) {
     var stats = fs.statSync(__filename);
     process.setuid(stats.uid);
   }
+});
+
+process.on('SIGINT', function() {
+  server.close();
+  // calling .shutdown allows your process to exit normally
+  toobusy.shutdown();
+  process.exit();
 });

@@ -18,9 +18,10 @@
   , "redis": "*"
   , "request": "*"
   , "rsvp": "*"
+  , "toobusy": "*"
   , "uglify-js": "*"
   }
-, "engine": "node >= 0.10.22"
+, "engine": "node >= 0.10.24"
 , "author": {
     "name": "kazuyukitanimura",
     "email": "kazuyukitanimura@gmail.com"
