@@ -5,13 +5,17 @@
     "start": "node app"
   }
 , "dependencies": {
-    "cheerio": "*"
+    "body-parser": "*"
+  , "cheerio": "*"
   , "client-sessions": "*"
+  , "compression": "*"
   , "express": "*"
   , "fussy": "*"
   , "hiredis": "*"
   , "hogan.js": "*"
   , "lru-cache": "*"
+  , "method-override": "*"
+  , "morgan": "*"
   , "natural": "*"
   , "node.extend": "*"
   , "oauth": "*"
@@ -21,7 +25,7 @@
   , "toobusy": "*"
   , "uglify-js": "*"
   }
-, "engine": "node >= 0.10.24"
+, "engine": "node >= 0.10.26"
 , "author": {
     "name": "kazuyukitanimura",
     "email": "kazuyukitanimura@gmail.com"

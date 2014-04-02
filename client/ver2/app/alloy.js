@@ -11,5 +11,5 @@
 // Alloy.Globals.someGlobalFunction = function(){};
 var gDomain = 'domain.com';
 if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-  gDomain = 'localhost';
+  gDomain = 'localhost:8080';
 }

@@ -73,7 +73,7 @@ client.setOnerror(function(e) { // on error including a timeout
     index.needAuth = false;
     Titanium.UI.createAlertDialog({
       title: 'There was a network issue',
-      message: 'Limily will automatically retry later'
+      message: 'Limily will automatically retry later. Also try "Refresh" from the left menu.'
     }).show();
   } else {
     Titanium.UI.createAlertDialog({

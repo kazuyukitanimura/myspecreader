@@ -1,3 +1,3 @@
 <Alloy>
-  <Button id="learnMore" onClick="doClick">Learn more, really?</Button>
+  <Button id="learnMore" onClick="doClick">Learn more</Button>
 </Alloy>

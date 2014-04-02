@@ -1,6 +1,10 @@
 var fs = require('fs');
 var sessions = require("client-sessions");
 var express = require('express');
+var bodyParser = require('body-parser');
+var compress = require('compression');
+var logger = require('morgan');
+var methodOverride = require('method-override');
 var lruCache = require('lru-cache')();
 var toobusy = require('toobusy');
 var app = express();
@@ -14,10 +18,14 @@ var STATES = {
   AUTH: 'auth'
 };
 
+// This has to be exactly one of "http://localhost", "https://localhost", "http://localhost:8080" during sandbox
+// https://groups.google.com/forum/#!topic/feedly-cloud/MIMvcu8Ju30
+var port = 8080;
+var redirect_uri = 'http://localhost:' + port;
+
 // Msr Authorization URI
 var authorization_uri = msrCommon.getAuthUrl({
-  // this has to be exactly http://localhost during sandbox
-  redirect_uri: 'http://localhost',
+  redirect_uri: redirect_uri,
   scope: 'https://cloud.feedly.com/subscriptions',
   state: STATES.AUTH
 });
@@ -42,7 +50,7 @@ var auth_middleware = function(req, res, next) {
     }
   } else if (url_pathname === '/' && code && state === STATES.AUTH) {
     msrCommon.getAccessToken(code, {
-      redirect_uri: 'http://localhost'
+      redirect_uri: redirect_uri
     },
     function(err, results) {
       if (err) {
@@ -69,11 +77,10 @@ app.use(function(req, res, next) { // middleware which blocks requests when we'r
     next();
   }
 });
-app.use(express.logger());
-app.use(express.compress());
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
+app.use(logger());
+app.use(compress());
+app.use(bodyParser());
+app.use(methodOverride());
 app.use(sessions({
   cookieName: 'msrCookie',
   secret: secret.SESSION_SECRET || 'himitsu',
@@ -81,7 +88,6 @@ app.use(sessions({
   activeDuration: 30 * 60 * 1000
 }));
 app.use(auth_middleware);
-app.use(app.router);
 
 // Initial page redirecting to Msr
 app.get('/auth', function(req, res) {
@@ -170,7 +176,7 @@ app.post('/subscriptions', function(req, res) {
   });
 });
 
-var server = app.listen(80, function() {
+var server = app.listen(port, function() {
   // if run as root, downgrade to the owner of this file
   if (process.getuid() === 0) {
     var stats = fs.statSync(__filename);
