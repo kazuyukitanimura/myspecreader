@@ -10,7 +10,7 @@
   left: '-200dp',
   backgroundColor: '#F7F7F7',
   color: '#1F1f21',
-  height: '286dp', // 44 * 6 + 22
+  height: '330dp', // 44 * 7 + 22
   opacity: 1
 }
 

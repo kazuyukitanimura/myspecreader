@@ -8,9 +8,10 @@
             <Label>Menu</Label>
           </View>
         </HeaderView>
+        <ListItem class="menuItem" title="\uE036 Home" />
         <ListItem class="menuItem" title="\uE114 Search & Add" />
         <ListItem class="menuItem" title="\u2B50 Stars" />
-        <ListItem class="menuItem" title="\u21BB Refresh" />
+        <ListItem class="menuItem" title="\uE024 Recently Read" />
         <ListItem class="menuItem" title="\u2699 Settings" />
         <ListItem class="menuItem" title="\u2139 About" />
         <ListItem class="menuItem" title="\uE41E Logout" />

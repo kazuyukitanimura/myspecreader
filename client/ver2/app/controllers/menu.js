@@ -1,6 +1,5 @@
 var args = arguments[0] || {};
 var parentWindow = args.parentWindow;
-var argStars = args.stars;
 var menu = $.menu;
 var menuList = $.menuList;
 
@@ -37,6 +36,14 @@ function search(e) {
   Ti.API.debug('search');
 }
 
+function recent(e) {
+  Ti.API.debug('recent');
+  parentWindow.fireEvent('openRows', {
+    hasRead: true
+  });
+  closeMenu();
+}
+
 function stars(e) {
   Ti.API.debug('stars');
   parentWindow.fireEvent('openRows', {
@@ -45,12 +52,10 @@ function stars(e) {
   closeMenu();
 }
 
-function refresh(e) {
-  Ti.API.debug('refresh');
+function home(e) {
+  Ti.API.debug('home');
   parentWindow.needAuth = true;
-  parentWindow.fireEvent('openRows', {
-    stars: argStars
-  });
+  parentWindow.fireEvent('openRows');
   closeMenu();
 }
 
@@ -69,10 +74,10 @@ function about(e) {
 function logout(e) {
   Ti.API.debug('logout');
   Ti.Network.createHTTPClient().clearCookies('http://' + gDomain);
-  refresh(e);
+  home(e);
 }
 
-var itemClicks = [search, stars, refresh, settings, about, logout];
+var itemClicks = [home, search, stars, recent, settings, about, logout];
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
   e.cancelBubble = true;

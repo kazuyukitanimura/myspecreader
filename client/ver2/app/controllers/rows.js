@@ -12,7 +12,7 @@ var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
 // fetch existing data from storage
 if (recommends) {
-  var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0) - (stars ? 1: 0);
+  var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
   recommends.fetch({
     query: ['SELECT * FROM ', recommends.config.adapter.collection_name, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? '5': '0, 4'), ') ORDER BY rowid DESC LIMIT ', limit].join('')
   });
@@ -28,9 +28,18 @@ if (recommends) {
     setTimeout(getNextPage, 5 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
   }
 }
-if (stars) {
-  //var section = Titanium.UI.createTableViewSection();
-  //table.add(section);
+if (stars || hasRead) {
+  var sideLabel = Ti.UI.createLabel({
+    width: Ti.Platform.displayCaps.platformHeight,
+    left: 24,
+    text: stars ? '\u2605 Starred': 'Recently Read',
+    transform: Ti.UI.create2DMatrix().rotate( - 90),
+    opacity: 0.7,
+    color: stars ? '#4A4A4A': '#898C90',
+    backgroundColor: stars ? '#E0FF00': '#D1EEFC',
+    textAlign: 'center'
+  });
+  table.add(sideLabel);
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the
@@ -60,6 +69,8 @@ function uploadData(e) {
       }).save();
     }
   });
+  e.stars = stars;
+  e.hasRead = hasRead;
   getNextPage(e);
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
@@ -120,14 +131,9 @@ table.addEventListener('swipe', function(e) {
   var direction = e.direction;
   if (direction === 'up') {
     slideOut(table, uploadData);
-  } else if (direction === 'down') {
-    getNextPage({
-      hasRead: true
-    });
   } else if (direction === 'right') {
     Alloy.createController('menu', {
-      parentWindow: currentWindow,
-      stars: stars
+      parentWindow: currentWindow
     }).getView().open();
   }
 });

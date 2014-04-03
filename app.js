@@ -180,6 +180,7 @@ var server = app.listen(port, function() {
   // if run as root, downgrade to the owner of this file
   if (process.getuid() === 0) {
     var stats = fs.statSync(__filename);
+    process.setgid(stats.gid);
     process.setuid(stats.uid);
   }
 });
