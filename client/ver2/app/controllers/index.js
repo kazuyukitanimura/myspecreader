@@ -1,5 +1,4 @@
 var getRecommends = require('getRecommends');
-//var slideIn = require('slideIn');
 var protocol = 'http';
 var authUrl = protocol + '://' + gDomain + '/auth';
 var index = $.index;
@@ -87,9 +86,6 @@ client.setOnerror(function(e) { // on error including a timeout
 
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
-  //var firstChild = index.children[0] || {};
-  //var hasRead = e.hasRead || firstChild.hasRead === e.hasRead;
-  //var stars = e.stars || firstChild.stars === e.stars;
   index.removeAllChildren();
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
@@ -101,13 +97,7 @@ index.addEventListener('openRows', function(e) {
     hasRead: e.hasRead,
     stars: e.stars
   }).getView();
-  //rows.hasRead = hasRead;
-  //rows.stars = stars;
-  //if (e.hasRead) {
-  //  index.add(slideIn(rows));
-  //} else {
-    index.add(rows);
-  //}
+  index.add(rows);
   var menuIcon = Alloy.createController('menuIcon', {
     currentWindow: index
   }).getView();

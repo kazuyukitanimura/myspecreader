@@ -23,6 +23,7 @@ var actInd = Ti.UI.createActivityIndicator({
   opacity: 0.7
 });
 webpage.add(actInd);
+webpage.oldState = 1;
 var backButton = Ti.UI.createButton({
   top: '14dp',
   left: '4dp',
@@ -111,7 +112,15 @@ webview.addEventListener('beforeload', function(e) {
     actInd.show();
   }
   if (options.star) {
-    starButton.title = (webpage.state === 5) ? '\u2605': '\u2606';
+    if (webpage.state === 5) {
+      starButton.title = '\u2605';
+      if (options.unread) {
+        dislikeButton.hide();
+        unreadButton.hide();
+      }
+    } else {
+      starButton.title = '\u2606';
+    }
   }
   if (webview.canGoBack()) {
     backButton.title = '\u2329 Back'; //\u27E8 \u3008 \u2329 \u276C \u276E

@@ -49,6 +49,7 @@ function openSummary(e) {
     star: true
   };
   var webpage = Alloy.createController('webpage', options).getView();
+  webpage.state = state;
   webpage.noInd = true;
   webpage.addEventListener('beforeload', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
