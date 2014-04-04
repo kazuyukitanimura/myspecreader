@@ -79,7 +79,7 @@ app.use(function(req, res, next) { // middleware which blocks requests when we'r
 });
 app.use(logger());
 app.use(compress());
-app.use(bodyParser());
+app.use(bodyParser({limit: '1mb'}));
 app.use(methodOverride());
 app.use(sessions({
   cookieName: 'msrCookie',

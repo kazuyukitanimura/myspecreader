@@ -214,6 +214,18 @@ Feedly.prototype._put = function(api_url, putBody, callback) {
 };
 
 /**
+ * Internal function to perfrom http delete
+ *
+ * @param url {String} http put url including http...
+ * @param putBody {String} or {Object} http put body
+ * @params callback {Function}
+ */
+Feedly.prototype._delete = function(api_url, callback) {
+  console.log(api_url);
+  this._oa.del(api_url, this._token, this._createResponseHandler(callback));
+};
+
+/**
  *
  *
  * @param options {Object}
@@ -346,10 +358,38 @@ Feedly.prototype.putTags = function(ids, tagId, callback) {
 
 /**
  *
+ * @param ids {Array} or {String} of entries to tag
+ * @param tagId {String} to tag
+ * @params callback {Function}
+ */
+Feedly.prototype.deleteTags = function(ids, tagId, callback) {
+  if (!ids || ! ids.length) {
+    callback();
+    return;
+  }
+  if (!Array.isArray(ids)) {
+    ids = [ids];
+  }
+  var api_path = url.join('tags', tagId, ids.join(','));
+  this._delete(this._buildUrl(api_path), callback);
+};
+
+/**
+ *
  * @param ids {Array} or {String} of entries to mark as read
  * @params callback {Function}
  */
 Feedly.prototype.putSaved = function(ids, callback) {
   var tagId = url.join('user', this._results.id, 'tag', ID_SAVED);
   this.putTags(ids, tagId, callback);
+};
+
+/**
+ *
+ * @param ids {Array} or {String} of entries to mark as read
+ * @params callback {Function}
+ */
+Feedly.prototype.deleteSaved = function(ids, callback) {
+  var tagId = url.join('user', this._results.id, 'tag', ID_SAVED);
+  this.deleteTags(ids, tagId, callback);
 };

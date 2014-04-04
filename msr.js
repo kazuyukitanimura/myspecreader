@@ -230,6 +230,7 @@ Msr.prototype.postRecommends = function(postBody, callback) {
     var reads = [];
     var unreads = [];
     var stars = [];
+    var unstars = [];
     scw.train(function(trainCallback) {
       if (!trainCallback) {
         callback(new Error());
@@ -246,6 +247,8 @@ Msr.prototype.postRecommends = function(postBody, callback) {
         }
         if (category === 'star') {
           stars.push(datum.id);
+        } else {
+          unstars.push(datum.id);
         }
         trainCallback(datum);
       }
@@ -286,6 +289,15 @@ Msr.prototype.postRecommends = function(postBody, callback) {
             resolve();
           }
         });
+      //}.bind(this)),
+      //unsaved: new RSVP.Promise(function(resolve, reject) {
+      //  this.deleteSaved(unstars, function(err) { // this is troublesome
+      //    if (err) {
+      //      reject(err);
+      //    } else {
+      //      resolve();
+      //    }
+      //  });
       }.bind(this))
     };
     rsvpHash(promises).then(function(results) {

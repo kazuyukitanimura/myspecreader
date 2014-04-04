@@ -18,3 +18,7 @@ OAuth2.prototype.post = function(url, access_token, post_body, callback) {
 OAuth2.prototype.put = function(url, access_token, put_body, callback) {
   this.sendJSON('PUT', url, access_token, put_body, callback);
 };
+
+OAuth2.prototype.del = function(url, access_token, callback) {
+  this.sendJSON('DELETE', url, access_token, '', callback);
+};
