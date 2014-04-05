@@ -10,9 +10,9 @@ var protocol = 'http';
 var postUrl = protocol + '://' + gDomain + '/recommends';
 var table = $.table;
 var recommends = Alloy.Collections.instance('recommends');
+var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 // fetch existing data from storage
 if (recommends) {
-  var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
   recommends.fetch({
     query: ['SELECT * FROM ', recommends.config.adapter.collection_name, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? '5': '0, 4'), ') ORDER BY rowid DESC LIMIT ', limit].join('')
   });
@@ -75,7 +75,7 @@ function uploadData(e) {
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
-      query: 'SELECT * FROM ' + recommends.config.adapter.collection_name + ' WHERE state NOT IN (0)'
+      query: ['SELECT * FROM', recommends.config.adapter.collection_name, 'WHERE state NOT IN (0) ORDER BY rowid DESC LIMIT', Math.max(limit * 3, 18)].join(' ')
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
