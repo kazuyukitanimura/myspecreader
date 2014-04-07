@@ -9,10 +9,10 @@ var lruCache = require('lru-cache')();
 var toobusy = require('toobusy');
 var app = express();
 
-var Msr = require('./msr');
+var Msr = require('./lib/msr');
 var msrCommon = new Msr();
 var secret = require('./secret');
-var url = require('./url');
+var url = require('./lib/url');
 
 var STATES = {
   AUTH: 'auth'
