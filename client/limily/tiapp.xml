@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><ti:app xmlns:ti="http://ti.appcelerator.org">
-	<id>net.ver2.index</id>
-	<name>ver2</name>
+	<id>net.limily.index</id>
+	<name>limily</name>
 	<version>1.0</version>
 	<publisher>not specified</publisher>
 	<url/>
