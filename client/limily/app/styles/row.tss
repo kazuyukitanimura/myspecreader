@@ -46,7 +46,8 @@
 }
 
 '#origin': {
-  width: '128dp',
+  width: '118dp',
+  height: '1em',
   left: '92dp',
   bottom: '2dp',
   font: {
@@ -58,7 +59,7 @@
 
 '#state': {
   width: Ti.UI.Size,
-  right: '80dp',
+  right: '60dp',
   bottom: '2dp',
   font: {
     fontSize: '9dp'

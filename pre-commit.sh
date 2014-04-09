@@ -8,7 +8,7 @@
 # To enable this hook, rename this file to "pre-commit".
 
 find . \( -path ./node_modules -o -path ./client \) -prune -o -type f -name \*.js -print0 | xargs -0 -J% readyjs % --no-compile --no-aggregate --keep >/dev/null || exit $?
-find client/ver2/app \( -path client/ver2/app/widgets \) -prune -o -type f -name \*.js -print0 | xargs -0 -J% readyjs % --no-compile --no-aggregate --keep >/dev/null || exit $?
+find client/limily/app \( -path client/limily/app/widgets \) -prune -o -type f -name \*.js -print0 | xargs -0 -J% readyjs % --no-compile --no-aggregate --keep >/dev/null || exit $?
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
