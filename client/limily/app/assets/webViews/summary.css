@@ -23,6 +23,7 @@ body {
   margin: 10px auto 0px auto;
   display: table;
   color: #007AFF;
+  font-weight: bold;
   text-decoration: none;
   text-align: center;
 }
