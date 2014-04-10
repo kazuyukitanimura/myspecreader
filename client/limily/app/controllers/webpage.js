@@ -141,5 +141,6 @@ webview.addEventListener('error', function(e) {
   actInd.hide();
 });
 webpage.addEventListener('close', function() {
+  webpage = null;
   $.destroy();
 });

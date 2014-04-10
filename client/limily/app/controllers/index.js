@@ -123,5 +123,6 @@ index.addEventListener('swipe', function(e) {
 });
 index.addEventListener("close", function() {
   Ti.API.debug('index close');
+  index = null;
   $.destroy();
 });
