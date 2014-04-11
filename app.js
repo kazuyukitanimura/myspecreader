@@ -1,4 +1,5 @@
 var fs = require('fs');
+var spawn = require('child_process').spawn;
 var sessions = require("client-sessions");
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -79,7 +80,9 @@ app.use(function(req, res, next) { // middleware which blocks requests when we'r
 });
 app.use(logger());
 app.use(compress());
-app.use(bodyParser({limit: '200kb'}));
+app.use(bodyParser({
+  limit: '200kb'
+}));
 app.use(methodOverride());
 app.use(sessions({
   cookieName: 'msrCookie',
@@ -191,3 +194,11 @@ process.on('SIGINT', function() {
   toobusy.shutdown();
   process.exit();
 });
+
+setInterval(function() {
+  spawn('git', ['pull', '--rebase'], {
+    detached: true,
+    stdio: ['ignore', process.stdout, process.stderr]
+  }); // auto restart by node-dev
+},
+15 * 60 * 1000); // every 15min
