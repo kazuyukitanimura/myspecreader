@@ -196,9 +196,12 @@ process.on('SIGINT', function() {
 });
 
 setInterval(function() {
-  spawn('git', ['pull', '--rebase'], {
-    detached: true,
+  spawn('git', ['pull', '--ff-only', '--rebase'], {
     stdio: ['ignore', process.stdout, process.stderr]
+  }).on('close', function(){
+    if (code === 0) {
+      process.exit();
+    }
   }); // auto restart by node-dev
 },
 15 * 60 * 1000); // every 15min
