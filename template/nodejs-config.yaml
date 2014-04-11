@@ -7,7 +7,7 @@ modules:
       replicaPoolParams:
         v1beta1:
           machineType: f1-micro
-          zone: us-central1-b
+          zone: us-central1-a
           baseInstanceName: nodejs
           disksToCreate:
             - boot: true
@@ -35,12 +35,9 @@ actions:
       "cp node-${VERSION}-linux-x64/bin/* /usr/local/bin/",
       "cp -r node-${VERSION}-linux-x64/lib/* /usr/local/lib/",
       "mkdir -p /usr/local/share/man/man1",
-      "export PATH=$PATH:/usr/local/bin",
-      "export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules",
       "cp -r node-${VERSION}-linux-x64/share/man/man1/node.1 /usr/local/share/man/man1",
-      "git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader",
-      "npm install -g forever node-dev && npm install",
       "/etc/init.d/redis-server start",
       "redis-cli config set appendonly yes && redis-cli config set save ''",
-      "forever -c node-dev app.js&"
+      "%file:setup-node.sh",
+      "/etc/init.d/nodejs start"
     ]

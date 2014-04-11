@@ -4,3 +4,4 @@ npm-debug.log
 build
 secret.js
 dump.rdb
+appendonly.aof
