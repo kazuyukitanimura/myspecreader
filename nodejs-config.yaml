@@ -1,0 +1,46 @@
+name: nodejs
+modules:
+  nodejs:
+    type: REPLICA_POOL
+    replicaPoolModule:
+      numReplicas: 1
+      replicaPoolParams:
+        v1beta1:
+          machineType: f1-micro
+          zone: us-central1-b
+          baseInstanceName: nodejs
+          disksToCreate:
+            - boot: true
+              mode: READ_WRITE
+              initializeParams:
+                sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/backports-debian-7-wheezy-v20140408
+                diskSizeGb: 64
+          initAction: install
+          networkInterfaces:
+            - network: default
+              accessConfigs:
+                - name: External NAT
+                  type: ONE_TO_ONE_NAT
+      envVariables:
+        PORT:
+          value: 8080
+        VERSION:
+          value: v0.10.26
+actions:
+  install:
+    commands: [
+      "apt-get update && apt-get -y install git-core python redis-server",
+      "wget -O nodejs.tar.gz http://nodejs.org/dist/${VERSION}/node-${VERSION}-linux-x64.tar.gz",
+      "tar -xzf nodejs.tar.gz",
+      "cp node-${VERSION}-linux-x64/bin/* /usr/local/bin/",
+      "cp -r node-${VERSION}-linux-x64/lib/* /usr/local/lib/",
+      "mkdir -p /usr/local/share/man/man1",
+      "export PATH=$PATH:/usr/local/bin",
+      "export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules",
+      "cp -r node-${VERSION}-linux-x64/share/man/man1/node.1 /usr/local/share/man/man1",
+      "git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader",
+      "npm install -g forever node-dev && npm install",
+      "/etc/init.d/redis-server start",
+      "redis-cli config set appendonly yes && redis-cli config set save ''",
+      "forever -c node-dev app.js&"
+    ]
