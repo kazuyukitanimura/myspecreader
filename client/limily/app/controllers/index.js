@@ -122,6 +122,6 @@ index.addEventListener('swipe', function(e) {
 });
 index.addEventListener("close", function() {
   Ti.API.debug('index close');
-  index = null;
+  //index = null; // index has to be allways here, do not assgin null
   $.destroy();
 });

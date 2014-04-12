@@ -12,6 +12,11 @@ if (options.html) {
 
 var webview = $.webview;
 var webpage = $.webpage;
+var closeWebPage = function() {
+  if (webpage) {
+    webpage.close();
+  }
+};
 webview.hideLoadIndicator = true; // hide default spinner
 webview.loading = false; // do not indicate the webview is loading
 var actInd = Ti.UI.createActivityIndicator({
@@ -37,7 +42,7 @@ backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
     webview.goBack();
   } else {
-    webpage.close();
+    closeWebPage();
   }
 });
 webpage.add(backButton);
@@ -52,7 +57,7 @@ var dislikeButton = Ti.UI.createButton({
 });
 dislikeButton.addEventListener('click', function(e) {
   webpage.state = - 1; // FIXME is this ok?
-  webpage.close();
+  closeWebPage();
 });
 if (options.dislike) {
   webpage.add(dislikeButton);
@@ -68,7 +73,7 @@ var unreadButton = Ti.UI.createButton({
 });
 unreadButton.addEventListener('click', function(e) {
   webpage.state = 4;
-  webpage.close();
+  closeWebPage();
 });
 if (options.unread) {
   webpage.add(unreadButton);
@@ -133,7 +138,7 @@ webview.addEventListener('load', function(e) {
   var url = webview.url;
   if (url.indexOf(gBaseUrl) === 0 && url.indexOf('state=auth') !== - 1) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
-    webpage.close();
+    closeWebPage();
   }
   //webview.evalJS("document.cookie = '';"); // for test
 });
@@ -141,6 +146,7 @@ webview.addEventListener('error', function(e) {
   actInd.hide();
 });
 webpage.addEventListener('close', function() {
+  webview = null;
   webpage = null;
   $.destroy();
 });

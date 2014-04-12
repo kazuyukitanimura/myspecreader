@@ -44,7 +44,7 @@ if (cluster.isMaster) {
   // This has to be exactly one of "http://localhost", "https://localhost", "http://localhost:8080" during sandbox
   // https://groups.google.com/forum/#!topic/feedly-cloud/MIMvcu8Ju30
   var port = 443;
-  var redirect_uri = 'http://localhost:' + port;
+  var redirect_uri = 'https://localhost';
 
   // Msr Authorization URI
   var authorization_uri = msrCommon.getAuthUrl({
