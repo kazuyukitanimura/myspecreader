@@ -9,6 +9,7 @@ if (cluster.isMaster) {
   var worker = cluster.fork();
   setInterval(function() {
     spawn('git', ['pull', '--ff-only', '--rebase'], {
+      cwd: __dirname,
       detached: true,
       stdio: ['ignore', process.stdout, process.stderr],
       uid: stats.uid,
