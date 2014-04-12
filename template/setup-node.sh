@@ -1,5 +1,5 @@
-export PATH=$PATH:/usr/local/bin
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+curl -L https://npmjs.org/install.sh | sh
 git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader && npm install
 DIR=`pwd`
 FILE=app.js
@@ -11,7 +11,6 @@ cat <<EOF >/etc/init.d/nodejs
 
 PIDFILE=/var/run/nodejs.pid
 NODE="/usr/local/bin/node $DIR/$FILE"
-export PATH=$PATH:/usr/local/bin
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 
 . /lib/init/vars.sh

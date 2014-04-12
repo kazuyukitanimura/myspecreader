@@ -29,15 +29,14 @@ modules:
 actions:
   install:
     commands: [
-      "apt-get update && apt-get -y install git-core python redis-server",
+      "apt-get update && apt-get -y install git-core redis-server make build-essential",
+      "redis-cli ping && redis-cli config set appendonly yes && redis-cli config set save ''",
       "wget -O nodejs.tar.gz http://nodejs.org/dist/${VERSION}/node-${VERSION}-linux-x64.tar.gz",
       "tar -xzf nodejs.tar.gz",
       "cp node-${VERSION}-linux-x64/bin/* /usr/local/bin/",
       "cp -r node-${VERSION}-linux-x64/lib/* /usr/local/lib/",
       "mkdir -p /usr/local/share/man/man1",
       "cp -r node-${VERSION}-linux-x64/share/man/man1/node.1 /usr/local/share/man/man1",
-      "/etc/init.d/redis-server start",
-      "redis-cli config set appendonly yes && redis-cli config set save ''",
       "%file:setup-node.sh",
       "/etc/init.d/nodejs start"
     ]
