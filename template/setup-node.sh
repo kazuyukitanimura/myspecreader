@@ -1,8 +1,6 @@
 export PATH=$PATH:/usr/local/bin
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
-git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader
-npm install -g node-dev && npm install
-NODEDEV=`which node-dev`
+git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader && npm install
 DIR=`pwd`
 FILE=app.js
 
@@ -12,7 +10,7 @@ cat <<EOF >/etc/init.d/nodejs
 #!/bin/sh
 
 PIDFILE=/var/run/nodejs.pid
-NODE="$NODEDEV $DIR/$FILE"
+NODE="/usr/local/bin/node $DIR/$FILE"
 export PATH=$PATH:/usr/local/bin
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 
