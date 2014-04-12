@@ -1,6 +1,5 @@
 var setImage = require('cacheImage').setImage;
-var protocol = 'http';
-var url = protocol + '://' + gDomain + '/recommends';
+var url = gBaseUrl + '/recommends';
 var recommends = Alloy.Collections.instance('recommends'); // this needs to stay here for controllers/rows.js
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,

@@ -1,13 +1,12 @@
 var getRecommends = require('getRecommends');
-var protocol = 'http';
-var authUrl = protocol + '://' + gDomain + '/auth';
+var authUrl = gBaseUrl + '/auth';
 var index = $.index;
 index.needAuth = true;
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
   timeout: 1000 // in milliseconds
 });
-//client.clearCookies('http://' + gDomain); // for test
+//client.clearCookies(gBaseUrl); // for test
 client.open('HEAD', authUrl); // Prepare the connection.
 client.send(); // Send the request.
 var intervalId = 0;

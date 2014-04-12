@@ -73,7 +73,7 @@ function about(e) {
 
 function logout(e) {
   Ti.API.debug('logout');
-  Ti.Network.createHTTPClient().clearCookies('http://' + gDomain);
+  Ti.Network.createHTTPClient().clearCookies(gBaseUrl);
   home(e);
 }
 

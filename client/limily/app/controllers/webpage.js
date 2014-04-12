@@ -131,7 +131,7 @@ webview.addEventListener('beforeload', function(e) {
 webview.addEventListener('load', function(e) {
   actInd.hide();
   var url = webview.url;
-  if (url.indexOf('http://' + gDomain) === 0 && url.indexOf('state=auth') !== - 1) { // FIXME we should not hard code like this
+  if (url.indexOf(gBaseUrl) === 0 && url.indexOf('state=auth') !== - 1) { // FIXME we should not hard code like this
     webpage.fireEvent('authenticated');
     webpage.close();
   }

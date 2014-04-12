@@ -9,7 +9,7 @@
 // object. For example:
 //
 // Alloy.Globals.someGlobalFunction = function(){};
-var gDomain = 'domain.com';
+var gBaseUrl = 'https://limily.com';
 if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-  gDomain = 'localhost:8080';
+  gBaseUrl = 'https://localhost';
 }
