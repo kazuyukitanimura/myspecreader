@@ -21,6 +21,7 @@ if (cluster.isMaster) {
   15 * 60 * 1000); // every 15min
 } else {
   var fs = require('fs');
+  var https = require('https');
   var sessions = require("client-sessions");
   var express = require('express');
   var bodyParser = require('body-parser');
@@ -42,7 +43,7 @@ if (cluster.isMaster) {
 
   // This has to be exactly one of "http://localhost", "https://localhost", "http://localhost:8080" during sandbox
   // https://groups.google.com/forum/#!topic/feedly-cloud/MIMvcu8Ju30
-  var port = 8080;
+  var port = 443;
   var redirect_uri = 'http://localhost:' + port;
 
   // Msr Authorization URI
@@ -200,14 +201,14 @@ if (cluster.isMaster) {
     });
   });
 
-  var server = app.listen(port, function() {
+  var server = https.createServer(secret.HTTPS_OPTIONS, app).listen(port, function() {
     // if run as root, downgrade to the owner of this file
     if (process.getuid() === 0) {
       var stats = fs.statSync(__filename);
       process.setgid(stats.gid);
       process.setuid(stats.uid);
     }
-    console.log('New server listening at port ' + port);
+    console.log('New server listening to port ' + port);
   });
 
   process.on('SIGINT', function() {
