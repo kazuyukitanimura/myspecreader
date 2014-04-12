@@ -1,4 +1,6 @@
 var cluster = require('cluster');
+var fs = require('fs');
+var stats = fs.statSync(__filename);
 if (cluster.isMaster) {
   /**
    * Zero Downtime Auto Deploy
@@ -8,7 +10,9 @@ if (cluster.isMaster) {
   setInterval(function() {
     spawn('git', ['pull', '--ff-only', '--rebase'], {
       detached: true,
-      stdio: ['ignore', process.stdout, process.stderr]
+      stdio: ['ignore', process.stdout, process.stderr],
+      uid: stats.uid,
+      gid: stats.gid
     }).on('close', function(code) {
       if (code === 0) {
         var newWorker = cluster.fork().on('listening', function() {
@@ -20,7 +24,6 @@ if (cluster.isMaster) {
   },
   15 * 60 * 1000); // every 15min
 } else {
-  var fs = require('fs');
   var https = require('https');
   var sessions = require("client-sessions");
   var express = require('express');
@@ -204,7 +207,6 @@ if (cluster.isMaster) {
   var server = https.createServer(secret.HTTPS_OPTIONS, app).listen(port, function() {
     // if run as root, downgrade to the owner of this file
     if (process.getuid() === 0) {
-      var stats = fs.statSync(__filename);
       process.setgid(stats.gid);
       process.setuid(stats.uid);
     }

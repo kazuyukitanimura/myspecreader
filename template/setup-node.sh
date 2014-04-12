@@ -10,17 +10,16 @@ cat <<EOF >/etc/init.d/nodejs
 #!/bin/sh
 
 PIDFILE=/var/run/nodejs.pid
-NODE="/usr/local/bin/node $DIR/$FILE"
-export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+NODE="/usr/local/bin/node \$DIR/\$FILE"
+LOGFILE=/var/log/appjs.log
+export NODE_PATH=\$NODE_PATH:/usr/local/lib/node_modules
 
 . /lib/init/vars.sh
 . /lib/lsb/init-functions
 
 do_start()
 {
-  start-stop-daemon --start --chuid nobody --quiet --pidfile \$PIDFILE --background --exec \$NODE  || { log_daemon_msg " NodeJS already running."; return 1; }
-
-  start-stop-daemon --start --chuid nobody --quiet --make-pidfile --pidfile \$PIDFILE --background --exec \$NODE || { log_daemon_msg " Failed to start NodeJS."; return 2; }
+  /sbin/start-stop-daemon --start --quiet --pidfile \$PIDFILE --background --exec /bin/bash -- -c "exec \$NODE > \$LOGFILE 2>&1" || { log_daemon_msg " start-stop-daemon failed to run \$NODE"; return 1; }
 }
 
 case "\$1" in
