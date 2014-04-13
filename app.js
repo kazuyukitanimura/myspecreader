@@ -24,6 +24,11 @@ if (cluster.isMaster) {
     });
   },
   15 * 60 * 1000); // every 15min
+  cluster.on('exit', function() {
+    if (!Object.keys(cluster.workers).length) {
+      worker = cluster.fork();
+    }
+  });
 } else {
   var https = require('https');
   var sessions = require("client-sessions");
@@ -48,7 +53,7 @@ if (cluster.isMaster) {
   // This has to be exactly one of "http://localhost", "https://localhost", "http://localhost:8080" during sandbox
   // https://groups.google.com/forum/#!topic/feedly-cloud/MIMvcu8Ju30
   var port = 443;
-  var redirect_uri = 'urn:ietf:wg:oauth:2.0:oob';
+  var redirect_uri = 'http://localhost';
 
   // Msr Authorization URI
   var authorization_uri = msrCommon.getAuthUrl({

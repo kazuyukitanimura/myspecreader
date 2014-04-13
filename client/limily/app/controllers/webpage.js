@@ -113,6 +113,7 @@ if (html) {
   webview.setHtml(html);
 }
 webview.addEventListener('beforeload', function(e) {
+  console.log(e);
   if (!webpage.noInd) {
     actInd.show();
   }
