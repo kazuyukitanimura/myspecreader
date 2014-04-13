@@ -31,6 +31,7 @@ if (cluster.isMaster) {
   });
 } else {
   var https = require('https');
+  var log = require('util').log;
   var sessions = require("client-sessions");
   var express = require('express');
   var bodyParser = require('body-parser');
@@ -53,24 +54,24 @@ if (cluster.isMaster) {
   // This has to be exactly one of "http://localhost", "https://localhost", "http://localhost:8080" during sandbox
   // https://groups.google.com/forum/#!topic/feedly-cloud/MIMvcu8Ju30
   var port = 443;
-  var redirect_uri = 'http://localhost';
+  var redirectUri = 'http://localhost';
 
   // Msr Authorization URI
-  var authorization_uri = msrCommon.getAuthUrl({
-    redirect_uri: redirect_uri,
+  var authorizationUri = msrCommon.getAuthUrl({
+    redirect_uri: redirectUri,
     scope: 'https://cloud.feedly.com/subscriptions',
     state: STATES.AUTH
   });
 
   // Msr Authorization Middleware
-  var auth_middleware = function(req, res, next) {
+  var authMiddleware = function(req, res, next) {
     var msrOptions = req.msrCookie.msrOptions;
     var loggedin = req.loggedin = (!!msrOptions && !! msrOptions.id);
     var state = req.query.state;
     var code = req.query.code;
-    var url_pathname = url.parse(req.url).pathname;
+    var urlPathname = url.parse(req.url).pathname;
     if (loggedin) {
-      if (url_pathname === '/auth') {
+      if (urlPathname === '/auth') {
         res.redirect('/');
       } else {
         console.log(msrOptions);
@@ -80,9 +81,9 @@ if (cluster.isMaster) {
         }
         next();
       }
-    } else if (url_pathname === '/' && code && state === STATES.AUTH) {
+    } else if (urlPathname === '/' && code && state === STATES.AUTH) {
       msrCommon.getAccessToken(code, {
-        redirect_uri: redirect_uri
+        redirect_uri: redirectUri
       },
       function(err, results) {
         if (err) {
@@ -95,7 +96,7 @@ if (cluster.isMaster) {
           res.send(201);
         }
       });
-    } else if (url_pathname === '/' || url_pathname === '/auth') {
+    } else if (urlPathname === '/' || urlPathname === '/auth') {
       next();
     } else {
       res.send(401);
@@ -121,11 +122,11 @@ if (cluster.isMaster) {
     duration: 24 * 60 * 60 * 1000,
     activeDuration: 30 * 60 * 1000
   }));
-  app.use(auth_middleware);
+  app.use(authMiddleware);
 
   // Initial page redirecting to Msr
   app.get('/auth', function(req, res) {
-    res.redirect(authorization_uri);
+    res.redirect(authorizationUri);
   });
 
   // Callback service parsing the authorization token and asking for the access token
@@ -216,7 +217,7 @@ if (cluster.isMaster) {
       process.setgid(stats.gid);
       process.setuid(stats.uid);
     }
-    console.log('New server listening to port ' + port);
+    log('New server listening to port ' + port);
   });
 
   process.on('SIGINT', function() {
