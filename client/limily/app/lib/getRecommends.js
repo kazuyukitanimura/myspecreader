@@ -15,9 +15,6 @@ client.setOnload(function() { // on success
     var items = JSON.parse(this.responseText).items;
     for (var i = items.length; i--;) {
       var item = items[i];
-      if (i % 40 === 0) { // TODO delete this test code
-        Ti.API.debug(item);
-      }
       var id = item.id;
       var table = recommends.config.adapter.collection_name;
       var defaultState = recommends.config.defaults.state;
