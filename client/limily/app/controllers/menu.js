@@ -77,7 +77,8 @@ function logout(e) {
   home(e);
 }
 
-var itemClicks = [home, search, stars, recent, settings, about, logout];
+//var itemClicks = [home, search, stars, recent, settings, about, logout];
+var itemClicks = [home, stars, recent, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
   e.cancelBubble = true;

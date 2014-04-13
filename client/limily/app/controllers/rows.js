@@ -5,6 +5,23 @@ var stars = args.stars;
 var getImage = require('cacheImage').getImage;
 var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
+moment.lang('en', {
+  relativeTime: {
+    future: "in %s",
+    past: "%s ago",
+    s: "seconds",
+    m: "a minute",
+    mm: "%d min", // customized
+    h: "an hour",
+    hh: "%d hours",
+    d: "a day",
+    dd: "%d days",
+    M: "a month",
+    MM: "%d months",
+    y: "a year",
+    yy: "%d years"
+  }
+});
 var slideOut = require('slideOut');
 var postUrl = gBaseUrl + '/recommends';
 var table = $.table;
