@@ -114,7 +114,7 @@ if (html) {
 }
 webview.addEventListener('beforeload', function(e) {
   // HACK for the sandbox enviroment
-  if (e.url && e.url.indexOf('http://localhost') === 0) {
+  if (e.url && e.url.indexOf('http://localhost') === 0 && gBaseUrl.indexOf('localhost') === - 1) {
     webview.setUrl(e.url.replace(/^http:\/\/localhost/, gBaseUrl));
   }
 
