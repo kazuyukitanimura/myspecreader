@@ -10,7 +10,7 @@ cat <<EOF >/etc/init.d/nodejs
 #!/bin/sh
 
 PIDFILE=/var/run/nodejs.pid
-NODE="/usr/local/bin/node \$DIR/\$FILE"
+NODE="\$DIR/node_modules/forever/bin/forever \$DIR/\$FILE"
 LOGFILE=/var/log/appjs.log
 export NODE_PATH=\$NODE_PATH:/usr/local/lib/node_modules
 

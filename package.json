@@ -10,6 +10,7 @@
   , "client-sessions": "*"
   , "compression": "*"
   , "express": "*"
+  , "forever": "*"
   , "fussy": "*"
   , "hiredis": "*"
   , "hogan.js": "*"
