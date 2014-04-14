@@ -38,5 +38,6 @@ actions:
       "mkdir -p /usr/local/share/man/man1",
       "cp -r node-${VERSION}-linux-x64/share/man/man1/node.1 /usr/local/share/man/man1",
       "%file:setup-node.sh",
-      "/etc/init.d/nodejs start"
+      "/etc/init.d/nodejs start",
+      "update-rc.d nodejs defaults"
     ]
