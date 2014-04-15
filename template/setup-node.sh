@@ -10,7 +10,8 @@ cat <<EOF >/etc/init.d/nodejs
 #!/bin/sh
 
 PIDFILE=/var/run/nodejs.pid
-NODE="\$DIR/node_modules/forever/bin/forever \$DIR/\$FILE"
+FOREVER="\$DIR/node_modules/forever/bin/forever"
+NODE="\$FOREVER \$DIR/\$FILE"
 LOGFILE=/var/log/appjs.log
 export NODE_PATH=\$NODE_PATH:/usr/local/lib/node_modules
 
@@ -24,14 +25,13 @@ do_start()
 
 do_stop()
 {
+  \$FOREVER stopall
   /sbin/start-stop-daemon --stop --name node
 }
 
 do_restart()
 {
-  do_stop
-  sleep 2
-  do_start
+  \$FOREVER restartall
 }
 
 case "\$1" in
