@@ -7,7 +7,7 @@ var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
 moment.lang('en', {
   relativeTime: {
-    future: "in %s",
+    future: "just now",
     past: "%s ago",
     s: "seconds",
     m: "a minute",
