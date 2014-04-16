@@ -18,14 +18,16 @@ body {
   padding: 0px 4px;
 }
 #original {
-  background-color: #E0FF00;
-  padding: 6px 30px;
-  margin: 10px auto 0px auto;
+  background-color: #D7D7D7;
+  padding: 6px 27px;
+  margin: 14px auto 0px auto;
   display: table;
-  color: #007AFF;
-  font-weight: bold;
+  color: #1F1F21;
   text-decoration: none;
   text-align: center;
+  font-family: "Helvetica Neue";
+  font-size: 16px;
+  border-radius: 2px;
 }
 iframe {
   height: 0px;
