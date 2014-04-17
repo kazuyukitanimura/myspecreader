@@ -77,14 +77,18 @@ function getNextPage(e) {
 }
 
 function markAsRead(e) {
+  var ids = [];
   Alloy.Collections.instance('recommends').each(function(recommend) {
-    var state = recommend.get('state');
-    if (state === 0) {
-      recommend.set({
-        state: 1 // read
-      }).save();
+    if (recommend.get('state') === 0) {
+      ids.push(recommend.get('id'));
     }
   });
+  if (ids.length) {
+    var db = Ti.Database.open('recommends'); // update multiple rows at the same time
+    var table = recommends.config.adapter.collection_name;
+    db.execute(['UPDATE ', table, ' SET state = 1 WHERE id IN ("', ids.join('", "'), '")'].join(''));
+    db.close();
+  }
   e.stars = stars;
   e.hasRead = hasRead;
   getNextPage(e);
@@ -115,12 +119,13 @@ function uploadData() {
       }));
       client.setOnload(function(e) {
         // collection changes in the loop, so we cannot use recommends.each http://developer.appcelerator.com/question/149527/delete-sql-query-on-alloy-collections
+        var ids = [];
         for (var i = recommends.length; i--;) {
           var recommend = recommends.at(i);
           var data = JSON.parse(recommend.get('data'));
           var state = recommend.get('state');
           if (state !== 4 && state !== 5) { // do not delete markAsUnread and star
-            recommend.destroy(); // delete from persistance, FIXME slow since this will become multiple SQLs
+            ids.push(recommend.get('id'));
             var img = data.img;
             if (img) {
               delImage(img);
@@ -128,12 +133,16 @@ function uploadData() {
             }
           }
         }
-        table = null;
+        if (ids.length) {
+          var db = Ti.Database.open('recommends'); // delete multiple rows at the same time
+          var table = recommends.config.adapter.collection_name;
+          db.execute(['DELETE FROM ', table, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
+          db.close();
+        }
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
         currentWindow.needAuth = true;
-        table = null;
         currentWindow = null;
       });
     }

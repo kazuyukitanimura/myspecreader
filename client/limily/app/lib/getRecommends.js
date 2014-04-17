@@ -13,11 +13,11 @@ client.setOnload(function() { // on success
   try {
     var db = Ti.Database.open('recommends');
     var items = JSON.parse(this.responseText).items;
+    var table = recommends.config.adapter.collection_name;
+    var defaultState = recommends.config.defaults.state;
     for (var i = items.length; i--;) {
       var item = items[i];
       var id = item.id;
-      var table = recommends.config.adapter.collection_name;
-      var defaultState = recommends.config.defaults.state;
       // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
       // the order of saving to sqlite is important
       // the larger rowid, the newer (higher priority)
@@ -27,6 +27,7 @@ client.setOnload(function() { // on success
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
+    db.close();
     // TODO delte this test code
     //var rr = Alloy.createCollection('recommends');
     //rr.fetch({query: 'SELECT id, rowid, state, data FROM ' + recommends.config.adapter.collection_name});
