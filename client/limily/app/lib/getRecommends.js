@@ -18,6 +18,7 @@ client.setOnload(function() { // on success
       var id = item.id;
       var table = recommends.config.adapter.collection_name;
       var defaultState = recommends.config.defaults.state;
+      console.log(item.estCategory, item.featureVector.engagement, item.featureVector.ago);
       // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
       // the order of saving to sqlite is important
       // the larger rowid, the newer (higher priority)
