@@ -11,7 +11,7 @@ moment.lang('en', {
     past: "%s ago",
     s: "seconds",
     m: "a minute",
-    mm: "%d min", // customized
+    mm: "%d min",
     h: "an hour",
     hh: "%d hours",
     d: "a day",
@@ -72,11 +72,11 @@ function transformFunction(model) {
 }
 
 function getNextPage(e) {
-  table = null;
   currentWindow.fireEvent('openRows', e);
+  table = null;
 }
 
-function uploadData(e) {
+function markAsRead(e) {
   Alloy.Collections.instance('recommends').each(function(recommend) {
     var state = recommend.get('state');
     if (state === 0) {
@@ -88,12 +88,14 @@ function uploadData(e) {
   e.stars = stars;
   e.hasRead = hasRead;
   getNextPage(e);
+  setTimeout(uploadData, 2048);
+}
+
+function uploadData() {
   var recommends = Alloy.createCollection('recommends'); // always create a new local instance
   if (recommends) {
     recommends.fetch({
-      //query: ['SELECT * FROM', recommends.config.adapter.collection_name, 'WHERE state NOT IN (0) ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
-      // temporarily disable limit
-      query: ['SELECT * FROM', recommends.config.adapter.collection_name, 'WHERE state NOT IN (0) ORDER BY rowid ASC'].join(' ')
+      query: ['SELECT * FROM', recommends.config.adapter.collection_name, 'WHERE state NOT IN (0) ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
@@ -112,24 +114,27 @@ function uploadData(e) {
         data: data
       }));
       client.setOnload(function(e) {
-        recommends.each(function(recommend) {
+        // collection changes in the loop, so we cannot use recommends.each http://developer.appcelerator.com/question/149527/delete-sql-query-on-alloy-collections
+        for (var i = recommends.length; i--;) {
+          var recommend = recommends.at(i);
           var data = JSON.parse(recommend.get('data'));
           var state = recommend.get('state');
           if (state !== 4 && state !== 5) { // do not delete markAsUnread and star
-            recommend.destroy(); // delete from persistance
+            recommend.destroy(); // delete from persistance, FIXME slow since this will become multiple SQLs
             var img = data.img;
             if (img) {
               delImage(img);
               delImage(img, 'thumb');
             }
           }
-        });
+        }
         table = null;
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
         currentWindow.needAuth = true;
         table = null;
+        currentWindow = null;
       });
     }
   }
@@ -148,7 +153,7 @@ table.addEventListener('swipe', function(e) {
   Ti.API.debug(e.direction);
   var direction = e.direction;
   if (direction === 'up') {
-    slideOut(table, uploadData);
+    slideOut(table, markAsRead);
   } else if (direction === 'right') {
     Alloy.createController('menu', {
       parentWindow: currentWindow
