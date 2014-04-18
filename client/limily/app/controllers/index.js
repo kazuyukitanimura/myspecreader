@@ -30,7 +30,7 @@ client.setOnload(function() { // on success
     index.setBackgroundImage('');
     index.needAuth = false;
     index.fireEvent('openRows');
-    gFirstTime = false;
+    Ti.App.Properties.setBool('firstTime', false);
   }
   // setup background jobs
   var bgOptions = {
@@ -63,16 +63,18 @@ client.setOnload(function() { // on success
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
   client.timeout = Math.min(client.timeout * 2, 32 * 1000); // Max 32sec
-  if (gFirstTime) {
+  var firstTime = Ti.App.Properties.getBool('firstTime', true);
+  if (firstTime) {
     Titanium.UI.createAlertDialog({
       title: 'Welcome, but Limily needs the network for the first time',
-      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
+      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.',
+      exitOnClose: true
     }).show();
     index.close();
     return; // TODO exit the application
   }
   if (Ti.Network.online) {
-    index.needAuth = gFirstTime;
+    index.needAuth = firstTime;
     Titanium.UI.createAlertDialog({
       title: 'There was a network issue',
       message: 'Limily will automatically retry later.'
