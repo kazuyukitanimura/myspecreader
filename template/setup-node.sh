@@ -20,7 +20,7 @@ export NODE_PATH=\$NODE_PATH:/usr/local/lib/node_modules
 
 do_start()
 {
-  /sbin/start-stop-daemon --start --quiet --pidfile \$PIDFILE --background --exec /bin/bash -- -c "exec \$NODE > \$LOGFILE 2>&1" || { log_daemon_msg " start-stop-daemon failed to run \$NODE"; return 1; }
+  /sbin/start-stop-daemon --start --quiet --pidfile \$PIDFILE --background --exec /bin/bash -- -c "exec \$NODE >> \$LOGFILE 2>&1" || { log_daemon_msg " start-stop-daemon failed to run \$NODE"; return 1; }
 }
 
 do_stop()
