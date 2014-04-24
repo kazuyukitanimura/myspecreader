@@ -71,6 +71,9 @@ client.setOnerror(function(e) { // on error including a timeout
       exitOnClose: true
     }).show();
     index.close();
+    if (OS_ANDROID) {
+      Titanium.Android.currentActivity.finish();
+    }
     return; // TODO exit the application
   }
   if (Ti.Network.online) {
