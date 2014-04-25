@@ -6,35 +6,91 @@ function doClick(e) {
     backgroundColor: '#F7F7F7',
     top: Ti.Platform.displayCaps.platformHeight
   });
-  ModalWindow.add(Ti.UI.createLabel({
+  var scrollView = Ti.UI.createScrollView({
+    contentHeight: 'auto',
+    showVerticalScrollIndicator: true,
+    height: Ti.Platform.displayCaps.platformHeight,
+    width: Ti.Platform.displayCaps.platformWidth,
+    color: '#1F1F21',
+    font: {
+      fontSize: '11dp'
+    },
+    layout: 'vertical'
+  });
+  ModalWindow.add(scrollView);
+  scrollView.add(Ti.UI.createLabel({
     text: 'Welcome to Limily',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 20
+    },
+    top: 40
   }));
-  ModalWindow.add(Ti.UI.createLabel({
-    text: 'What is it?\nLimily is an inteligent news feed reader. It learns your preference and reading behavior over time. To save your time, Limily automagically brings the most relevant news at the top of the list. Limily is the best learning tool for those who want to keep up with the newest technologies and trending.\nSupported feed services:\nFeedly'
+  scrollView.add(Ti.UI.createLabel({
+    text: 'What is it?',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    top: 20
   }));
-  ModalWindow.add(Ti.UI.createLabel({
+  scrollView.add(Ti.UI.createLabel({
+    text: 'Limily is an inteligent news feed reader. It learns your preference and reading behavior over time. To save your time, Limily automagically brings the most relevant news at the top of the list. Limily is the best learning tool for those who want to keep up with the newest technologies and trending.\nSupported feed services: Feedly',
+  }));
+  scrollView.add(Ti.UI.createLabel({
     text: 'Limily Features',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    top: 20
   }));
-  ModalWindow.add(Ti.UI.createLabel({
+  scrollView.add(Ti.UI.createLabel({
     text: 'Simple intuitive UI\nInteligent news selection from feeds',
   }));
-  ModalWindow.add(Ti.UI.createLabel({
+  scrollView.add(Ti.UI.createLabel({
     text: 'Why do I need to login with Feedly?',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    top: 20
   }));
-  ModalWindow.add(Ti.UI.createLabel({
+  scrollView.add(Ti.UI.createLabel({
     text: 'Because Limily needs a source of feeds and helps you with finding the most interesting news.',
   }));
-  ModalWindow.add(Ti.UI.createLabel({
+  scrollView.add(Ti.UI.createLabel({
     text: 'More Information',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    top: 20
   }));
-  ModalWindow.add(Ti.UI.createLabel({
-    text: 'Link to apple store.',
+  scrollView.add(Ti.UI.createLabel({
+    text: 'Link to apple store.'
   }));
+  var contactus = Ti.UI.createButton({
+    title: 'Contact us',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    top: 20
+  });
+  contactus.addEventListener('click', function(e) {
+    var emailDialog = Ti.UI.createEmailDialog();
+    emailDialog.toRecipients = ['info@limily.com'];
+    emailDialog.open();
+  });
+  scrollView.add(contactus);
   var slide = Titanium.UI.createAnimation();
   slide.top = 0;
   ModalWindow.open(slide);
   var close = Titanium.UI.createButton({
-    title: 'Close'
+    top: 14,
+    left: 4,
+    title: '\u2573 Close'
   });
   close.addEventListener('click', function(e) {
     ModalWindow.close();
