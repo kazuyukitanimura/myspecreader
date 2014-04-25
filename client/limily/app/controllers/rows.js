@@ -25,12 +25,15 @@ moment.lang('en', {
 var slideOut = require('slideOut');
 var postUrl = gBaseUrl + '/recommends';
 var table = $.table;
-var recommends = Alloy.Collections.instance('recommends');
+var DB = 'recommends';
+var recommends = Alloy.Collections.instance(DB);
+var TABLE = recommends.config.adapter.collection_name;
+var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 // fetch existing data from storage
 if (recommends) {
   recommends.fetch({
-    query: ['SELECT * FROM ', recommends.config.adapter.collection_name, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? '5': '0, 4'), ') ORDER BY rowid DESC LIMIT ', limit].join('')
+    query: ['SELECT * FROM ', TABLE, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit].join('')
   });
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({
@@ -66,7 +69,7 @@ function transformFunction(model) {
   var state = model.get('state');
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
-  data.state = state === 4 ? 'Kept unread': state === 5 ? '\u2605': state === - 1 ? '\uE421': '';
+  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? '\u2605': state === STATES.DISLIKE ? '\uE421': '';
   data.ago = moment(data.published).fromNow();
   return data;
 }
@@ -78,15 +81,14 @@ function getNextPage(e) {
 
 function markAsRead(e) {
   var ids = [];
-  Alloy.Collections.instance('recommends').each(function(recommend) {
-    if (recommend.get('state') === 0) {
+  Alloy.Collections.instance(DB).each(function(recommend) {
+    if (recommend.get('state') === STATES.UNREAD) {
       ids.push(recommend.get('id'));
     }
   });
   if (ids.length) {
-    var db = Ti.Database.open('recommends'); // update multiple rows at the same time
-    var table = recommends.config.adapter.collection_name;
-    db.execute(['UPDATE ', table, ' SET state = 1 WHERE id IN ("', ids.join('", "'), '")'].join(''));
+    var db = Ti.Database.open(DB); // update multiple rows at the same time
+    db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
     db.close();
   }
   e.stars = stars;
@@ -96,15 +98,16 @@ function markAsRead(e) {
 }
 
 function uploadData() {
-  var recommends = Alloy.createCollection('recommends'); // always create a new local instance
+  var recommends = Alloy.createCollection(DB); // always create a new local instance
   if (recommends) {
     recommends.fetch({
-      query: ['SELECT * FROM', recommends.config.adapter.collection_name, 'WHERE state NOT IN (0) ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
+      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
         var state = recommend.get('state');
+        console.log(state);
         return {
           id: data.id,
           featureVector: data.featureVector,
@@ -124,7 +127,7 @@ function uploadData() {
           var recommend = recommends.at(i);
           var data = JSON.parse(recommend.get('data'));
           var state = recommend.get('state');
-          if (state !== 4 && state !== 5) { // do not delete markAsUnread and star
+          if (state !== STATES.KEEPUNREAD && state !== STATES.STAR) { // do not delete markAsUnread and star
             ids.push(recommend.get('id'));
             var img = data.img;
             if (img) {
@@ -134,9 +137,8 @@ function uploadData() {
           }
         }
         if (ids.length) {
-          var db = Ti.Database.open('recommends'); // delete multiple rows at the same time
-          var table = recommends.config.adapter.collection_name;
-          db.execute(['DELETE FROM ', table, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
+          var db = Ti.Database.open(DB); // delete multiple rows at the same time
+          db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
           db.close();
         }
       });

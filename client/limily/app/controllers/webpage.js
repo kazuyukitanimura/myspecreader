@@ -28,7 +28,7 @@ var actInd = Ti.UI.createActivityIndicator({
   opacity: 0.7
 });
 webpage.add(actInd);
-webpage.oldState = 1;
+webpage.oldState = 3;
 var backButton = Ti.UI.createButton({
   top: '14dp',
   left: '4dp',
@@ -137,6 +137,10 @@ webview.addEventListener('beforeload', function(e) {
   } else {
     backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
   }
+
+  webpage.fireEvent('urlChange', {
+    url: webview.url
+  });
 });
 webview.addEventListener('load', function(e) {
   actInd.hide();

@@ -51,9 +51,9 @@ function openSummary(e) {
   var webpage = Alloy.createController('webpage', options).getView();
   webpage.state = state;
   webpage.noInd = true;
-  webpage.addEventListener('beforeload', function(e) {
+  webpage.addEventListener('urlChange', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
-    if ($model && (state === 0 || state === 4)) {
+    if ($model && (state !== 4 && state !== 5)) {
       state = 2; // 2: viewSummary
       if (viewOriginal) {
         state = 3; // 3: viewOriginal
