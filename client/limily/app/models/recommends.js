@@ -15,7 +15,7 @@ exports.definition = {
       'idAttribute': 'id'
     },
     STATES: {
-      DISLIKE: - 1,
+      DISLIKE: - 1, // FIXME is this ok?
       UNREAD: 0,
       PASSED: 1,
       VIEWSUMMARY: 2,

@@ -107,7 +107,6 @@ function uploadData() {
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
         var state = recommend.get('state');
-        console.log(state);
         return {
           id: data.id,
           featureVector: data.featureVector,

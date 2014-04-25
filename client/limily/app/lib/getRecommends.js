@@ -1,6 +1,7 @@
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
-var recommends = Alloy.Collections.instance('recommends'); // this needs to stay here for controllers/rows.js
+var DB = 'recommends';
+var recommends = Alloy.Collections.instance(DB); // this needs to stay here for controllers/rows.js
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 64 * 1000 // in milliseconds
@@ -11,7 +12,7 @@ function toThumb(blob) {
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getReccomends');
   try {
-    var db = Ti.Database.open('recommends');
+    var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
     var table = recommends.config.adapter.collection_name;
     var defaultState = recommends.config.defaults.state;
@@ -29,7 +30,7 @@ client.setOnload(function() { // on success
     }
     db.close();
     // TODO delte this test code
-    //var rr = Alloy.createCollection('recommends');
+    //var rr = Alloy.createCollection(DB);
     //rr.fetch({query: 'SELECT id, rowid, state, data FROM ' + recommends.config.adapter.collection_name});
     //rr.each(function(r){
     //  console.log(r.get('id'), r.get('rowid'), r.get('state'), r.get('data'));

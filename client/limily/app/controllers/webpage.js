@@ -10,6 +10,10 @@ if (options.html) {
   html = options.html;
 }
 
+var DB = 'recommends';
+var recommends = Alloy.Collections.instance(DB);
+var STATES = recommends.config.STATES;
+
 var webview = $.webview;
 var webpage = $.webpage;
 var closeWebPage = function() {
@@ -28,7 +32,7 @@ var actInd = Ti.UI.createActivityIndicator({
   opacity: 0.7
 });
 webpage.add(actInd);
-webpage.oldState = 3;
+webpage.oldState = STATES.VIEWORIGINAL; // FIXME is this appropriate?
 var backButton = Ti.UI.createButton({
   top: '14dp',
   left: '4dp',
@@ -56,7 +60,7 @@ var dislikeButton = Ti.UI.createButton({
   title: '\uE421'
 });
 dislikeButton.addEventListener('click', function(e) {
-  webpage.state = - 1; // FIXME is this ok?
+  webpage.state = STATES.DISLIKE;
   closeWebPage();
 });
 if (options.dislike) {
@@ -72,7 +76,7 @@ var unreadButton = Ti.UI.createButton({
   title: 'Keep Unread'
 });
 unreadButton.addEventListener('click', function(e) {
-  webpage.state = 4;
+  webpage.state = STATES.KEEPUNREAD;
   closeWebPage();
 });
 if (options.unread) {
@@ -88,7 +92,7 @@ var starButton = Ti.UI.createButton({
 });
 starButton.addEventListener('click', function(e) {
   var state = webpage.state;
-  if (state === 5) {
+  if (state === STATES.STAR) {
     webpage.state = webpage.oldState;
     if (options.unread) {
       dislikeButton.show();
@@ -97,7 +101,7 @@ starButton.addEventListener('click', function(e) {
     this.title = '\u2606'; // white star
   } else {
     webpage.oldState = state;
-    webpage.state = 5;
+    webpage.state = STATES.STAR;
     if (options.unread) {
       dislikeButton.hide();
       unreadButton.hide();
@@ -122,7 +126,7 @@ webview.addEventListener('beforeload', function(e) {
     actInd.show();
   }
   if (options.star) {
-    if (webpage.state === 5) {
+    if (webpage.state === STATES.STAR) {
       starButton.title = '\u2605';
       if (options.unread) {
         dislikeButton.hide();

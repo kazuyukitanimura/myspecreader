@@ -3,15 +3,19 @@ var row = $.row;
 var cell = $.cell;
 var getImage = require('cacheImage').getImage;
 
+var DB = 'recommends';
+var recommends = Alloy.Collections.instance(DB);
+var STATES = recommends.config.STATES;
+
 // $model represents the current model accessible to this
 // controller from the markup's model-view binding. $model
 // will be null if there is no binding in place.
-var state = 0;
+var state = STATES.UNREAD;
 var data = {};
 if ($model) {
   state = $model.get('state');
   data = JSON.parse($model.get('data'));
-  if ($model && state !== 0 && state !== 4) {
+  if ($model && state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) {
     cell.opacity = 0.7;
   }
 }
@@ -53,10 +57,10 @@ function openSummary(e) {
   webpage.noInd = true;
   webpage.addEventListener('urlChange', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
-    if ($model && (state !== 4 && state !== 5)) {
-      state = 2; // 2: viewSummary
+    if ($model && (state !== STATES.KEEPUNREAD && state !== STATES.STAR)) {
+      state = STATES.VIEWSUMMARY;
       if (viewOriginal) {
-        state = 3; // 3: viewOriginal
+        state = STATES.VIEWORIGINAL;
       }
       $model.set('state', state);
       $model.save();
