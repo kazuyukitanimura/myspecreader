@@ -101,7 +101,7 @@ function uploadData() {
   var recommends = Alloy.createCollection(DB); // always create a new local instance
   if (recommends) {
     recommends.fetch({
-      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
+      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ', ', STATES.KEEPUNREAD, ') ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {

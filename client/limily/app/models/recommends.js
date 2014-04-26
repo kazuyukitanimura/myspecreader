@@ -15,13 +15,13 @@ exports.definition = {
       'idAttribute': 'id'
     },
     STATES: {
-      DISLIKE: - 1, // FIXME is this ok?
       UNREAD: 0,
       PASSED: 1,
       VIEWSUMMARY: 2,
       VIEWORIGINAL: 3,
-      KEEPUNREAD: 4,
-      STAR: 5
+      STAR: 4,
+      KEEPUNREAD: 254, // -2
+      DISLIKE: 255 // -1
     }
   },
 

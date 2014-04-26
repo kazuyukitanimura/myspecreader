@@ -69,7 +69,7 @@ function openSummary(e) {
   webpage.addEventListener('close', function(e) {
     if (webpage.state && $model) {
       state = webpage.state;
-      $model.set('state', state); // 4: keepUnread, 5: star
+      $model.set('state', state); // keepUnread, star
       $model.save();
     }
     webpage = null;
