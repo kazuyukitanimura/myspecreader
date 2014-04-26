@@ -21,7 +21,6 @@
 
 '.sectionHeader': {
   backgroundColor: '#E1FF00',
-  color: '#F7F7F7',
   height: Ti.UI.Size
 }
 

@@ -39,6 +39,7 @@ var backButton = Ti.UI.createButton({
   font: {
     fontSize: '16dp'
   },
+  color: '#1F1F21',
   title: '\u2573 Close'
 });
 backButton.addEventListener('click', function(e) {
@@ -72,6 +73,7 @@ var unreadButton = Ti.UI.createButton({
   font: {
     fontSize: '16dp'
   },
+  color: '#1F1F21',
   title: 'Keep Unread'
 });
 unreadButton.addEventListener('click', function(e) {
@@ -87,7 +89,8 @@ var starButton = Ti.UI.createButton({
   width: '20dp',
   font: {
     fontSize: '16dp'
-  }
+  },
+  color: '#1F1F21'
 });
 starButton.addEventListener('click', function(e) {
   var state = webpage.state;
