@@ -33,11 +33,12 @@ var actInd = Ti.UI.createActivityIndicator({
 });
 webpage.add(actInd);
 var backButton = Ti.UI.createButton({
-  top: '14dp',
+  top: '15dp',
   left: '4dp',
   width: '70dp',
   font: {
-    fontSize: '16dp'
+    fontWeight: 'bold',
+    fontSize: '14dp'
   },
   color: '#1F1F21',
   title: '\u2573 Close'
@@ -51,11 +52,11 @@ backButton.addEventListener('click', function(e) {
 });
 webpage.add(backButton);
 var dislikeButton = Ti.UI.createButton({
-  top: '14dp',
+  top: '18dp',
   left: '96dp',
   width: '24dp',
   font: {
-    fontSize: '16dp'
+    fontSize: '11dp'
   },
   title: '\uE421'
 });
@@ -67,11 +68,11 @@ if (options.dislike) {
   webpage.add(dislikeButton);
 }
 var unreadButton = Ti.UI.createButton({
-  top: '14dp',
+  top: '15dp',
   right: '24dp',
   width: '152dp',
   font: {
-    fontSize: '16dp'
+    fontSize: '14dp'
   },
   color: '#1F1F21',
   title: 'Keep Unread'
