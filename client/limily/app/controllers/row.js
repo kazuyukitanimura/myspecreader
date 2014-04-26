@@ -57,13 +57,18 @@ function openSummary(e) {
   webpage.noInd = true;
   webpage.addEventListener('urlChange', function(e) {
     var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
-    if ($model && (state !== STATES.KEEPUNREAD && state !== STATES.STAR)) {
-      state = STATES.VIEWSUMMARY;
-      if (viewOriginal) {
-        state = STATES.VIEWORIGINAL;
+    if ($model) {
+      if (state === STATES.STAR) {
+        webpage.oldState = viewOriginal? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
+      } else if (state !== STATES.VIEWORIGINAL && state !== STATES.DISLIKE) {
+        state = STATES.VIEWSUMMARY;
+        if (viewOriginal) {
+          state = STATES.VIEWORIGINAL;
+        }
+        webpage.state = state;
+        $model.set('state', state);
+        $model.save();
       }
-      $model.set('state', state);
-      $model.save();
     }
   });
   webpage.addEventListener('close', function(e) {

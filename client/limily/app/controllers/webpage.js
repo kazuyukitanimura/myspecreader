@@ -32,7 +32,6 @@ var actInd = Ti.UI.createActivityIndicator({
   opacity: 0.7
 });
 webpage.add(actInd);
-webpage.oldState = STATES.VIEWORIGINAL; // FIXME is this appropriate?
 var backButton = Ti.UI.createButton({
   top: '14dp',
   left: '4dp',
@@ -93,7 +92,7 @@ var starButton = Ti.UI.createButton({
 starButton.addEventListener('click', function(e) {
   var state = webpage.state;
   if (state === STATES.STAR) {
-    webpage.state = webpage.oldState;
+    webpage.state = webpage.oldState || STATES.VIEWSUMMARY;
     if (options.unread) {
       dislikeButton.show();
       unreadButton.show();
