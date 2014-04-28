@@ -42,7 +42,7 @@ var uStarBlack = '\u2605';
 if (recommends) {
   recommends.fetch({
     query: ['SELECT * FROM ', TABLE, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid ', (hasRead ? 'ASC': 'DESC'), ' LIMIT ', limit, ' OFFSET ' + limit * (hasRead - 1)].join('')
-  }); // FIXME reverse the order for hasRead
+  });
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({
       width: Ti.UI.FILL,
@@ -82,6 +82,14 @@ function transformFunction(model) {
   return data;
 }
 
+// Use this filter function as changing sorting order
+function filterFunction(collection) {
+  if (hasRead === 1) { // TODO understand why we should not reverse the order when hasRead > 1
+    collection.models = collection.models.reverse();
+  }
+  return collection.models;
+}
+
 function getNextPage(e) {
   currentWindow.fireEvent('openRows', e);
   table = null;
@@ -100,7 +108,7 @@ function markAsRead(e) {
     db.close();
   }
   e.stars = stars;
-  e.hasRead = hasRead = 0;
+  e.hasRead = hasRead;
   getNextPage(e);
   if (!hasRead) {
     setTimeout(uploadData, 2048 * 10);
@@ -173,7 +181,12 @@ table.addEventListener('swipe', function(e) {
   Ti.API.debug(e.direction);
   var direction = e.direction;
   if (direction === 'up') {
-    slideOut(table, markAsRead);
+    if (hasRead) {
+      e.hasRead = hasRead - 1;
+      getNextPage(e);
+    } else {
+      slideOut(table, markAsRead);
+    }
   } else if (direction === 'down') {
     e.hasRead = hasRead + 1;
     getNextPage(e);
