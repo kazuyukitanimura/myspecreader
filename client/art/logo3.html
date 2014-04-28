@@ -7,12 +7,12 @@
         padding: 0px;
         height: 2048px;
         width: 2048px;
-        background-color: whitesmoke;
+        background-color: rgb(163, 163, 163);
       }
       body::-webkit-scrollbar {
         display: none;
       }
-      #cover {
+      #cover2 {
         position: absolute;
         overflow: hidden;
         top: 0px;
@@ -25,8 +25,18 @@
         background-repeat: no-repeat;
         background-size: 100%;
         background-position: center 2%;
-        opacity: 0.45;
-        -webkit-filter: blur(5px);
+        -webkit-filter: blur(18px);
+      }
+      #cover {
+        position: absolute;
+        overflow: hidden;
+        top: 0px;
+        left: 0px;
+        margin: 0px;
+        padding: 0px;
+        height: 2048px;
+        width: 2048px;
+        background-color: rgba(159, 162, 151, 0.39);
       }
       h1 {
         color: rgba(224, 255, 0, 1);
@@ -61,6 +71,7 @@
     </style>
   </head>
   <body>
+    <div id="cover2"></div>
     <div id="cover"></div>
     <h1>Limily</h1>
     <h2>Feed Reader<h2>
