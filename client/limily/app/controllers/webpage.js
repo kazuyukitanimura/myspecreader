@@ -14,6 +14,15 @@ var DB = 'recommends';
 var recommends = Alloy.Collections.instance(DB);
 var STATES = recommends.config.STATES;
 
+/**
+ * Unicodes
+ */
+var uClose = '\ue082';
+var uBack = '\ue07a';
+var uStarWhite = '\u2606';
+var uStarBlack = '\u2605';
+var uDislike = '\ue06d';
+
 var webview = $.webview;
 var webpage = $.webpage;
 var closeWebPage = function() {
@@ -28,20 +37,20 @@ var actInd = Ti.UI.createActivityIndicator({
   height: Ti.UI.FILL,
   message: 'Loading...',
   color: 'FFF',
-  backgroundColor: '1F1F21',
+  backgroundColor: '#1F1F21',
   opacity: 0.7
 });
 webpage.add(actInd);
 var backButton = Ti.UI.createButton({
-  top: '15dp',
+  top: '14dp',
   left: '4dp',
-  width: '70dp',
+  width: '40dp',
   font: {
-    fontWeight: 'bold',
-    fontSize: '14dp'
+    fontFamily: "Simple-Line-Icons",
+    fontSize: '18dp'
   },
   color: '#1F1F21',
-  title: '\u2573 Close'
+  title: uClose
 });
 backButton.addEventListener('click', function(e) {
   if (webview.canGoBack()) {
@@ -56,9 +65,11 @@ var dislikeButton = Ti.UI.createButton({
   left: '96dp',
   width: '24dp',
   font: {
-    fontSize: '11dp'
+    fontFamily: "Simple-Line-Icons",
+    fontSize: '14dp'
   },
-  title: '\uE421'
+  color: '#1F1F21',
+  title: uDislike
 });
 dislikeButton.addEventListener('click', function(e) {
   webpage.state = STATES.DISLIKE;
@@ -68,7 +79,7 @@ if (options.dislike) {
   webpage.add(dislikeButton);
 }
 var unreadButton = Ti.UI.createButton({
-  top: '15dp',
+  top: '16dp',
   right: '24dp',
   width: '152dp',
   font: {
@@ -85,11 +96,11 @@ if (options.unread) {
   webpage.add(unreadButton);
 }
 var starButton = Ti.UI.createButton({
-  top: '14dp',
+  top: '11dp',
   right: '4dp',
-  width: '20dp',
+  width: '30dp',
   font: {
-    fontSize: '16dp'
+    fontSize: '21dp'
   },
   color: '#1F1F21'
 });
@@ -101,7 +112,7 @@ starButton.addEventListener('click', function(e) {
       dislikeButton.show();
       unreadButton.show();
     }
-    this.title = '\u2606'; // white star
+    this.title = uStarWhite;
   } else {
     webpage.oldState = state;
     webpage.state = STATES.STAR;
@@ -109,7 +120,7 @@ starButton.addEventListener('click', function(e) {
       dislikeButton.hide();
       unreadButton.hide();
     }
-    this.title = '\u2605'; // black star
+    this.title = uStarBlack;
   }
 });
 if (options.star) {
@@ -130,19 +141,19 @@ webview.addEventListener('beforeload', function(e) {
   }
   if (options.star) {
     if (webpage.state === STATES.STAR) {
-      starButton.title = '\u2605';
+      starButton.title = uStarBlack;
       if (options.unread) {
         dislikeButton.hide();
         unreadButton.hide();
       }
     } else {
-      starButton.title = '\u2606';
+      starButton.title = uStarWhite;
     }
   }
   if (webview.canGoBack()) {
-    backButton.title = '\u2329 Back'; //\u27E8 \u3008 \u2329 \u276C \u276E
+    backButton.title = uBack;
   } else {
-    backButton.title = '\u2573 Close'; //\u00D7\u02DF\u274C\u2A2F\u2715\u2613\u2716\u2715
+    backButton.title = uClose;
   }
 
   webpage.fireEvent('urlChange', {

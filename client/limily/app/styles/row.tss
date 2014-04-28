@@ -62,6 +62,7 @@
   right: '60dp',
   bottom: '2dp',
   font: {
+    fontFamily: "Simple-Line-Icons",
     fontSize: '9dp'
   },
   color: '#8E8E93',

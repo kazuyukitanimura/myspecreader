@@ -30,6 +30,13 @@ var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
+
+/**
+ * Unicodes
+ */
+var uDislike = '\ue06d';
+var uStarBlack = '\u2605';
+
 // fetch existing data from storage
 if (recommends) {
   recommends.fetch({
@@ -51,7 +58,7 @@ if (stars || hasRead) {
   var sideLabel = Ti.UI.createLabel({
     width: Ti.Platform.displayCaps.platformHeight,
     left: 24,
-    text: stars ? '\u2605 Starred': 'Recently Read',
+    text: stars ? uStarBlack + ' Starred': 'Recently Read',
     transform: Ti.UI.create2DMatrix().rotate( - 90),
     opacity: 0.7,
     color: stars ? '#4A4A4A': '#898C90',
@@ -69,7 +76,7 @@ function transformFunction(model) {
   var state = model.get('state');
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
-  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? '\u2605': state === STATES.DISLIKE ? '\uE421': '';
+  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: state === STATES.DISLIKE ? uDislike: '';
   data.ago = moment(data.published).fromNow();
   return data;
 }

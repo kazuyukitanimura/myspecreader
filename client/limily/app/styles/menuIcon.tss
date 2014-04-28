@@ -1,11 +1,14 @@
 '#menuIcon': {
   scrollable: false,
   backgroundColor: '#E1FF00',
-  height: Ti.UI.Size,
   left: '-12',
   borderRadius: 11,
   borderWidth: 0,
-  width: '26dp',
+  width: '30dp',
   textAlign: 'center',
+  font: {
+    fontFamily: "Simple-Line-Icons",
+    fontSize: '20dp'
+  },
   color: '#1F1F21'
 }

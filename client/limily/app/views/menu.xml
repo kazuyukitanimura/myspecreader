@@ -8,13 +8,13 @@
             <Label>Menu</Label>
           </View>
         </HeaderView>
-        <ListItem class="menuItem" title="\uE036 Home" />
-        <!-- <ListItem class="menuItem" title="\uE114 Search & Add" /> comment out until we impleent-->
-        <ListItem class="menuItem" title="\u2B50 Stars" />
-        <ListItem class="menuItem" title="\uE024 Recently Read" />
-        <!-- <ListItem class="menuItem" title="\u2699 Settings" /> comment out until we impleent-->
-        <ListItem class="menuItem" title="\u2139 About" />
-        <ListItem class="menuItem" title="\uE41E Logout" />
+        <ListItem class="menuItem" title="\ue069 Home" />
+        <!-- <ListItem class="menuItem" title="\ue090 Search & Add" /> comment out until we impleent-->
+        <ListItem class="menuItem" title="\ue09b Stars" />
+        <!-- <ListItem class="menuItem" title="\ue081 Recently Read" /> -->
+        <!-- <ListItem class="menuItem" title="\ue09a Settings" /> comment out until we impleent-->
+        <ListItem class="menuItem" title="\ue08b About" />
+        <ListItem class="menuItem" title="\ue065 Logout" />
       </ListSection>
     </ListView>
   </Window>
