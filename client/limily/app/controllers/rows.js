@@ -1,6 +1,6 @@
 var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
-var hasRead = args.hasRead;
+var hasRead = args.hasRead | 0;
 var stars = args.stars;
 var getImage = require('cacheImage').getImage;
 var delImage = require('cacheImage').delImage;
@@ -30,6 +30,7 @@ var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
+var sendLimit = Math.max(limit * 2, 12);
 
 /**
  * Unicodes
@@ -40,29 +41,29 @@ var uStarBlack = '\u2605';
 // fetch existing data from storage
 if (recommends) {
   recommends.fetch({
-    query: ['SELECT * FROM ', TABLE, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit].join('')
-  });
+    query: ['SELECT * FROM ', TABLE, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid ', (hasRead ? 'ASC': 'DESC'), ' LIMIT ', limit, ' OFFSET ' + limit * (hasRead - 1)].join('')
+  }); // FIXME reverse the order for hasRead
   if (!recommends.length) {
     var allRead = Ti.UI.createLabel({
       width: Ti.UI.FILL,
       height: Ti.UI.FILL,
-      text: '\u2714 All Read',
+      text: '\u2714 ' + (stars? 'No More Stars' : hasRead ? 'No More History...': 'All Read'),
       color: '#1F1f21',
       textAlign: 'center'
     });
-    table.add(allRead);
+    currentWindow.add(allRead);
     setTimeout(getNextPage, 5 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
   }
 }
-if (stars || hasRead) {
+if (stars) {
   var sideLabel = Ti.UI.createLabel({
     width: Ti.Platform.displayCaps.platformHeight,
     left: 24,
-    text: stars ? uStarBlack + ' Starred': 'Recently Read',
+    text: uStarBlack + ' Starred',
     transform: Ti.UI.create2DMatrix().rotate( - 90),
     opacity: 0.7,
-    color: stars ? '#4A4A4A': '#898C90',
-    backgroundColor: stars ? '#E0FF00': '#D1EEFC',
+    color: '#4A4A4A',
+    backgroundColor: '#E0FF00',
     textAlign: 'center'
   });
   table.add(sideLabel);
@@ -99,16 +100,18 @@ function markAsRead(e) {
     db.close();
   }
   e.stars = stars;
-  e.hasRead = hasRead;
+  e.hasRead = hasRead = 0;
   getNextPage(e);
-  setTimeout(uploadData, 2048);
+  if (!hasRead) {
+    setTimeout(uploadData, 2048 * 10);
+  }
 }
 
 function uploadData() {
   var recommends = Alloy.createCollection(DB); // always create a new local instance
   if (recommends) {
     recommends.fetch({
-      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ', ', STATES.KEEPUNREAD, ') ORDER BY rowid ASC LIMIT', Math.max(limit * 2, 12)].join(' ')
+      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ', ', STATES.KEEPUNREAD, ') ORDER BY rowid ASC LIMIT', sendLimit].join(' ')
     });
     if (recommends.length && Ti.Network.online) {
       var data = recommends.map(function(recommend) {
@@ -171,6 +174,9 @@ table.addEventListener('swipe', function(e) {
   var direction = e.direction;
   if (direction === 'up') {
     slideOut(table, markAsRead);
+  } else if (direction === 'down') {
+    e.hasRead = hasRead + 1;
+    getNextPage(e);
   } else if (direction === 'right') {
     Alloy.createController('menu', {
       parentWindow: currentWindow

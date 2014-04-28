@@ -1,4 +1,5 @@
 var getRecommends = require('getRecommends');
+var slideIn = require('slideIn');
 var authUrl = gBaseUrl + '/auth';
 var index = $.index;
 index.needAuth = true;
@@ -103,7 +104,7 @@ index.addEventListener('openRows', function(e) {
     hasRead: e.hasRead,
     stars: e.stars
   }).getView();
-  index.add(rows);
+  index.add(e.hasRead ? slideIn(rows) : rows);
   var menuIcon = Alloy.createController('menuIcon', {
     currentWindow: index
   }).getView();

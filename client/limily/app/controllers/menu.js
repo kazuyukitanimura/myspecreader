@@ -39,7 +39,7 @@ function search(e) {
 function recent(e) {
   Ti.API.debug('recent');
   parentWindow.fireEvent('openRows', {
-    hasRead: true
+    hasRead: 1
   });
   closeMenu();
 }

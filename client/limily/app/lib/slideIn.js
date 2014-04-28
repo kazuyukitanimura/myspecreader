@@ -8,13 +8,11 @@ exports = function(view, duration, finishCallback) {
     duration = null;
   }
 
-  view.bottom = Ti.Platform.displayCaps.platformHeight;
+  view.setTop(parseInt(view.getTop(), 10) - Ti.Platform.displayCaps.platformHeight); // setBottom does not work
   var animation = Ti.UI.createAnimation({
     transform: Ti.UI.create2DMatrix().translate(0, Ti.Platform.displayCaps.platformHeight),
-    duration: duration || 300
+    duration: duration || 200
   });
-  view.addEventListener('postlayout', function(e) {
-    view.animate(animation, finishCallback || function() {});
-  });
+  view.animate(animation, finishCallback || function() {});
   return view;
 };
