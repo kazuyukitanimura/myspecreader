@@ -12,13 +12,13 @@ client.send(); // Send the request.
 var intervalId = 0;
 client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
+  if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
+    index.setBackgroundImage('Default.png');
+  } else {
+    index.setBackgroundImage('Default-Landscape.png');
+  }
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
-    if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
-      index.setBackgroundImage('Default.png');
-    } else {
-      index.setBackgroundImage('Default-Landscape.png');
-    }
     var loginButton = Alloy.createController('loginButton', {
       resLocation: resLocation,
       currentWindow: index
@@ -27,7 +27,6 @@ client.setOnload(function() { // on success
     var learnMore = Alloy.createController('learnMore').getView();
     index.add(learnMore);
   } else {
-    index.setBackgroundImage('');
     index.needAuth = false;
     index.fireEvent('openRows');
     Ti.App.Properties.setBool('firstTime', false);
@@ -88,7 +87,6 @@ client.setOnerror(function(e) { // on error including a timeout
       message: 'You can still read pre-loaded articles'
     }).show();
   }
-  index.setBackgroundImage('');
   index.fireEvent('openRows');
 });
 

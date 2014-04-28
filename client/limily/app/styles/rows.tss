@@ -1,6 +1,7 @@
 '#table': {
   scrollable: false,
-  backgroundColor: '#BDBEC2',
+  //backgroundColor: '#BDBEC2',
+  backgroundColor: 'transparent',
   separatorColor: 'transparent',
   allowsSelection: false,
   top: '14dp'
