@@ -40,10 +40,11 @@ function openSummary(e) {
   };
   var htmlPath = 'webViews/summary.html';
   var html = Ti.Filesystem.getFile(htmlPath).read().text;
-  for (var k in variables) {
-    if (variables.hasOwnProperty(k)) {
-      html = html.replace(new RegExp(k, 'g'), variables[k]);
-    }
+  var keys = Object.keys(variables);
+  var k = '';
+  for (var i = keys.length; i--;) {
+    k = keys[i];
+    html = html.replace(new RegExp(k, 'g'), variables[k]);
   }
   var options = {
     url: htmlPath,
