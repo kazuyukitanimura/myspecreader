@@ -5,7 +5,7 @@
       <ListSection class="menuSection">
         <HeaderView>
           <View class="sectionHeader">
-            <Label>Menu</Label>
+            <!--<Label>Limily</Label>-->
           </View>
         </HeaderView>
         <ListItem class="menuItem" title="\ue069 Home" />

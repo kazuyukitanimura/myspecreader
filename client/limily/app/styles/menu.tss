@@ -8,11 +8,11 @@
 '#menuList': {
   width: '200dp',
   left: '-200dp',
-  backgroundColor: '#F7F7F7',
-  color: '#1F1f21',
+  backgroundColor: '#1F1f21',
+  color: '#F7F7F7',
   //height: '330dp', // 44 * 7 + 22
-  height: '198dp', // 44 * 4 + 22
-  opacity: 1
+  height: '176dp', // 44 * 4
+  opacity: 0.9
 }
 
 '.menuSection': {
@@ -21,11 +21,14 @@
 
 '.sectionHeader': {
   backgroundColor: '#E1FF00',
-  height: Ti.UI.Size
+  //height: Ti.UI.Size
+  height: '1dp'
 }
 
 '.menuItem': {
   opacity: 1,
+  backgroundColor: '#1F1f21',
+  color: '#F7F7F7',
   font: {
     fontFamily: "Simple-Line-Icons"
   }
