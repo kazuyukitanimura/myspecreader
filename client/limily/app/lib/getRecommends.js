@@ -1,7 +1,6 @@
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
-var DB = 'recommends';
-var recommends = Alloy.Collections.instance(DB); // this needs to stay here for controllers/rows.js
+var recommends = Alloy.Collections.instance(DB);
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 64 * 1000 // in milliseconds

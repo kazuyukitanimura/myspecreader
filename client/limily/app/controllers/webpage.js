@@ -10,7 +10,6 @@ if (options.html) {
   html = options.html;
 }
 
-var DB = 'recommends';
 var recommends = Alloy.Collections.instance(DB);
 var STATES = recommends.config.STATES;
 

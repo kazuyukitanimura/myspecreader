@@ -3,7 +3,6 @@ var row = $.row;
 var cell = $.cell;
 var getImage = require('cacheImage').getImage;
 
-var DB = 'recommends';
 var recommends = Alloy.Collections.instance(DB);
 var STATES = recommends.config.STATES;
 

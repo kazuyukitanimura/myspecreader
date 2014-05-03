@@ -1,6 +1,6 @@
 var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
-var hasRead = args.hasRead | 0;
+var page = args.page | 0;
 var stars = args.stars;
 var getImage = require('cacheImage').getImage;
 var delImage = require('cacheImage').delImage;
@@ -22,10 +22,8 @@ moment.lang('en', {
     yy: "%d years"
   }
 });
-var slideOut = require('slideOut');
 var postUrl = gBaseUrl + '/recommends';
 var table = $.table;
-var DB = 'recommends';
 var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
@@ -40,21 +38,12 @@ var uStarBlack = '\u2605';
 
 // fetch existing data from storage
 if (recommends) {
+  recommends = Alloy.Collections.rowsData;
   recommends.fetch({
-    query: ['SELECT * FROM ', TABLE, ' WHERE state ', (hasRead ? 'NOT ': ''), 'IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid ', (hasRead ? 'ASC': 'DESC'), ' LIMIT ', limit, ' OFFSET ' + limit * (hasRead - 1)].join('')
+    query: ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('')
   });
-  if (!recommends.length) {
-    var allRead = Ti.UI.createLabel({
-      width: Ti.UI.FILL,
-      height: Ti.UI.FILL,
-      text: '\u2714 ' + (stars? 'No More Stars' : hasRead ? 'No More History...': 'All Read'),
-      color: '#1F1f21',
-      textAlign: 'center'
-    });
-    currentWindow.add(allRead);
-    setTimeout(getNextPage, 5 * 1000); // FIXME call getNextPage on update of recommends isntead of polling
-  }
 }
+
 if (stars) {
   var sideLabel = Ti.UI.createLabel({
     width: Ti.Platform.displayCaps.platformHeight,
@@ -82,38 +71,16 @@ function transformFunction(model) {
   return data;
 }
 
-// Use this filter function as changing sorting order
-function filterFunction(collection) {
-  if (hasRead === 1) { // TODO understand why we should not reverse the order when hasRead > 1
-    collection.models = collection.models.reverse();
+table.addEventListener('markAsRead', function(e) {
+  if (recommends) {
+    recommends.each(function(recommend) {
+      if (recommend.get('state') === STATES.UNREAD) {
+        recommend.set('state', STATES.PASSED);
+        recommend.save();
+      }
+    });
   }
-  return collection.models;
-}
-
-function getNextPage(e) {
-  currentWindow.fireEvent('openRows', e);
-  table = null;
-}
-
-function markAsRead(e) {
-  var ids = [];
-  Alloy.Collections.instance(DB).each(function(recommend) {
-    if (recommend.get('state') === STATES.UNREAD) {
-      ids.push(recommend.get('id'));
-    }
-  });
-  if (ids.length) {
-    var db = Ti.Database.open(DB); // update multiple rows at the same time
-    db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-    db.close();
-  }
-  e.stars = stars;
-  e.hasRead = hasRead;
-  getNextPage(e);
-  if (!hasRead) {
-    setTimeout(uploadData, 2048 * 10);
-  }
-}
+});
 
 function uploadData() {
   var recommends = Alloy.createCollection(DB); // always create a new local instance
@@ -175,24 +142,10 @@ table.addEventListener('singletap', function(e) { // since tableViewRow does not
   }
 });
 
-table.addEventListener('swipe', function(e) {
-  // prevent bubbling up to the row
+table.addEventListener("free", function(e) {
+  Ti.API.debug('table free');
   e.cancelBubble = true;
-  Ti.API.debug(e.direction);
-  var direction = e.direction;
-  if (direction === 'up') {
-    if (hasRead) {
-      e.hasRead = hasRead - 1;
-      getNextPage(e);
-    } else {
-      slideOut(table, markAsRead);
-    }
-  } else if (direction === 'down') {
-    e.hasRead = hasRead + 1;
-    getNextPage(e);
-  } else if (direction === 'right') {
-    Alloy.createController('menu', {
-      parentWindow: currentWindow
-    }).getView().open();
-  }
+  table = null;
+  recommends = null;
+  $.destroy();
 });

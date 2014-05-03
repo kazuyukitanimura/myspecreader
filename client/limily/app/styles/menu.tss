@@ -11,7 +11,7 @@
   backgroundColor: '#1F1f21',
   color: '#F7F7F7',
   //height: '330dp', // 44 * 7 + 22
-  height: '176dp', // 44 * 4
+  height: '132dp', // 44 * 3
   opacity: 0.9
 }
 

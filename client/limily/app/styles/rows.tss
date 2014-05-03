@@ -4,5 +4,5 @@
   backgroundColor: 'transparent',
   separatorColor: 'transparent',
   allowsSelection: false,
-  top: '14dp'
+  width: Ti.Platform.displayCaps.platformWidth,
 }

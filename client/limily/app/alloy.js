@@ -13,3 +13,4 @@ var gBaseUrl = 'https://limily.com';
 //if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
 //  gBaseUrl = 'https://localhost';
 //}
+var DB = 'recommends';

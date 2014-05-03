@@ -39,7 +39,7 @@ function search(e) {
 function recent(e) {
   Ti.API.debug('recent');
   parentWindow.fireEvent('openRows', {
-    hasRead: 1
+    page: 1
   });
   closeMenu();
 }
@@ -78,7 +78,7 @@ function logout(e) {
 }
 
 //var itemClicks = [home, search, stars, recent, settings, about, logout];
-var itemClicks = [home, stars, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
+var itemClicks = [home, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
   e.cancelBubble = true;
