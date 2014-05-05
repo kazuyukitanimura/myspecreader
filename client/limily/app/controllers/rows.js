@@ -3,7 +3,6 @@ var currentWindow = args.currentWindow;
 var page = args.page | 0;
 var stars = args.stars;
 var getImage = require('cacheImage').getImage;
-var delImage = require('cacheImage').delImage;
 var moment = require('alloy/moment');
 moment.lang('en', {
   relativeTime: {
@@ -22,13 +21,11 @@ moment.lang('en', {
     yy: "%d years"
   }
 });
-var postUrl = gBaseUrl + '/recommends';
 var table = $.table;
 var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
-var sendLimit = Math.max(limit * 2, 12);
 
 /**
  * Unicodes
@@ -81,59 +78,6 @@ table.addEventListener('markAsRead', function(e) {
     });
   }
 });
-
-function uploadData() {
-  var recommends = Alloy.createCollection(DB); // always create a new local instance
-  if (recommends) {
-    recommends.fetch({
-      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ', ', STATES.KEEPUNREAD, ') ORDER BY rowid ASC LIMIT', sendLimit].join(' ')
-    });
-    if (recommends.length && Ti.Network.online) {
-      var data = recommends.map(function(recommend) {
-        var data = JSON.parse(recommend.get('data'));
-        var state = recommend.get('state');
-        return {
-          id: data.id,
-          featureVector: data.featureVector,
-          state: state
-        };
-      });
-      var client = Ti.Network.createHTTPClient();
-      client.open('POST', postUrl);
-      client.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-      client.send(JSON.stringify({ // explicit stringify is required to send JSON that includes arrays
-        data: data
-      }));
-      client.setOnload(function(e) {
-        // collection changes in the loop, so we cannot use recommends.each http://developer.appcelerator.com/question/149527/delete-sql-query-on-alloy-collections
-        var ids = [];
-        for (var i = recommends.length; i--;) {
-          var recommend = recommends.at(i);
-          var data = JSON.parse(recommend.get('data'));
-          var state = recommend.get('state');
-          if (state !== STATES.KEEPUNREAD && state !== STATES.STAR) { // do not delete markAsUnread and star
-            ids.push(recommend.get('id'));
-            var img = data.img;
-            if (img) {
-              delImage(img);
-              delImage(img, 'thumb');
-            }
-          }
-        }
-        if (ids.length) {
-          var db = Ti.Database.open(DB); // delete multiple rows at the same time
-          db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-          db.close();
-        }
-      });
-      client.setOnerror(function(e) { // on error including a timeout
-        Ti.API.debug(e.error);
-        currentWindow.needAuth = true;
-        currentWindow = null;
-      });
-    }
-  }
-}
 
 table.addEventListener('singletap', function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
   var row = e.row;

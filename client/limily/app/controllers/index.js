@@ -1,4 +1,5 @@
 var getRecommends = require('getRecommends');
+var postRecommends = require('postRecommends');
 var authUrl = gBaseUrl + '/auth';
 var index = $.index;
 index.needAuth = true;
@@ -166,6 +167,11 @@ index.addEventListener('openRows', function(e) {
     if (nextPage > MAX_PREV_VIEWS) {
       nextPage = scrollView.currentPage = MAX_PREV_VIEWS; // FIXME this flicks the screen
     }
+    var leaveLimit = 0;
+    for (i = nextPage; i--;) {
+      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // three is only one section
+    }
+    postRecommends(leaveLimit);
   }
   currentPage = nextPage;
 });
