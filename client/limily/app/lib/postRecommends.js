@@ -3,7 +3,7 @@ var postUrl = gBaseUrl + '/recommends';
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 var sendLimit = Math.max(limit * 2, 12);
 
-exports = function(leaveLimit) {
+exports = function(leaveLimit, index) {
   var recommends = Alloy.createCollection(DB); // always create a new local instance
   var TABLE = recommends.config.adapter.collection_name;
   var STATES = recommends.config.STATES;
@@ -54,8 +54,7 @@ exports = function(leaveLimit) {
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
-        currentWindow.needAuth = true;
-        currentWindow = null;
+        index.needAuth = true;
       });
     }
   }

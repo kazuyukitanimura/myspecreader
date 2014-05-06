@@ -70,12 +70,18 @@ function transformFunction(model) {
 
 table.addEventListener('markAsRead', function(e) {
   if (recommends) {
+    var ids = [];
     recommends.each(function(recommend) {
       if (recommend.get('state') === STATES.UNREAD) {
         recommend.set('state', STATES.PASSED);
-        recommend.save();
+        ids.push(recommend.get('id'));
       }
     });
+    if (ids.length) {
+      var db = Ti.Database.open(DB); // update multiple rows at the same time
+      db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
+      db.close();
+    }
   }
 });
 

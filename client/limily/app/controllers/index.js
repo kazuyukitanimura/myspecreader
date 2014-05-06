@@ -171,7 +171,7 @@ index.addEventListener('openRows', function(e) {
     for (i = nextPage; i--;) {
       leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // three is only one section
     }
-    postRecommends(leaveLimit);
+    postRecommends(leaveLimit, index);
   }
   currentPage = nextPage;
 });
