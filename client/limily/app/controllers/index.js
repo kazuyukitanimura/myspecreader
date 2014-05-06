@@ -161,15 +161,16 @@ index.addEventListener('openRows', function(e) {
     for (i = 0; i < nextPage - MAX_PREV_VIEWS; i++) {
       var view = views[i];
       view.fireEvent('free');
-      scrollView.removeView(i);
+      views.splice(i, 1);
       view = null;
     }
     if (nextPage > MAX_PREV_VIEWS) {
-      nextPage = scrollView.currentPage = MAX_PREV_VIEWS; // FIXME this flicks the screen
+      scrollView.setViews(views);
+      nextPage = MAX_PREV_VIEWS;
     }
     var leaveLimit = 0;
     for (i = nextPage; i--;) {
-      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // three is only one section
+      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
     }
     postRecommends(leaveLimit, index);
   }
