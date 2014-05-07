@@ -13,7 +13,7 @@ function _getFile(url, ver) {
     return;
   }
   var md5 = Ti.Utils.md5HexDigest(url + (ver || '')) + _getExtension(url);
-  return Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory, md5);
+  return Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, md5);
 }
 
 function _getBlob(image) {
