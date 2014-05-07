@@ -30,9 +30,16 @@ function _getSafeUrl(url) {
   return (url || '').replace(/ /g, '%20'); // do not use encodeURI to avoide multiple encoding
 }
 
+var used = {}; // key: Ti file blob, val: counter, increment 1 once it is used
+
 function getImage(url, ver) {
   var file = _getFile(url, ver);
-  return file && file.exists() ? file: _getSafeUrl(url);
+  if (file && file.exists()) {
+    var filename = file.name;
+    used[filename] = (used[filename] | 0) + 1;
+    return file;
+  }
+  return _getSafeUrl(url);
 }
 
 function setImage(url, ver, as) {
@@ -62,8 +69,16 @@ function setImage(url, ver, as) {
 
 function delImage(url, ver) {
   var file = _getFile(url, ver);
-  if (file && file.exists()) {
-    file.deleteFile();
+  if (file) {
+    var filename = file.name;
+    if (file.exists()) {
+      if (!used[filename] || !(--used[filename])) {
+        file.deleteFile();
+        delete used[filename];
+      }
+    } else {
+      delete used[filename];
+    }
   }
 }
 
