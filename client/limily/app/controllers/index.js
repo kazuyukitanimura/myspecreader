@@ -32,7 +32,7 @@ var setBackground = function() {
   }
 };
 
-var MAX_NEXT_VIEWS = 5; // including the current page
+var MAX_NEXT_VIEWS = 2; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
 
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
