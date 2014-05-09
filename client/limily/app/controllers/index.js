@@ -149,15 +149,12 @@ index.addEventListener('openRows', function(e) {
   }
   if (nextPage > currentPage) { // if scrolling down
     views[nextPage - 1].fireEvent('markAsRead');
-    for (i = 0; i < nextPage - MAX_PREV_VIEWS; i++) {
-      var view = views[i];
+    while (nextPage > MAX_PREV_VIEWS) {
+      var view = views[0];
       view.fireEvent('free');
-      views.splice(i, 1);
+      views.splice(0, 1);
       view = null;
-    }
-    if (nextPage > MAX_PREV_VIEWS) {
-      nextPage = MAX_PREV_VIEWS;
-      scrollView.currentPage--;
+      nextPage--;
     }
     var leaveLimit = 0;
     for (i = nextPage; i--;) {
@@ -166,7 +163,7 @@ index.addEventListener('openRows', function(e) {
     postRecommends(leaveLimit, index);
   }
   scrollView.setViews(views);
-  currentPage = nextPage;
+  scrollView.currentPage = currentPage = nextPage;
   if (Ti.Network.online && index.needAuth) {
     index.removeAllChildren();
     client.open('HEAD', authUrl);

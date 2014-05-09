@@ -30,7 +30,7 @@ function _getSafeUrl(url) {
   return (url || '').replace(/ /g, '%20'); // do not use encodeURI to avoide multiple encoding
 }
 
-var used = {}; // key: Ti file blob, val: counter, increment 1 once it is used
+var used = {}; // key: file name, val: counter, increment 1 once it is used
 
 function getImage(url, ver) {
   var file = _getFile(url, ver);
