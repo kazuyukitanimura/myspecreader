@@ -19,7 +19,7 @@ var learnMore = Alloy.createController('learnMore').getView();
 var allRead = Ti.UI.createLabel({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
-  text: '\u2714 All Read',
+  text: '\u2714 Analyzing More Articles...',
   color: '#1F1f21',
   textAlign: 'center'
 });
@@ -32,7 +32,7 @@ var setBackground = function() {
   }
 };
 
-var MAX_NEXT_VIEWS = 2; // including the current page
+var MAX_NEXT_VIEWS = 3; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
 
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
@@ -126,36 +126,26 @@ client.setOnerror(function(e) { // on error including a timeout
 var currentPage = Math.max(scrollView.currentPage, 0); // the currentPage can be -1
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
-  if (Ti.Network.online && index.needAuth) {
-    index.removeAllChildren();
-    currentPage = 0;
-    client.open('HEAD', authUrl);
-    client.send();
-    return;
-  }
-  index.remove(allRead);
   var i = 0;
   var views = scrollView.views || [];
   var nextPage = (e.currentPage| 0);
   var offset = views.length - nextPage;
-  for (i = offset; i < MAX_NEXT_VIEWS - offset; i++) {
+  for (i = offset; i < MAX_NEXT_VIEWS; i++) {
     // HACK in order to get a local model, we need to create an instance here
     // see Resources/iphone/alloy/controllers/rows.js
     var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
     var rows = Alloy.createController('rows', {
       currentWindow: index,
-      page: offset + i,
+      page: i,
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
-      if (i === offset) {
-        index.add(allRead);
-      }
+      views.push(allRead);
       setTimeout(index.fireEvent.bind(this, 'openRows'), 5 * 1000);
       break;
     }
     rows.setTransform(counterRotate);
-    scrollView.addView(rows);
+    views.push(rows);
   }
   if (nextPage > currentPage) { // if scrolling down
     views[nextPage - 1].fireEvent('markAsRead');
@@ -166,8 +156,8 @@ index.addEventListener('openRows', function(e) {
       view = null;
     }
     if (nextPage > MAX_PREV_VIEWS) {
-      scrollView.setViews(views);
       nextPage = MAX_PREV_VIEWS;
+      scrollView.currentPage--;
     }
     var leaveLimit = 0;
     for (i = nextPage; i--;) {
@@ -175,7 +165,14 @@ index.addEventListener('openRows', function(e) {
     }
     postRecommends(leaveLimit, index);
   }
+  scrollView.setViews(views);
   currentPage = nextPage;
+  if (Ti.Network.online && index.needAuth) {
+    index.removeAllChildren();
+    client.open('HEAD', authUrl);
+    client.send();
+    return;
+  }
 });
 
 scrollView.addEventListener('scrollend', function(e) {
