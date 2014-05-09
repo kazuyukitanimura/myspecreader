@@ -68,7 +68,7 @@ function transformFunction(model) {
   return data;
 }
 
-table.addEventListener('markAsRead', function(e) {
+table.markAsRead = function() {
   if (recommends) {
     var ids = [];
     recommends.each(function(recommend) {
@@ -83,7 +83,7 @@ table.addEventListener('markAsRead', function(e) {
       db.close();
     }
   }
-});
+};
 
 table.addEventListener('singletap', function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
   var row = e.row;
@@ -92,10 +92,9 @@ table.addEventListener('singletap', function(e) { // since tableViewRow does not
   }
 });
 
-table.addEventListener("free", function(e) {
+table.free = function() {
   Ti.API.debug('table free');
-  e.cancelBubble = true;
   table = null;
   recommends = null;
   $.destroy();
-});
+};

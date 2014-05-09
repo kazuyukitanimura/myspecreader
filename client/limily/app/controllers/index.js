@@ -21,7 +21,8 @@ var allRead = Ti.UI.createLabel({
   height: Ti.UI.FILL,
   text: '\u2714 Analyzing More Articles...',
   color: '#1F1f21',
-  textAlign: 'center'
+  textAlign: 'center',
+  transform: counterRotate
 });
 
 var setBackground = function() {
@@ -46,6 +47,7 @@ var intervalId = 0;
 client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
   setBackground();
+  index.removeAllChildren();
   var resLocation = this.getResponseHeader('Location');
   if (this.status === 302 && resLocation !== '/') {
     var loginButton = Alloy.createController('loginButton', {
@@ -128,7 +130,7 @@ index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   var i = 0;
   var views = scrollView.views || [];
-  var nextPage = (e.currentPage| 0);
+  var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
     // HACK in order to get a local model, we need to create an instance here
@@ -141,31 +143,31 @@ index.addEventListener('openRows', function(e) {
     }).getView();
     if (!rowsData.length) {
       views.push(allRead);
-      setTimeout(index.fireEvent.bind(this, 'openRows'), 5 * 1000);
+      index.needAuth = true;
       break;
     }
     rows.setTransform(counterRotate);
     views.push(rows);
   }
   if (nextPage > currentPage) { // if scrolling down
-    views[nextPage - 1].fireEvent('markAsRead');
+    views[nextPage - 1].markAsRead();
     while (nextPage > MAX_PREV_VIEWS) {
       var view = views[0];
-      view.fireEvent('free');
+      view.free();
       views.splice(0, 1);
       view = null;
       nextPage--;
     }
+    scrollView.currentPage = nextPage;
     var leaveLimit = 0;
     for (i = nextPage; i--;) {
       leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
     }
     postRecommends(leaveLimit, index);
   }
+  currentPage = nextPage;
   scrollView.setViews(views);
-  scrollView.currentPage = currentPage = nextPage;
   if (Ti.Network.online && index.needAuth) {
-    index.removeAllChildren();
     client.open('HEAD', authUrl);
     client.send();
     return;
@@ -184,7 +186,7 @@ if (Alloy.isTablet) {
     var views = scrollView.views;
     for (var i = views.length; i--;) {
       var view = views[i];
-      view.fireEvent('free');
+      view.free();
       scrollView.removeView(i);
       view = null;
     }
