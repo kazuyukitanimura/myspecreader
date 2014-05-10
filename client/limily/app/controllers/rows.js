@@ -78,9 +78,13 @@ table.markAsRead = function() {
       }
     });
     if (ids.length) {
-      var db = Ti.Database.open(DB); // update multiple rows at the same time
-      db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-      db.close();
+      try {
+        var db = Ti.Database.open(DB); // update multiple rows at the same time
+        db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
+        db.close();
+      } catch(err) {
+        Ti.API.error(err);
+      }
     }
   }
 };

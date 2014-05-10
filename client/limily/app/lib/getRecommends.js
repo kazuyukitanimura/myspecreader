@@ -1,3 +1,4 @@
+var getReads = require('getReads');
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
 var recommends = Alloy.Collections.instance(DB);
@@ -41,7 +42,7 @@ client.setOnload(function() { // on success
 });
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
-  client.timeout = Math.min(client.timeout * 2, 32 * 1000); // Max 32sec
+  client.timeout = Math.min(client.timeout * 2, 256 * 1000); // Max 256sec
 });
 
 var getRecommends = function() {
@@ -52,6 +53,7 @@ var getRecommends = function() {
   }
   client.open('GET', url);
   client.send();
+  getReads();
 };
 
 exports = getRecommends;

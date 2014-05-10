@@ -47,9 +47,13 @@ exports = function(leaveLimit, index) {
           }
         }
         if (ids.length) {
-          var db = Ti.Database.open(DB); // delete multiple rows at the same time
-          db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-          db.close();
+          try {
+            var db = Ti.Database.open(DB); // delete multiple rows at the same time
+            db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
+            db.close();
+          } catch(err) {
+            Ti.API.error(err);
+          }
         }
       });
       client.setOnerror(function(e) { // on error including a timeout
