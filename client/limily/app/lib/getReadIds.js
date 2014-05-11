@@ -1,4 +1,4 @@
-var url = gBaseUrl + '/reads';
+var url = gBaseUrl + '/readids';
 var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var client = Ti.Network.createHTTPClient({
@@ -6,7 +6,7 @@ var client = Ti.Network.createHTTPClient({
   timeout: 64 * 1000 // in milliseconds
 });
 client.setOnload(function() { // on success
-  Ti.API.debug('sucess getReads');
+  Ti.API.debug('sucess getReadIds');
   try {
     var db = Ti.Database.open(DB);
     var ids = JSON.parse(this.responseText).items;
@@ -22,7 +22,7 @@ client.setOnerror(function(e) { // on error including a timeout
   client.timeout = Math.min(client.timeout * 2, 256 * 1000); // Max 256sec
 });
 
-var getReads = function() {
+var getReadIds = function() {
   // silently ignore this if there's no network connection
   if (!Ti.Network.online) {
     return;
@@ -31,4 +31,4 @@ var getReads = function() {
   client.send();
 };
 
-exports = getReads;
+exports = getReadIds;

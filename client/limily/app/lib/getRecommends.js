@@ -1,4 +1,4 @@
-var getReads = require('getReads');
+var getReadIds = require('getReadIds');
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
 var recommends = Alloy.Collections.instance(DB);
@@ -53,7 +53,7 @@ var getRecommends = function() {
   }
   client.open('GET', url);
   client.send();
-  getReads();
+  getReadIds();
 };
 
 exports = getRecommends;
