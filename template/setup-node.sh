@@ -3,8 +3,22 @@ curl -L https://npmjs.org/install.sh | sh
 git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader && npm install
 DIR=`pwd`
 FILE=app.js
+LOGDIR=/var/log/forever
+mkdir -p $LOGDIR
+LOGFILE=$LOGDIR/appjs.log
 
 chmod a+r $DIR/$FILE
+
+cat <<EOF >/etc/logrotate.d/appjs
+\$LOGFILE {
+  weekly
+  missingok
+  copytruncate
+  rotate 4
+  compress
+  notifempty
+}
+EOF
 
 cat <<EOF >/etc/init.d/nodejs
 #!/bin/sh
@@ -12,7 +26,6 @@ cat <<EOF >/etc/init.d/nodejs
 PIDFILE=/var/run/nodejs.pid
 FOREVER="\$DIR/node_modules/forever/bin/forever"
 NODE="\$FOREVER \$DIR/\$FILE"
-LOGFILE=/var/log/appjs.log
 export NODE_PATH=\$NODE_PATH:/usr/local/lib/node_modules
 
 . /lib/init/vars.sh
