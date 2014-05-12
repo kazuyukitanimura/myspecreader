@@ -142,31 +142,28 @@ index.addEventListener('openRows', function(e) {
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
-      views.push(allRead);
+      scrollView.addView(allRead);
       index.needAuth = true;
       break;
     }
     rows.setTransform(counterRotate);
-    views.push(rows);
+    scrollView.addView(rows);
   }
   if (nextPage > currentPage) { // if scrolling down
     views[nextPage - 1].markAsRead();
-    while (nextPage > MAX_PREV_VIEWS) {
+    while (nextPage-- > MAX_PREV_VIEWS) {
       var view = views[0];
       view.free();
-      views.splice(0, 1);
       view = null;
-      nextPage--;
+      scrollView.shiftView();
     }
-    scrollView.currentPage = nextPage;
     var leaveLimit = 0;
-    for (i = nextPage; i--;) {
+    for (i = ++nextPage; i--;) {
       leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
     }
     postRecommends(leaveLimit, index);
   }
   currentPage = nextPage;
-  scrollView.setViews(views);
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();

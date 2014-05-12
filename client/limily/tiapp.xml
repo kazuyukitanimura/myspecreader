@@ -49,6 +49,7 @@
 		<theme>default</theme>
 	</mobileweb>
 	<modules>
+		<module version="0.1">com.limily.verticalscrollableview</module>
 	</modules>
 	<deployment-targets>
 		<target device="android">false</target>

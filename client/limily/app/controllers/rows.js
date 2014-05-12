@@ -64,7 +64,7 @@ function transformFunction(model) {
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
   data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: state === STATES.DISLIKE ? uDislike: '';
-  data.ago = moment(data.published).fromNow();
+  data.ago = parseInt(data.published, 10)? moment(data.published).fromNow(): '';
   return data;
 }
 
