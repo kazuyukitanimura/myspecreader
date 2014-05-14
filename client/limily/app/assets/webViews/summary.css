@@ -19,21 +19,18 @@ body {
 }
 #original {
   background-color: white;
-  /*background-color: #E1FF00;*/
   background-repeat: no-repeat;
   background-position: 10% center;
   padding: 4px 23px;
   margin: 14px auto 0px auto;
   display: table;
   color: #8E8E93;
-  /*color: #1F1F21;*/
   text-decoration: none;
   text-align: center;
   font-family: "Helvetica Neue";
   font-size: 16px;
   border-radius: 9px;
   border: 3px solid #8E8E93;
-  /*border: 3px solid #1F1F21;*/
   min-height: 18px;
 }
 iframe {

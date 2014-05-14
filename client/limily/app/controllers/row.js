@@ -15,7 +15,7 @@ if ($model) {
   state = $model.get('state');
   data = JSON.parse($model.get('data'));
   if ($model && state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) {
-    cell.opacity = 0.7;
+    cell.opacity = 0.8;
   }
 }
 
