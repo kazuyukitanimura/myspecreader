@@ -132,6 +132,21 @@ index.addEventListener('openRows', function(e) {
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
+  if (nextPage > currentPage) { // if scrolling down
+    views[nextPage - 1].markAsRead();
+    while (nextPage-- > MAX_PREV_VIEWS) {
+      var view = views[0];
+      view.free();
+      view = null;
+      scrollView.shiftView();
+    }
+    var leaveLimit = 0;
+    for (i = ++nextPage; i--;) {
+      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
+    }
+    postRecommends(leaveLimit, index);
+  }
+  currentPage = nextPage;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
     // HACK in order to get a local model, we need to create an instance here
     // see Resources/iphone/alloy/controllers/rows.js
@@ -149,21 +164,6 @@ index.addEventListener('openRows', function(e) {
     rows.setTransform(counterRotate);
     scrollView.addView(rows);
   }
-  if (nextPage > currentPage) { // if scrolling down
-    views[nextPage - 1].markAsRead();
-    while (nextPage-- > MAX_PREV_VIEWS) {
-      var view = views[0];
-      view.free();
-      view = null;
-      scrollView.shiftView();
-    }
-    var leaveLimit = 0;
-    for (i = ++nextPage; i--;) {
-      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
-    }
-    postRecommends(leaveLimit, index);
-  }
-  currentPage = nextPage;
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
