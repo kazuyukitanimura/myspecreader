@@ -132,7 +132,7 @@ index.addEventListener('openRows', function(e) {
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
-  if (nextPage > currentPage) { // if scrolling down
+  if (nextPage > currentPage && !e.stars) { // if scrolling down
     views[nextPage - 1].markAsRead();
     while (nextPage-- > MAX_PREV_VIEWS) {
       var view = views[0];
@@ -157,8 +157,10 @@ index.addEventListener('openRows', function(e) {
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
-      scrollView.addView(allRead);
-      index.needAuth = true;
+      if (!e.stars) {
+        scrollView.addView(allRead);
+        index.needAuth = true;
+      }
       break;
     }
     rows.setTransform(counterRotate);
@@ -175,19 +177,23 @@ scrollView.addEventListener('scrollend', function(e) {
   index.fireEvent('openRows', e);
 });
 
+index.unloadViews = function() {
+  var views = scrollView.views;
+  for (var i = views.length; i--;) {
+    var view = views[i];
+    view.free();
+    scrollView.removeView(i);
+    view = null;
+  }
+  currentPage = scrollView.currentPage = 0;
+};
+
 if (Alloy.isTablet) {
   index.orientationModes = [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];
   // Handling Orientation Changes
   Ti.Gesture.addEventListener('orientationchange', function(e) {
     setBackground();
-    var views = scrollView.views;
-    for (var i = views.length; i--;) {
-      var view = views[i];
-      view.free();
-      scrollView.removeView(i);
-      view = null;
-    }
-    currentPage = scrollView.currentPage = 0;
+    index.unloadViews();
     index.fireEvent('openRows');
   });
 }

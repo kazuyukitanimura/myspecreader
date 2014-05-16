@@ -46,6 +46,7 @@ function recent(e) {
 
 function stars(e) {
   Ti.API.debug('stars');
+  parentWindow.unloadViews();
   parentWindow.fireEvent('openRows', {
     stars: true
   });
@@ -55,6 +56,7 @@ function stars(e) {
 function home(e) {
   Ti.API.debug('home');
   parentWindow.needAuth = true;
+  parentWindow.unloadViews();
   parentWindow.fireEvent('openRows');
   closeMenu();
 }
@@ -78,7 +80,7 @@ function logout(e) {
 }
 
 //var itemClicks = [home, search, stars, recent, settings, about, logout];
-var itemClicks = [home, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
+var itemClicks = [home, stars, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
   e.cancelBubble = true;

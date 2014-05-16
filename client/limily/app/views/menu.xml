@@ -10,7 +10,7 @@
         </HeaderView>
         <ListItem class="menuItem" title="\ue069 Home" />
         <!-- <ListItem class="menuItem" title="\ue090 Search & Add" /> comment out until we impleent-->
-        <!-- <ListItem class="menuItem" title="\ue09b Stars" /> -->
+        <ListItem class="menuItem" title="\ue09b Stars" />
         <!-- <ListItem class="menuItem" title="\ue081 Recently Read" /> -->
         <!-- <ListItem class="menuItem" title="\ue09a Settings" /> comment out until we impleent-->
         <ListItem class="menuItem" title="\ue08b About" />
