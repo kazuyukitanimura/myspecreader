@@ -1,6 +1,6 @@
 '#row': {
   backgroundColor: 'transparent',
-  height: '92dp',
+  height: '94dp',
   className: 'itemRow'
 }
 
