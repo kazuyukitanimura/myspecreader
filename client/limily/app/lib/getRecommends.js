@@ -1,7 +1,11 @@
 var getReadIds = require('getReadIds');
+var getStars = require('getStars');
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
 var recommends = Alloy.Collections.instance(DB);
+var TABLE = recommends.config.adapter.collection_name;
+var STATES = recommends.config.STATES;
+var unreadState = STATES.UNREAD;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 64 * 1000 // in milliseconds
@@ -14,8 +18,6 @@ client.setOnload(function() { // on success
   try {
     var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
-    var table = recommends.config.adapter.collection_name;
-    var defaultState = recommends.config.defaults.state;
     for (var i = items.length; i--;) {
       var item = items[i];
       var id = item.id;
@@ -24,7 +26,7 @@ client.setOnload(function() { // on success
       // the larger rowid, the newer (higher priority)
       // experimentally confirmed that the save() monotonically increase its rowid even for existing row
       // by sorting by rowid, we can always get the newest sorted ranking
-      db.execute(['INSERT OR REPLACE INTO ', table, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', table, ' WHERE id = ?), ', defaultState , '), ?)'].join(''), id, id, JSON.stringify(item));
+      db.execute(['INSERT OR REPLACE INTO ', TABLE, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState , '), ?)'].join(''), id, id, JSON.stringify(item));
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
@@ -54,6 +56,7 @@ var getRecommends = function() {
   client.open('GET', url);
   client.send();
   getReadIds();
+  getStars();
 };
 
 exports = getRecommends;
