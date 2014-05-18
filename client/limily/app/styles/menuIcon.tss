@@ -1,13 +1,13 @@
 '#menuIcon': {
   scrollable: false,
   backgroundColor: '#1F1F21',
-  left: '-12',
+  left: '-18',
   borderWidth: 0,
-  width: '30dp',
+  width: '45dp',
   textAlign: 'center',
   font: {
     fontFamily: "Simple-Line-Icons",
-    fontSize: '20dp'
+    fontSize: '30dp'
   },
   color: '#F7F7F7',
   opacity: 0.9

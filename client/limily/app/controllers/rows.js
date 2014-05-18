@@ -96,9 +96,9 @@ table.addEventListener('singletap', function(e) { // since tableViewRow does not
   }
 });
 
-table.free = function() {
+table.addEventListener('free', function(e) {
   Ti.API.debug('table free');
   table = null;
   recommends = null;
   $.destroy();
-};
+});

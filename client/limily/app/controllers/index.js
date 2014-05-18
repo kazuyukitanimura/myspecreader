@@ -136,7 +136,7 @@ index.addEventListener('openRows', function(e) {
     views[nextPage - 1].markAsRead();
     while (nextPage-- > MAX_PREV_VIEWS) {
       var view = views[0];
-      view.free();
+      view.fireEvent('free', e);
       view = null;
       scrollView.shiftView();
     }
@@ -181,7 +181,7 @@ index.unloadViews = function() {
   var views = scrollView.views;
   for (var i = views.length; i--;) {
     var view = views[i];
-    view.free();
+    view.fireEvent('free');
     scrollView.removeView(i);
     view = null;
   }
