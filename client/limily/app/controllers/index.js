@@ -42,7 +42,8 @@ var MAX_PREV_VIEWS = 2; // without the current page
 
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
-  timeout: 1000 // in milliseconds
+  timeout: 1000, // in milliseconds
+  enableKeepAlive: true
 });
 //client.clearCookies(gBaseUrl); // for test
 client.open('HEAD', authUrl); // Prepare the connection.

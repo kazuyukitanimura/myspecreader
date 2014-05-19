@@ -10,10 +10,17 @@ var client = Ti.Network.createHTTPClient({
   onerror: function(e) { // on error including a timeout, has to be defined before setOnload
     Ti.API.debug(e.error);
     this.timeout = Math.min(this.timeout * 2, 256 * 1000); // Max 256sec
-  }
+  },
+  enableKeepAlive: true
 });
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getStars');
+  if (this.status >= 400) { // workaround
+    if (this.onerror) {
+      this.onerror(e);
+    }
+    return;
+  }
   try {
     var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
@@ -28,7 +35,7 @@ client.setOnload(function() { // on success
     db.close();
   } catch(err) {
     Ti.API.error(err);
-    Ti.API.debug(this.responseText);
+    //Ti.API.debug(this.responseText);
   }
 });
 

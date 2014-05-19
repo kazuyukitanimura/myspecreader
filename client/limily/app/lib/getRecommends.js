@@ -12,13 +12,20 @@ var client = Ti.Network.createHTTPClient({
   onerror: function(e) { // on error including a timeout, has to be defined before setOnload
     Ti.API.debug(e.error);
     this.timeout = Math.min(this.timeout * 2, 256 * 1000); // Max 256sec
-  }
+  },
+  enableKeepAlive: true
 });
 function toThumb(blob) {
   return blob.imageAsThumbnail(90, 0, 0);
 }
-client.setOnload(function() { // on success
+client.setOnload(function(e) { // on success
   Ti.API.debug('sucess getReccomends');
+  if (this.status >= 400) { // workaround
+    if (this.onerror) {
+      this.onerror(e);
+    }
+    return;
+  }
   try {
     var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
@@ -32,15 +39,9 @@ client.setOnload(function() { // on success
       // by sorting by rowid, we can always get the newest sorted ranking
       db.execute(['INSERT OR REPLACE INTO ', TABLE, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState , '), ?)'].join(''), id, id, JSON.stringify(item));
       setImage(item.img);
-      setImage(item.img, 'thumb', toThumb);
+      //setImage(item.img, 'thumb', toThumb);
     }
     db.close();
-    // TODO delte this test code
-    //var rr = Alloy.createCollection(DB);
-    //rr.fetch({query: 'SELECT id, rowid, state, data FROM ' + recommends.config.adapter.collection_name});
-    //rr.each(function(r){
-    //  console.log(r.get('id'), r.get('rowid'), r.get('state'), r.get('data'));
-    //});
   } catch(err) {
     Ti.API.error(err);
     Ti.API.debug(this.responseText);
