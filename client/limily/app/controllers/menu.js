@@ -2,12 +2,18 @@ var args = arguments[0] || {};
 var parentWindow = args.parentWindow;
 var menu = $.menu;
 var menuList = $.menuList;
+var MENU_OPEN = 'menuOpen';
 
 function openMenu(e) {
-  menuList.animate({
-    left: '0dp',
-    duration: 250
-  });
+  if (Ti.App.Properties.getBool(MENU_OPEN, false)) {
+    closeMenu();
+  } else {
+    Ti.App.Properties.setBool(MENU_OPEN, true);
+    menuList.animate({
+      left: '0dp',
+      duration: 250
+    });
+  }
 }
 
 function closeMenu(e) {
@@ -16,6 +22,7 @@ function closeMenu(e) {
     duration: 250
   },
   function(e) {
+    Ti.App.Properties.setBool(MENU_OPEN, false);
     menu.close();
     menu = null;
     menuList = null;
