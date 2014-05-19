@@ -35,7 +35,7 @@ var actInd = Ti.UI.createActivityIndicator({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
   message: 'Loading...',
-  color: 'FFF',
+  color: '#FFF',
   backgroundColor: '#1F1F21',
   opacity: 0.7
 });

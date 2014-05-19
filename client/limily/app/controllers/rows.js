@@ -34,12 +34,10 @@ var uDislike = '\ue06d';
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage
-if (recommends) {
-  recommends = Alloy.Collections.rowsData;
-  recommends.fetch({
-    query: ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('')
-  });
-}
+recommends = Alloy.Collections.rowsData;
+recommends.fetch({
+  query: ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('')
+});
 
 if (stars) {
   var sideLabel = Ti.UI.createLabel({

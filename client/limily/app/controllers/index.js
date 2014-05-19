@@ -22,12 +22,16 @@ var learnMore = Alloy.createController('learnMore').getView();
 var allRead = Ti.UI.createLabel({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
-  text: '\u2714 Analyzing Articles...',
-  color: '#1F1f21',
+  font: {
+    fontFamily: "Simple-Line-Icons",
+    fontSize: '20dp'
+  },
+  text: 'Analyzing articles now\n\n\ue06b \ue077 \ue083',
+  color: '#FFF',
   textAlign: 'center',
-  transform: counterRotate
+  opacity: 0.7,
+  backgroundColor: '#1F1F21',
 });
-allRead.markAsRead = function(){};
 
 var setBackground = function() {
   if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
@@ -163,7 +167,7 @@ index.addEventListener('openRows', function(e) {
     }).getView();
     if (!rowsData.length) {
       if (!e.stars) {
-        scrollView.addView(allRead);
+        index.add(allRead);
         index.needAuth = true;
       }
       break;
