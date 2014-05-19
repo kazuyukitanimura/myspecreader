@@ -41,12 +41,12 @@ var actInd = Ti.UI.createActivityIndicator({
 });
 webpage.add(actInd);
 var backButton = Ti.UI.createButton({
-  top: '14dp',
+  top: '16dp',
   left: '4dp',
   width: '40dp',
   font: {
     fontFamily: "Simple-Line-Icons",
-    fontSize: '18dp'
+    fontSize: '30dp'
   },
   color: '#1F1F21',
   title: uClose
@@ -78,7 +78,7 @@ webpage.add(backButton);
 //  webpage.add(dislikeButton);
 //}
 var unreadButton = Ti.UI.createButton({
-  top: '16dp',
+  top: '24dp',
   right: '24dp',
   width: '152dp',
   font: {
@@ -96,10 +96,10 @@ if (options.unread) {
 }
 var starButton = Ti.UI.createButton({
   top: '11dp',
-  right: '4dp',
-  width: '30dp',
+  right: '8dp',
+  width: '34dp',
   font: {
-    fontSize: '21dp'
+    fontSize: '35dp'
   },
   color: '#1F1F21'
 });
