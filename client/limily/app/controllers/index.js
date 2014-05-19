@@ -6,10 +6,13 @@ index.needAuth = true;
 
 var rotate = Ti.UI.create2DMatrix().rotate(90);
 var counterRotate = rotate.rotate( - 180);
+var max = Math.max;
+var pWidth = Ti.Platform.displayCaps.platformWidth;
+var pHeight = Ti.Platform.displayCaps.platformHeight;
 var scrollView = Ti.UI.createScrollableView({
   showPagingControl: false,
-  height: Ti.Platform.displayCaps.platformHeight,
-  width: Ti.Platform.displayCaps.platformHeight,
+  height: max(pWidth, pHeight),
+  width: max(pWidth, pHeight),
   top: '14dp',
   transform: rotate
 });
@@ -126,7 +129,7 @@ client.setOnerror(function(e) { // on error including a timeout
   index.fireEvent('openRows');
 });
 
-var currentPage = Math.max(scrollView.currentPage, 0); // the currentPage can be -1
+var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   var i = 0;
