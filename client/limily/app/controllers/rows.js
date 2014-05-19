@@ -30,7 +30,6 @@ var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 /**
  * Unicodes
  */
-var uDislike = '\ue06d';
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage
@@ -61,7 +60,7 @@ function transformFunction(model) {
   var state = model.get('state');
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
-  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: state === STATES.DISLIKE ? uDislike: '';
+  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: '';
   data.ago = parseInt(data.published, 10)? moment(data.published).fromNow(): '';
   return data;
 }

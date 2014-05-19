@@ -20,8 +20,7 @@ exports.definition = {
       VIEWSUMMARY: 2,
       VIEWORIGINAL: 3,
       STAR: 4,
-      KEEPUNREAD: 254,
-      DISLIKE: 255
+      KEEPUNREAD: 254
     }
   },
 

@@ -20,7 +20,6 @@ var uClose = '\ue082';
 var uBack = '\ue07a';
 var uStarWhite = '\u2606';
 var uStarBlack = '\u2605';
-//var uDislike = '\ue06d';
 
 var webview = $.webview;
 var webpage = $.webpage;
@@ -59,24 +58,6 @@ backButton.addEventListener('click', function(e) {
   }
 });
 webpage.add(backButton);
-//var dislikeButton = Ti.UI.createButton({
-//  top: '18dp',
-//  left: '96dp',
-//  width: '24dp',
-//  font: {
-//    fontFamily: "Simple-Line-Icons",
-//    fontSize: '14dp'
-//  },
-//  color: '#1F1F21',
-//  title: uDislike
-//});
-//dislikeButton.addEventListener('click', function(e) {
-//  webpage.state = STATES.DISLIKE;
-//  closeWebPage();
-//});
-//if (options.dislike) {
-//  webpage.add(dislikeButton);
-//}
 var unreadButton = Ti.UI.createButton({
   top: '24dp',
   right: '24dp',
@@ -108,7 +89,6 @@ starButton.addEventListener('click', function(e) {
   if (state === STATES.STAR) {
     webpage.state = webpage.oldState || STATES.VIEWSUMMARY;
     if (options.unread) {
-      //dislikeButton.show();
       unreadButton.show();
     }
     this.title = uStarWhite;
@@ -116,7 +96,6 @@ starButton.addEventListener('click', function(e) {
     webpage.oldState = state;
     webpage.state = STATES.STAR;
     if (options.unread) {
-      //dislikeButton.hide();
       unreadButton.hide();
     }
     this.title = uStarBlack;
@@ -142,7 +121,6 @@ webview.addEventListener('beforeload', function(e) {
     if (webpage.state === STATES.STAR) {
       starButton.title = uStarBlack;
       if (options.unread) {
-        dislikeButton.hide();
         unreadButton.hide();
       }
     } else {

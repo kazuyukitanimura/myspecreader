@@ -48,7 +48,6 @@ function openSummary(e) {
   var options = {
     url: htmlPath,
     html: html,
-    dislike: true,
     unread: true,
     star: true
   };
@@ -60,7 +59,7 @@ function openSummary(e) {
     if ($model) {
       if (state === STATES.STAR) {
         webpage.oldState = viewOriginal? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
-      } else if (state !== STATES.VIEWORIGINAL && state !== STATES.DISLIKE) {
+      } else if (state !== STATES.VIEWORIGINAL) {
         state = STATES.VIEWSUMMARY;
         if (viewOriginal) {
           state = STATES.VIEWORIGINAL;
