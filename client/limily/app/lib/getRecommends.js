@@ -8,7 +8,11 @@ var STATES = recommends.config.STATES;
 var unreadState = STATES.UNREAD;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
-  timeout: 64 * 1000 // in milliseconds
+  timeout: 64 * 1000, // in milliseconds
+  onerror: function(e) { // on error including a timeout, has to be defined before setOnload
+    Ti.API.debug(e.error);
+    this.timeout = Math.min(this.timeout * 2, 256 * 1000); // Max 256sec
+  }
 });
 function toThumb(blob) {
   return blob.imageAsThumbnail(90, 0, 0);
@@ -41,10 +45,6 @@ client.setOnload(function() { // on success
     Ti.API.error(err);
     Ti.API.debug(this.responseText);
   }
-});
-client.setOnerror(function(e) { // on error including a timeout
-  Ti.API.debug(e.error);
-  client.timeout = Math.min(client.timeout * 2, 256 * 1000); // Max 256sec
 });
 
 var getRecommends = function() {

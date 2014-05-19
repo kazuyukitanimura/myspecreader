@@ -19,11 +19,12 @@ var learnMore = Alloy.createController('learnMore').getView();
 var allRead = Ti.UI.createLabel({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
-  text: '\u2714 Analyzing More Articles...',
+  text: '\u2714 Analyzing Articles...',
   color: '#1F1f21',
   textAlign: 'center',
   transform: counterRotate
 });
+allRead.markAsRead = function(){};
 
 var setBackground = function() {
   if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
@@ -189,12 +190,16 @@ index.unloadViews = function() {
 };
 
 if (Alloy.isTablet) {
+  var oldOrientation = index.orientation;
   index.orientationModes = [Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT, Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];
   // Handling Orientation Changes
   Ti.Gesture.addEventListener('orientationchange', function(e) {
-    setBackground();
-    index.unloadViews();
-    index.fireEvent('openRows');
+    if (oldOrientation !== index.orientation) {
+      oldOrientation = index.orientation;
+      setBackground();
+      index.unloadViews();
+      index.fireEvent('openRows');
+    }
   });
 }
 
