@@ -26,7 +26,7 @@ var allRead = Ti.UI.createLabel({
     fontFamily: "Simple-Line-Icons",
     fontSize: '20dp'
   },
-  text: 'Analyzing articles now\n\n\ue06b \ue077 \ue083',
+  text: 'Analyzing articles now...\n\n\ue06b \ue077 \ue083',
   color: '#FFF',
   textAlign: 'center',
   opacity: 0.7,
