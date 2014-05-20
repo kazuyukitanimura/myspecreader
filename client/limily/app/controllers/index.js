@@ -215,17 +215,6 @@ if (Alloy.isTablet) {
 }
 
 index.open();
-index.addEventListener('swipe', function(e) {
-  // prevent bubbling up to the row
-  e.cancelBubble = true;
-  Ti.API.debug(e.direction);
-  var direction = e.direction;
-  if (direction === 'up') {
-    Alloy.createController('menu', {
-      parentWindow: index
-    }).getView().open();
-  }
-});
 index.addEventListener("close", function() {
   Ti.API.debug('index close');
   //index = null; // index has to be allways here, do not assgin null

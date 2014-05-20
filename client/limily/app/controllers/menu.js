@@ -23,8 +23,10 @@ function closeMenu(e) {
   },
   function(e) {
     Ti.App.Properties.setBool(MENU_OPEN, false);
-    menu.close();
-    menu = null;
+    if (menu) {
+      menu.close();
+      menu = null;
+    }
     menuList = null;
     $.destroy();
   });

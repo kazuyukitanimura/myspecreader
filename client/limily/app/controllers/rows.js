@@ -92,6 +92,17 @@ table.addEventListener('singletap', function(e) { // since tableViewRow does not
     row.fireEvent('singletap', e);
   }
 });
+table.addEventListener('swipe', function(e) {
+  // prevent bubbling up to the row
+  e.cancelBubble = true;
+  Ti.API.debug(e.direction);
+  var direction = e.direction;
+  if (direction === 'right') {
+    Alloy.createController('menu', {
+      parentWindow: currentWindow
+    }).getView().open();
+  }
+});
 
 table.addEventListener('free', function(e) {
   Ti.API.debug('table free');
