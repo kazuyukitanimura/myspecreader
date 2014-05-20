@@ -27,7 +27,6 @@ client.setOnload(function(e) { // on success
     return;
   }
   try {
-    var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
     // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
     // the order of saving to sqlite is important
@@ -49,8 +48,11 @@ client.setOnload(function(e) { // on success
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
-    db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
-    db.close();
+    if (items.length) {
+      var db = Ti.Database.open(DB);
+      db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
+      db.close();
+    }
   } catch(err) {
     Ti.API.error(err);
     //Ti.API.debug(this.responseText);

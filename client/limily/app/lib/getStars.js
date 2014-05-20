@@ -22,7 +22,6 @@ client.setOnload(function() { // on success
     return;
   }
   try {
-    var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
     // see lib/getRecommends.js
     var sql = ['INSERT OR REPLACE INTO', TABLE, '(id, state, data) VALUES '].join(' ');
@@ -39,8 +38,11 @@ client.setOnload(function() { // on success
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
-    db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
-    db.close();
+    if (items.length) {
+      var db = Ti.Database.open(DB);
+      db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
+      db.close();
+    }
   } catch(err) {
     Ti.API.error(err);
     //Ti.API.debug(this.responseText);
