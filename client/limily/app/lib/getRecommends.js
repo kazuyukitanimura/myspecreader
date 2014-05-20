@@ -29,22 +29,31 @@ client.setOnload(function(e) { // on success
   try {
     var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
+    // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
+    // the order of saving to sqlite is important
+    // the larger rowid, the newer (higher priority)
+    // experimentally confirmed that the save() monotonically increase its rowid even for existing row
+    // by sorting by rowid, we can always get the newest sorted ranking
+    var sql = ['INSERT OR REPLACE INTO', TABLE, '(id, state, data) VALUES '].join(' ');
+    // http://stackoverflow.com/questions/1609637/is-it-possible-to-insert-multiple-rows-at-a-time-in-an-sqlite-database
+    var sqlVal = ['(?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState , '), ?)'].join('');
+    var sqls = [];
+    var sqlArgs = [];
     for (var i = items.length; i--;) {
       var item = items[i];
       var id = item.id;
-      // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
-      // the order of saving to sqlite is important
-      // the larger rowid, the newer (higher priority)
-      // experimentally confirmed that the save() monotonically increase its rowid even for existing row
-      // by sorting by rowid, we can always get the newest sorted ranking
-      db.execute(['INSERT OR REPLACE INTO ', TABLE, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState , '), ?)'].join(''), id, id, JSON.stringify(item));
+      sqls.push(sqlVal);
+      sqlArgs.push(id);
+      sqlArgs.push(id);
+      sqlArgs.push(JSON.stringify(item));
       setImage(item.img);
-      //setImage(item.img, 'thumb', toThumb);
+      setImage(item.img, 'thumb', toThumb);
     }
+    db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
     db.close();
   } catch(err) {
     Ti.API.error(err);
-    Ti.API.debug(this.responseText);
+    //Ti.API.debug(this.responseText);
   }
 });
 
