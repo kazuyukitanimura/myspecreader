@@ -24,14 +24,22 @@ client.setOnload(function() { // on success
   try {
     var db = Ti.Database.open(DB);
     var items = JSON.parse(this.responseText).items;
+    // see lib/getRecommends.js
+    var sql = ['INSERT OR REPLACE INTO', TABLE, '(id, state, data) VALUES '].join(' ');
+    var sqlVal = ['(?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', starState , '), ?)'].join('');
+    var sqls = [];
+    var sqlArgs = [];
     for (var i = items.length; i--;) {
       var item = items[i];
       var id = item.id;
-      // see lib/getRecommends.js
-      db.execute(['INSERT OR REPLACE INTO ', TABLE, ' (id, state, data) VALUES (?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', starState , '), ?)'].join(''), id, id, JSON.stringify(item));
+      sqls.push(sqlVal);
+      sqlArgs.push(id);
+      sqlArgs.push(id);
+      sqlArgs.push(JSON.stringify(item));
       setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
+    db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
     db.close();
   } catch(err) {
     Ti.API.error(err);
