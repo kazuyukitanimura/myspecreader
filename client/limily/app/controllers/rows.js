@@ -40,16 +40,16 @@ recommends.fetch({
 
 if (stars) {
   var sideLabel = Ti.UI.createLabel({
-    width: Ti.Platform.displayCaps.platformHeight,
-    left: 24,
-    text: uStarBlack + ' Starred',
-    transform: Ti.UI.create2DMatrix().rotate( - 90),
+    width: Ti.Platform.displayCaps.platformWidth,
+    top: '0dp',
+    height: '14dp',
+    text: '                          ' + uStarBlack + ' Starred',
     opacity: 0.7,
     color: '#4A4A4A',
-    backgroundColor: '#E0FF00',
+    backgroundColor: '#E1FF00',
     textAlign: 'center'
   });
-  table.add(sideLabel);
+  currentWindow.add(sideLabel);
 }
 // Perform transformations on each model as it is processed. Since these are only transformations for UI
 // representation, we don't actually want to change the model. Instead, return an object that contains the

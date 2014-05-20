@@ -138,6 +138,7 @@ var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   var i = 0;
+  scrollView.stars = e.stars;
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
@@ -183,6 +184,7 @@ index.addEventListener('openRows', function(e) {
 });
 
 scrollView.addEventListener('scrollend', function(e) {
+  e.stars = scrollView.stars;
   index.fireEvent('openRows', e);
 });
 
@@ -206,7 +208,8 @@ if (Alloy.isTablet) {
       oldOrientation = index.orientation;
       setBackground();
       index.unloadViews();
-      index.fireEvent('openRows');
+      e.stars = scrollView.stars;
+      index.fireEvent('openRows', e);
     }
   });
 }
