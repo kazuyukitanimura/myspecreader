@@ -59,7 +59,8 @@ function setImage(url, ver, as) {
         },
         onerror: function(err) {
           Ti.API.error(err);
-        }
+        },
+        enableKeepAlive: true
       });
       client.open('GET', url);
       client.send();

@@ -23,7 +23,9 @@ exports = function(leaveLimit, index) {
           state: state
         };
       });
-      var client = Ti.Network.createHTTPClient();
+      var client = Ti.Network.createHTTPClient({
+        enableKeepAlive: true
+      });
       client.open('POST', postUrl);
       client.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
       client.send(JSON.stringify({ // explicit stringify is required to send JSON that includes arrays
