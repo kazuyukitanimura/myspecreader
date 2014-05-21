@@ -19,7 +19,7 @@
   , "morgan": "*"
   , "natural": "*"
   , "node.extend": "*"
-  , "oauth": "https://github.com/kazuyukitanimura/node-oauth/tarball/master"
+  , "oauth": "git+https://github.com/kazuyukitanimura/node-oauth.git#master"
   , "redis": "*"
   , "request": "*"
   , "rsvp": "*"
