@@ -9,7 +9,7 @@ exports = function(leaveLimit, index) {
   var STATES = recommends.config.STATES;
   if (recommends) {
     recommends.fetch({
-      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ', ', STATES.KEEPUNREAD, ') ORDER BY rowid ASC'].join(' ')
+      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid ASC'].join(' ')
     });
     console.log('leaveLimit', leaveLimit);
     recommends = _.first(recommends.initial(leaveLimit | 0), sendLimit); // do not send the leaveLimit amount of recommends, returns an array
