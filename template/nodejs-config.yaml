@@ -25,14 +25,14 @@ modules:
         PORT:
           value: 8080
         VERSION:
-          value: v0.10.26
+          value: v0.10.28
 actions:
   install:
     commands: [
       "apt-get update && apt-get -y upgrade && apt-get -y install git-core redis-server make build-essential vim",
       "redis-cli ping && redis-cli config set appendonly yes && redis-cli config set save ''",
       "wget -O nodejs.tar.gz http://nodejs.org/dist/${VERSION}/node-${VERSION}-linux-x64.tar.gz",
-      "tar -xzf nodejs.tar.gz",
+      "tar -xzf nodejs.tar.gz && rm nodejs.tar.gz",
       "cp node-${VERSION}-linux-x64/bin/* /usr/local/bin/",
       "cp -r node-${VERSION}-linux-x64/lib/* /usr/local/lib/",
       "mkdir -p /usr/local/share/man/man1",

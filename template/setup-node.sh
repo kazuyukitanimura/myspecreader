@@ -1,5 +1,5 @@
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
-curl -L https://npmjs.org/install.sh | sh
+curl -L https://npmjs.org/install.sh | sh # this might not necessary
 git clone https://github.com/kazuyukitanimura/myspecreader.git && cd myspecreader && npm install
 DIR=`pwd`
 FILE=app.js
