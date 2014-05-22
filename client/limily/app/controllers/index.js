@@ -189,7 +189,7 @@ scrollView.addEventListener('scrollend', function(e) {
 });
 
 index.unloadViews = function() {
-  var views = scrollView.views;
+  var views = scrollView.views || [];
   for (var i = views.length; i--;) {
     var view = views[i];
     view.fireEvent('free');
