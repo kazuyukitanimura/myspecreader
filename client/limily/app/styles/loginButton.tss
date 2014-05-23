@@ -8,8 +8,8 @@
   //backgroundColor: '#82BD1A', // feedly link color
   //backgroundColor: '#6ABA45', // feedly color
   backgroundColor: '#4CD964', // iOS 7 color
-  top: '60%',
+  top: '56%',
   width: '56%',
-  height: '48dp',
+  height: '56dp',
   textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER//'center'
 }

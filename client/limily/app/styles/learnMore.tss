@@ -10,8 +10,8 @@
   color: '#34AADC',
   //borderColor: '#BDBEC2',
   borderColor: '#34AADC',
-  top: '76%',
+  bottom: '8%',
   width: '56%',
-  height: '48dp',
+  height: '56dp',
   textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER//'center'
 }
