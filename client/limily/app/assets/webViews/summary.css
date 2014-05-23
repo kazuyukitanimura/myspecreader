@@ -32,6 +32,7 @@ body {
   border-radius: 9px;
   border: 3px solid #8E8E93;
   min-height: 18px;
+  width: 78%;
 }
 iframe {
   height: 0px;
