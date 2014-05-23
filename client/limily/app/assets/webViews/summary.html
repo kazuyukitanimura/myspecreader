@@ -12,9 +12,9 @@
     <iframe src="{{href}}" height="0" frameborder="0" sandbox></iframe>
     <script>
       document.body.addEventListener('gestureend', function(e) {
-        if (e.scale < 0.9) {
+        if (e.scale < 1.0) {
           Ti.App.fireEvent('closeWebpage');
-        } else if (e.scale > 0.9) {
+        } else if (e.scale > 1.0) {
           location.href = '{{href}}';
         }
       }, false);
