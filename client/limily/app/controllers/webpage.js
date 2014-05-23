@@ -154,3 +154,4 @@ webpage.addEventListener('close', function() {
   webpage = null;
   $.destroy();
 });
+Ti.App.addEventListener('closeWebpage', closeWebPage);

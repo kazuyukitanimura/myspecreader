@@ -10,7 +10,6 @@
 //
 // Alloy.Globals.someGlobalFunction = function(){};
 var gBaseUrl = 'https://limily.com';
-//if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== - 1) {
-//  gBaseUrl = 'https://localhost';
-//}
 var DB = 'recommends';
+var gSummaryHtmlPath = 'webViews/summary.html';
+var gSummaryHtml = Ti.Filesystem.getFile(gSummaryHtmlPath).read().text.replace(/(^\s+)|\n/, '');

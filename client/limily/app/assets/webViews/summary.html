@@ -10,5 +10,14 @@
     <div id="summary">{{summary}}</div>
     <a id="original" href="{{href}}" onclick="this.innerHTML='&nbsp;&nbsp;Loading...';this.style.backgroundImage='url(\'webViews/spinner.gif\')';">View website</a>
     <iframe src="{{href}}" height="0" frameborder="0" sandbox></iframe>
+    <script>
+      document.body.addEventListener('gestureend', function(e) {
+        if (e.scale < 0.9) {
+          Ti.App.fireEvent('closeWebpage');
+        } else if (e.scale > 0.9) {
+          location.href = '{{href}}';
+        }
+      }, false);
+    </script>
   </body>
 </html>

@@ -37,16 +37,15 @@ function openSummary(e) {
     '{{title}}': escapeQuote(data.title),
     '{{href}}': escapeQuote(data.href)
   };
-  var htmlPath = 'webViews/summary.html';
-  var html = Ti.Filesystem.getFile(htmlPath).read().text;
   var keys = Object.keys(variables);
   var k = '';
+  var html = gSummaryHtml;
   for (var i = keys.length; i--;) {
     k = keys[i];
     html = html.replace(new RegExp(k, 'g'), variables[k]);
   }
   var options = {
-    url: htmlPath,
+    url: gSummaryHtmlPath,
     html: html,
     unread: true,
     star: true
@@ -55,7 +54,7 @@ function openSummary(e) {
   webpage.state = state;
   webpage.noInd = true;
   webpage.addEventListener('urlChange', function(e) {
-    var viewOriginal = e.url && e.url.indexOf(htmlPath) === - 1;
+    var viewOriginal = e.url && e.url.indexOf(gSummaryHtmlPath) === - 1;
     if ($model) {
       if (state === STATES.STAR) {
         webpage.oldState = viewOriginal? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
