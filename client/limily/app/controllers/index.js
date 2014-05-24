@@ -135,7 +135,6 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
-//var postRecommendsIntervalId = 0;
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   var i = 0;
@@ -143,32 +142,14 @@ index.addEventListener('openRows', function(e) {
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
-  if (nextPage > currentPage && !e.stars) { // if scrolling down
-    views[nextPage - 1].markAsRead();
-    while (nextPage-- > MAX_PREV_VIEWS) {
-      var view = views[0];
-      view.fireEvent('free', e);
-      view = null;
-      scrollView.shiftView();
-    }
-    var leaveLimit = 0;
-    for (i = ++nextPage + 1; i--;) {
-      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
-    }
-    //clearInterval(postRecommendsIntervalId);
-    postRecommends(leaveLimit, index);
-    //postRecommendsIntervalId = setInterval(function() {
-    //  postRecommends(leaveLimit, index);
-    //}, 24 * 1000);
-  }
-  currentPage = nextPage;
+  var scrollDown = (nextPage > currentPage && !e.stars) | 0;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
     // HACK in order to get a local model, we need to create an instance here
     // see Resources/iphone/alloy/controllers/rows.js
     var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
     var rows = Alloy.createController('rows', {
       currentWindow: index,
-      page: i,
+      page: i + scrollDown, // need to add 1 first to avoid duplicated loading if we are scrolling down
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
@@ -181,6 +162,21 @@ index.addEventListener('openRows', function(e) {
     rows.setTransform(counterRotate);
     scrollView.addView(rows);
   }
+  if (scrollDown) { // if scrolling down
+    views[nextPage - 1].markAsRead();
+    while (nextPage-- > MAX_PREV_VIEWS) {
+      var view = views[0];
+      view.fireEvent('free', e);
+      view = null;
+      scrollView.shiftView();
+    }
+    var leaveLimit = 0;
+    for (i = ++nextPage + 1; i--;) {
+      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
+    }
+    postRecommends(leaveLimit, index);
+  }
+  currentPage = nextPage;
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
