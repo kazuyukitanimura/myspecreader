@@ -152,7 +152,7 @@ index.addEventListener('openRows', function(e) {
       scrollView.shiftView();
     }
     var leaveLimit = 0;
-    for (i = ++nextPage; i--;) {
+    for (i = ++nextPage + 1; i--;) {
       leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
     }
     clearInterval(postRecommendsIntervalId);

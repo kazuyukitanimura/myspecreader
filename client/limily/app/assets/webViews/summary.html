@@ -5,9 +5,12 @@
     <link rel="stylesheet" href="webViews/summary.css"/>
   </head>
   <body>
-    <img id="img" src="{{img}}">
-    <h1 id="title">{{title}}</h1>
-    <div id="summary">{{summary}}</div>
+    <div id="container">
+      <img id="img" src="{{img}}">
+      <h1 id="title">{{title}}</h1>
+      <div id="summary">{{summary}}</div>
+      <div id="spacer"></div>
+    </div>
     <a id="original" href="{{href}}" onclick="this.innerHTML='&nbsp;&nbsp;Loading...';this.style.backgroundImage='url(\'webViews/spinner.gif\')';">View website</a>
     <iframe src="{{href}}" height="0" frameborder="0" sandbox></iframe>
     <script>
