@@ -135,7 +135,7 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
-var postRecommendsIntervalId = 0;
+//var postRecommendsIntervalId = 0;
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   var i = 0;
@@ -155,11 +155,11 @@ index.addEventListener('openRows', function(e) {
     for (i = ++nextPage + 1; i--;) {
       leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
     }
-    clearInterval(postRecommendsIntervalId);
+    //clearInterval(postRecommendsIntervalId);
     postRecommends(leaveLimit, index);
-    postRecommendsIntervalId = setInterval(function() {
-      postRecommends(leaveLimit, index);
-    }, 24 * 1000);
+    //postRecommendsIntervalId = setInterval(function() {
+    //  postRecommends(leaveLimit, index);
+    //}, 24 * 1000);
   }
   currentPage = nextPage;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
