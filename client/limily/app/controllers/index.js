@@ -121,10 +121,10 @@ client.setOnerror(function(e) { // on error including a timeout
   }
   if (Ti.Network.online) {
     index.needAuth = firstTime;
-    Titanium.UI.createAlertDialog({
-      title: 'There was a network issue',
-      message: 'Limily will automatically retry later.'
-    }).show();
+    //Titanium.UI.createAlertDialog({
+    //  title: 'There was a network issue',
+    //  message: 'Limily will automatically retry later.'
+    //}).show();
   } else {
     Titanium.UI.createAlertDialog({
       title: 'Your device is offline',
