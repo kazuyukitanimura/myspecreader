@@ -23,6 +23,7 @@ moment.lang('en', {
 });
 var table = $.table;
 var recommends = Alloy.Collections.instance(DB);
+var db = Ti.Database.open(DB); // update multiple rows at the same time
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
@@ -68,17 +69,16 @@ function transformFunction(model) {
 table.markAsRead = function() {
   if (recommends) {
     var ids = [];
-    recommends.each(function(recommend) {
+    for (var i = recommends.length; i--;) {
+      var recommend = recommends.at(i);
       if (recommend.get('state') === STATES.UNREAD) {
         recommend.set('state', STATES.PASSED);
         ids.push(recommend.get('id'));
       }
-    });
+    }
     if (ids.length) {
       try {
-        var db = Ti.Database.open(DB); // update multiple rows at the same time
         db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-        db.close();
       } catch(err) {
         Ti.API.error(err);
       }
@@ -106,6 +106,7 @@ table.addEventListener('swipe', function(e) {
 
 table.addEventListener('free', function(e) {
   Ti.API.debug('table free');
+  db.close();
   table = null;
   recommends = null;
   $.destroy();

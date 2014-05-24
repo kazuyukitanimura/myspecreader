@@ -1,5 +1,6 @@
 var url = gBaseUrl + '/readids';
 var recommends = Alloy.Collections.instance(DB);
+var db = Ti.Database.open(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var client = Ti.Network.createHTTPClient({
@@ -20,10 +21,8 @@ client.setOnload(function() { // on success
     return;
   }
   try {
-    var db = Ti.Database.open(DB);
     var ids = JSON.parse(this.responseText).items;
     db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '") AND state IN ("', [STATES.UNREAD, STATES.PASSED].join('", "'), '")'].join(''));
-    db.close();
   } catch(err) {
     Ti.API.error(err);
     //Ti.API.debug(this.responseText);
@@ -38,5 +37,6 @@ var getReadIds = function() {
   client.open('GET', url);
   client.send();
 };
+//db.close();
 
 exports = getReadIds;
