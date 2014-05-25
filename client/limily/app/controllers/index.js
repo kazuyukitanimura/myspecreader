@@ -4,6 +4,12 @@ var authUrl = gBaseUrl + '/auth';
 var index = $.index;
 index.needAuth = true;
 
+var db = Ti.Database.open(DB); // sqlite setup http://www.sqlite.org/pragma.html
+db.execute('PRAGMA journal_mode = WAL');
+db.execute('PRAGMA synchronous = OFF');
+db.execute('PRAGMA locking_mode = EXCLUSIVE');
+db.close();
+
 var rotate = Ti.UI.create2DMatrix().rotate(90);
 var counterRotate = rotate.rotate( - 180);
 var max = Math.max;
