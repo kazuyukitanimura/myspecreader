@@ -164,7 +164,7 @@ index.addEventListener('openRows', function(e) {
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
-      if (!e.stars) {
+      if (!e.stars && i === offset) {
         index.add(allRead);
         index.needAuth = true;
       }
