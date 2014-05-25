@@ -47,12 +47,12 @@ var setBackground = function() {
   }
 };
 
-var MAX_NEXT_VIEWS = 2; // including the current page
+var MAX_NEXT_VIEWS = 3; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
-
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
-  timeout: 1000, // in milliseconds
+  // timeout in milliseconds
+  timeout: 1000,
   enableKeepAlive: true
 });
 client.open('HEAD', authUrl); // Prepare the connection.
@@ -144,7 +144,10 @@ var blockOpenRows = false;
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
   if (blockOpenRows) {
-    index.fireEvent('openRows', e);
+    _.throttle(function() {
+      index.fireEvent('openRows', e);
+    },
+    256);
     return;
   }
   blockOpenRows = true;
@@ -153,14 +156,15 @@ index.addEventListener('openRows', function(e) {
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
-  var scrollDown = (nextPage > currentPage && !e.stars) | 0;
+  var scrollDown = (nextPage > currentPage && ! e.stars) | 0;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
     // HACK in order to get a local model, we need to create an instance here
     // see Resources/iphone/alloy/controllers/rows.js
     var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
     var rows = Alloy.createController('rows', {
       currentWindow: index,
-      page: i + scrollDown, // need to add 1 first to avoid duplicated loading if we are scrolling down
+      // need to add 1 first to avoid duplicated loading if we are scrolling down
+      page: i + scrollDown,
       stars: e.stars
     }).getView();
     if (!rowsData.length) {
