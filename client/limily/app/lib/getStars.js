@@ -13,6 +13,9 @@ var client = Ti.Network.createHTTPClient({
   },
   enableKeepAlive: true
 });
+function toThumb(blob) {
+  return blob.imageAsThumbnail(90, 0, 0);
+}
 client.setOnload(function() { // on success
   Ti.API.debug('sucess getStars');
   if (this.status >= 400) { // workaround

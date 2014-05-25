@@ -55,7 +55,6 @@ var client = Ti.Network.createHTTPClient({ // cookies should be manually managed
   timeout: 1000, // in milliseconds
   enableKeepAlive: true
 });
-//client.clearCookies(gBaseUrl); // for test
 client.open('HEAD', authUrl); // Prepare the connection.
 client.send(); // Send the request.
 var intervalId = 0;
@@ -141,8 +140,14 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
+var blockOpenRows = false;
 index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
+  if (blockOpenRows) {
+    index.fireEvent('openRows', e);
+    return;
+  }
+  blockOpenRows = true;
   var i = 0;
   scrollView.stars = e.stars;
   var views = scrollView.views || [];
@@ -183,6 +188,7 @@ index.addEventListener('openRows', function(e) {
     postRecommends(leaveLimit, index);
   }
   currentPage = nextPage;
+  blockOpenRows = false;
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
