@@ -1,7 +1,6 @@
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/stars';
 var recommends = Alloy.Collections.instance(DB);
-var db = Ti.Database.open(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var starState = STATES.STAR;
@@ -40,7 +39,9 @@ client.setOnload(function() { // on success
       setImage(item.img, 'thumb', toThumb);
     }
     if (items.length) {
+      var db = Ti.Database.open(DB);
       db.execute.apply(db, [sql + sqls.join(', ')].concat(sqlArgs));
+      db.close();
     }
   } catch(err) {
     Ti.API.error(err);
@@ -56,6 +57,5 @@ var getStars = function() {
   client.open('GET', url);
   client.send();
 };
-//db.close();
 
 exports = getStars;

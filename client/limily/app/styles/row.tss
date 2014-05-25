@@ -6,6 +6,7 @@
 
 '#cell': {
   backgroundColor: '#fff',
+  height: '90dp',
   left: '5dp',
   bottom: '0dp',
   right: '5dp',
