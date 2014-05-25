@@ -28,7 +28,6 @@ exports = function(leaveLimit, index) {
       });
       client.open('POST', postUrl);
       client.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-      Ti.API.debug(JSON.stringify(data));
       client.send(JSON.stringify({ // explicit stringify is required to send JSON that includes arrays
         data: data
       }));
