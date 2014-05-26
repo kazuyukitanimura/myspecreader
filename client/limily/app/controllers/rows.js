@@ -2,6 +2,7 @@ var args = arguments[0] || {};
 var currentWindow = args.currentWindow;
 var page = args.page | 0;
 var stars = args.stars;
+var db = args.db;
 var getImage = require('cacheImage').getImage;
 var moment = require('alloy/moment');
 moment.lang('en', {
@@ -32,10 +33,25 @@ var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
  */
 var uStarBlack = '\u2605';
 
-// fetch existing data from storage
+// fetch existing data from storage, but do not use the normal fetch option to serialize the transaction
 recommends = Alloy.Collections.rowsData;
-recommends.fetch({
-  query: ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('')
+// https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
+var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
+var rs = db.execute(sql);
+var values = [];
+while (rs.isValidRow()) {
+  var o = {};
+  var fc = _.isFunction(rs.fieldCount) ? rs.fieldCount() : rs.fieldCount;
+  for (var i = 0; i < fc; i++) {
+    var fn = rs.fieldName(i);
+    o[fn] = rs.fieldByName(fn);
+  }
+  values.push(o);
+  rs.next();
+}
+rs.close();
+recommends.reset(values, {
+  parse: true
 });
 
 if (stars) {
@@ -65,7 +81,7 @@ function transformFunction(model) {
   return data;
 }
 
-table.markAsRead = function() {
+table.markAsRead = function(db) {
   if (recommends) {
     var ids = [];
     for (var i = recommends.length; i--;) {
@@ -77,10 +93,7 @@ table.markAsRead = function() {
     }
     if (ids.length) {
       try {
-        var db = Ti.Database.open(DB); // update multiple rows at the same time
         db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
-        db.close();
-        Ti.API.debug('UPDATE done');
       } catch(err) {
         Ti.API.error(err);
       }

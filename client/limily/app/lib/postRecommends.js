@@ -53,7 +53,6 @@ exports = function(leaveLimit, index) {
             var db = Ti.Database.open(DB); // delete multiple rows at the same time
             db.execute(['DELETE FROM ', TABLE, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
             db.close();
-            Ti.API.debug('DELETE done');
           } catch(err) {
             Ti.API.error(err);
           }

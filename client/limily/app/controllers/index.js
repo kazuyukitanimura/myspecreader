@@ -148,29 +148,10 @@ index.addEventListener('openRows', function(e) {
   var views = scrollView.views || [];
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
-  var scrollDown = (nextPage > currentPage && ! e.stars) | 0;
-  for (i = offset; i < MAX_NEXT_VIEWS; i++) {
-    // HACK in order to get a local model, we need to create an instance here
-    // see Resources/iphone/alloy/controllers/rows.js
-    var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
-    var rows = Alloy.createController('rows', {
-      currentWindow: index,
-      // need to add 1 first to avoid duplicated loading if we are scrolling down
-      page: i + scrollDown,
-      stars: e.stars
-    }).getView();
-    rows.setTransform(counterRotate);
-    scrollView.addView(rows);
-    if (!rowsData.length) {
-      if (!e.stars && i === offset) {
-        index.add(allRead);
-        index.needAuth = true;
-      }
-      break;
-    }
-  }
-  if (scrollDown) { // if scrolling down
-    views[nextPage - 1].markAsRead();
+  db = Ti.Database.open(DB);
+  db.execute('BEGIN');
+  if (nextPage > currentPage && ! e.stars) { // if scrolling down
+    views[nextPage - 1].markAsRead(db);
     while (nextPage-- > MAX_PREV_VIEWS) {
       var view = views[0];
       view.fireEvent('free', e);
@@ -184,6 +165,28 @@ index.addEventListener('openRows', function(e) {
     postRecommends(leaveLimit, index);
   }
   currentPage = nextPage;
+  for (i = offset; i < MAX_NEXT_VIEWS; i++) {
+    // HACK in order to get a local model, we need to create an instance here
+    // see Resources/iphone/alloy/controllers/rows.js
+    var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
+    var rows = Alloy.createController('rows', {
+      currentWindow: index,
+      page: i,
+      stars: e.stars,
+      db: db
+    }).getView();
+    rows.setTransform(counterRotate);
+    scrollView.addView(rows);
+    if (!rowsData.length) {
+      if (!e.stars && i === offset) {
+        index.add(allRead);
+        index.needAuth = true;
+      }
+      break;
+    }
+  }
+  db.execute('COMMIT');
+  db.close();
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
