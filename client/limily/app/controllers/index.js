@@ -167,6 +167,8 @@ index.addEventListener('openRows', function(e) {
       page: i + scrollDown,
       stars: e.stars
     }).getView();
+    rows.setTransform(counterRotate);
+    scrollView.addView(rows);
     if (!rowsData.length) {
       if (!e.stars && i === offset) {
         index.add(allRead);
@@ -174,8 +176,6 @@ index.addEventListener('openRows', function(e) {
       }
       break;
     }
-    rows.setTransform(counterRotate);
-    scrollView.addView(rows);
   }
   if (scrollDown) { // if scrolling down
     views[nextPage - 1].markAsRead();
