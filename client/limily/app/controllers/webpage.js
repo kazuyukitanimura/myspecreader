@@ -57,7 +57,7 @@ backButton.addEventListener('click', _.debounce(function(e) {
     closeWebPage();
   }
 },
-256));
+256, true));
 webpage.add(backButton);
 var unreadButton = Ti.UI.createButton({
   top: '24dp',

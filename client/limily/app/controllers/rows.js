@@ -93,7 +93,7 @@ table.addEventListener('singletap', _.debounce(function(e) { // since tableViewR
     row.fireEvent('singletap', e);
   }
 },
-256));
+256, true));
 table.addEventListener('swipe', function(e) {
   // prevent bubbling up to the row
   e.cancelBubble = true;
