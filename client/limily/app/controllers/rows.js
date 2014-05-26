@@ -61,7 +61,7 @@ function transformFunction(model) {
   data.img = getImage(data.img, 'thumb') || 'noimage.png';
   data.origin = data.origin.title;
   data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: '';
-  data.ago = parseInt(data.published, 10)? moment(data.published).fromNow(): '';
+  data.ago = parseInt(data.published, 10) ? moment(data.published).fromNow() : '';
   return data;
 }
 
@@ -87,12 +87,13 @@ table.markAsRead = function() {
   }
 };
 
-table.addEventListener('singletap', function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
+table.addEventListener('singletap', _.debounce(function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
   var row = e.row;
   if (row) {
     row.fireEvent('singletap', e);
   }
-});
+},
+256));
 table.addEventListener('swipe', function(e) {
   // prevent bubbling up to the row
   e.cancelBubble = true;

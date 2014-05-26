@@ -50,13 +50,14 @@ var backButton = Ti.UI.createButton({
   color: '#1F1F21',
   title: uClose
 });
-backButton.addEventListener('click', function(e) {
+backButton.addEventListener('click', _.debounce(function(e) {
   if (webview.canGoBack()) {
     webview.goBack();
   } else {
     closeWebPage();
   }
-});
+},
+256));
 webpage.add(backButton);
 var unreadButton = Ti.UI.createButton({
   top: '24dp',
