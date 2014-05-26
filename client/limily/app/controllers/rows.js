@@ -80,6 +80,7 @@ table.markAsRead = function() {
         var db = Ti.Database.open(DB); // update multiple rows at the same time
         db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
         db.close();
+        Ti.API.debug('UPDATE done');
       } catch(err) {
         Ti.API.error(err);
       }
