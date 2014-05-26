@@ -141,14 +141,8 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
-var blockOpenRows = false;
-index.addEventListener('openRows', _.throttle(function(e) {
+index.addEventListener('openRows', function(e) {
   Ti.API.debug('openRows');
-  if (blockOpenRows) {
-    index.fireEvent('openRows', e);
-    return;
-  }
-  blockOpenRows = true;
   var i = 0;
   scrollView.stars = e.stars;
   var views = scrollView.views || [];
@@ -190,14 +184,12 @@ index.addEventListener('openRows', _.throttle(function(e) {
     postRecommends(leaveLimit, index);
   }
   currentPage = nextPage;
-  blockOpenRows = false;
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
     client.send();
     return;
   }
-},
-512));
+});
 
 scrollView.addEventListener('scrollend', function(e) {
   e.stars = scrollView.stars;
