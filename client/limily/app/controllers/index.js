@@ -48,7 +48,7 @@ var setBackground = function() {
   }
 };
 
-var MAX_NEXT_VIEWS = 3; // including the current page
+var MAX_NEXT_VIEWS = 4; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
@@ -141,7 +141,7 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
-index.addEventListener('openRows', function(e) {
+index.addEventListener('openRows', _.throttle(function(e) {
   Ti.API.debug('openRows');
   var i = 0;
   scrollView.stars = e.stars;
@@ -192,7 +192,7 @@ index.addEventListener('openRows', function(e) {
     client.send();
     return;
   }
-});
+}, 10 * 1024));
 
 scrollView.addEventListener('scrollend', function(e) {
   e.stars = scrollView.stars;
