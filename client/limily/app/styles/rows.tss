@@ -3,6 +3,6 @@
   //backgroundColor: '#BDBEC2',
   backgroundColor: 'transparent',
   separatorColor: 'transparent',
-  allowsSelection: false,
+  //allowsSelection: false,
   width: Ti.Platform.displayCaps.platformWidth,
 }
