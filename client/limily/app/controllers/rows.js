@@ -38,6 +38,7 @@ recommends = Alloy.Collections.rowsData;
 // https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
 var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
 var rs = db.execute(sql);
+var len = 0;
 var values = [];
 while (rs.isValidRow()) {
   var o = {};
@@ -47,9 +48,11 @@ while (rs.isValidRow()) {
     o[fn] = rs.fieldByName(fn);
   }
   values.push(o);
+  len++;
   rs.next();
 }
 rs.close();
+recommends.length = len;
 recommends.reset(values, {
   parse: true
 });
