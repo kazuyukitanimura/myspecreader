@@ -34,12 +34,10 @@ var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage, but do not use the normal fetch option to serialize the transaction
-recommends = Alloy.Collections.rowsData;
+data = rows.data = [];
 // https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
 var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
 var rs = db.execute(sql);
-var len = 0;
-var values = [];
 while (rs.isValidRow()) {
   var o = {};
   var fc = _.isFunction(rs.fieldCount) ? rs.fieldCount() : rs.fieldCount;
@@ -47,15 +45,25 @@ while (rs.isValidRow()) {
     var fn = rs.fieldName(i);
     o[fn] = rs.fieldByName(fn);
   }
-  values.push(o);
-  len++;
+  data.push(o);
   rs.next();
 }
 rs.close();
-recommends.length = len;
-recommends.reset(values, {
-  parse: true
-});
+
+var items = [];
+for (var i = data.length; i--;) {
+  var datum = data[i];
+  var state = datum.state;
+  var item = {
+    itemId: datum.id,
+    img: getImage(datum.img, 'thumb') || 'noimage.png',
+    origin: datum.origin.title,
+    state: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: '',
+    ago: parseInt(datum.published, 10) ? moment(datum.published).fromNow() : ''
+  };
+  items.push(item);
+}
+rows.sections[0].setItems(items);
 
 if (stars) {
   var sideLabel = Ti.UI.createLabel({
@@ -70,28 +78,15 @@ if (stars) {
   });
   currentWindow.add(sideLabel);
 }
-// Perform transformations on each model as it is processed. Since these are only transformations for UI
-// representation, we don't actually want to change the model. Instead, return an object that contains the
-// fields you want to use in your bindings. The easiest way to do that is to clone the model and return its
-// attributes with the toJSON() function.
-function transformFunction(model) {
-  var data = JSON.parse(model.get('data'));
-  var state = model.get('state');
-  data.img = getImage(data.img, 'thumb') || 'noimage.png';
-  data.origin = data.origin.title;
-  data.state = state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: '';
-  data.ago = parseInt(data.published, 10) ? moment(data.published).fromNow() : '';
-  return data;
-}
 
 table.markAsRead = function(db) {
-  if (recommends) {
+  if (data) {
     var ids = [];
-    for (var i = recommends.length; i--;) {
-      var recommend = recommends.at(i);
-      if (recommend.get('state') === STATES.UNREAD) {
-        recommend.set('state', STATES.PASSED);
-        ids.push(recommend.get('id'));
+    for (var i = data.length; i--;) {
+      var datum = data[i];
+      if (datum.state === STATES.UNREAD) {
+        datum.state = STATES.PASSED;
+        ids.push(datum.id);
       }
     }
     if (ids.length) {
@@ -104,13 +99,71 @@ table.markAsRead = function(db) {
   }
 };
 
-table.addEventListener('singletap', _.debounce(function(e) { // since tableViewRow does not fire singletap, manually fire it. Do not use click since it also fires swipe
-  var row = e.row;
-  if (row) {
-    row.fireEvent('singletap', e);
+var escapeQuote = function(text) {
+  return text.replace(/"/g, '\\"') || '';
+};
+
+var updateState = function(id, state) {
+  var db = Ti.Database.open(DB);
+  db.execute(['UPDATE ', TABLE, ' SET state = ', state, ' WHERE id = "', id, '"'].join(''));
+  db.close();
+};
+
+table.addEventListener('itemclick', _.debounce(function(e) {
+  e.cancelBubble = true;
+  var datum = data[e.itemIndex];
+  var img = getImage(datum.img);
+  if (img.resolve) {
+    img = img.resolve();
+  } else if (img.nativePath) {
+    img = img.nativePath;
   }
+  var variables = {
+    '{{img}}': escapeQuote(img),
+    '{{summary}}': escapeQuote(datum.summary),
+    '{{title}}': escapeQuote(datum.title),
+    '{{href}}': escapeQuote(datum.href)
+  };
+  var keys = Object.keys(variables);
+  var k = '';
+  var html = gSummaryHtml;
+  for (var i = keys.length; i--;) {
+    k = keys[i];
+    html = html.replace(new RegExp(k, 'g'), variables[k]);
+  }
+  var options = {
+    url: gSummaryHtmlPath,
+    html: html,
+    unread: true,
+    star: true
+  };
+  var webpage = Alloy.createController('webpage', options).getView();
+  var state = webpage.state = datum.state;
+  webpage.noInd = true;
+  webpage.addEventListener('urlChange', function(e) {
+    var viewOriginal = e.url && e.url.indexOf(gSummaryHtmlPath) === - 1;
+    if (state === STATES.STAR) {
+      webpage.oldState = viewOriginal? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
+    } else if (state !== STATES.VIEWORIGINAL) {
+      state = STATES.VIEWSUMMARY;
+      if (viewOriginal) {
+        state = STATES.VIEWORIGINAL;
+      }
+      datum.state = webpage.state = state;
+      updateState(datum.id, state);
+    }
+  });
+  webpage.addEventListener('close', function(e) {
+    if (webpage.state) {
+      state = datum.state = webpage.state;
+      updateState(datum.id, state);
+    }
+    webpage = null;
+  });
+  webpage.open();
 },
 256, true));
+
 table.addEventListener('swipe', function(e) {
   // prevent bubbling up to the row
   e.cancelBubble = true;

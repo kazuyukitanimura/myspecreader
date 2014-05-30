@@ -1,5 +1,5 @@
 <Alloy>
-  <TableView id="table" dataCollection="rowsData" dataTransform="transformFunction">
-    <Require src="row"/>
-  </TableView>
+  <ListSection>
+    <ListView id="table"  defaultItemTemplate="row"></ListView>
+  </ListSection>
 </Alloy>

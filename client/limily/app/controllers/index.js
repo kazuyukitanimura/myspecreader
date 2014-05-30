@@ -166,9 +166,6 @@ index.addEventListener('openRows', _.throttle(function(e) {
   }
   currentPage = nextPage;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
-    // HACK in order to get a local model, we need to create an instance here
-    // see Resources/iphone/alloy/controllers/rows.js
-    var rowsData = Alloy.Collections.rowsData = Alloy.createCollection(DB);
     var rows = Alloy.createController('rows', {
       currentWindow: index,
       page: i,
@@ -177,7 +174,7 @@ index.addEventListener('openRows', _.throttle(function(e) {
     }).getView();
     rows.setTransform(counterRotate);
     scrollView.addView(rows);
-    if (!rowsData.length) {
+    if (!rows.items.length) {
       if (!e.stars && i === offset) {
         index.add(allRead);
         index.needAuth = true;

@@ -1,5 +1,5 @@
 <Alloy>
-  <TableViewRow onSingletap="openSummary">
+  <ItemTemplate name="row">
     <View id="cell">
       <ImageView id="image" image="{img}"/>
       <Label id="title" text="{title}"/>
@@ -8,5 +8,5 @@
       <Label id="state" text="{state}"/>
       <Label id="ago" text="{ago}"/>
     </View>
-  </TableViewRow>
+  </ItemTemplate>
 </Alloy>
