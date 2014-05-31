@@ -103,6 +103,12 @@ var escapeQuote = function(text) {
   return text.replace(/"/g, '\\"') || '';
 };
 
+var setOpacity = function(cell, state) {
+  if (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) {
+    cell.opacity = 0.8;
+  }
+};
+
 var updateState = function(id, state) {
   var db = Ti.Database.open(DB);
   db.execute(['UPDATE ', TABLE, ' SET state = ', state, ' WHERE id = "', id, '"'].join(''));
@@ -157,6 +163,8 @@ table.addEventListener('itemclick', _.debounce(function(e) {
     if (webpage.state) {
       state = datum.state = webpage.state;
       updateState(datum.id, state);
+      //var cell = e.sections[0].items();
+      //setOpacity(cell, state);
     }
     webpage = null;
   });
