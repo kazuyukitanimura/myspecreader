@@ -33,7 +33,7 @@ var allRead = Ti.UI.createLabel({
     fontFamily: "Simple-Line-Icons",
     fontSize: '20dp'
   },
-  text: 'Analyzing articles now...\n\n\ue06b \ue077 \ue083',
+  text: 'Analyzing articles now...\n\nIt may take a few minutes.\n\n\ue06b \ue077 \ue083',
   color: '#FFF',
   textAlign: 'center',
   opacity: 0.7,
@@ -123,7 +123,7 @@ client.setOnerror(function(e) { // on error including a timeout
     if (OS_ANDROID) {
       Titanium.Android.currentActivity.finish();
     }
-    return; // TODO exit the application
+    return; // XXXX iOS does not die http://stackoverflow.com/questions/22616698/quit-application-in-titanium-ios
   }
   if (Ti.Network.online) {
     index.needAuth = firstTime;
@@ -175,9 +175,13 @@ index.addEventListener('openRows', _.throttle(function(e) {
     rows.setTransform(counterRotate);
     scrollView.addView(rows);
     if (!rows.items.length) {
-      if (!e.stars && i === offset) {
-        index.add(allRead);
-        index.needAuth = true;
+      if (i === offset) {
+        if (e.stars) {
+          // TODO show no more stars message
+        } else {
+          index.add(allRead);
+          index.needAuth = true;
+        }
       }
       break;
     }

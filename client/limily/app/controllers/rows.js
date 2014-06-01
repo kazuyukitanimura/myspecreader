@@ -70,7 +70,7 @@ if (stars) {
     width: Ti.Platform.displayCaps.platformWidth,
     top: '0dp',
     height: '14dp',
-    text: '                          ' + uStarBlack + ' Starred',
+    text: '                          ' + uStarBlack + 'Starred',
     opacity: 0.7,
     color: '#4A4A4A',
     backgroundColor: '#E1FF00',
