@@ -1,12 +1,12 @@
 <Alloy>
   <ItemTemplate name="row">
-    <View id="cell">
-      <ImageView id="image" image="{img}"/>
-      <Label id="title" text="{title}"/>
-      <Label id="summary" text="{summary}"/>
-      <Label id="origin" text="{origin}"/>
-      <Label id="state" text="{state}"/>
-      <Label id="ago" text="{ago}"/>
+    <View bindId="cell" id="cell">
+      <ImageView bindId="image" id="image" image="{img}"/>
+      <Label bindId="title" id="title" text="{title}"/>
+      <Label bindId="summary" id="summary" text="{summary}"/>
+      <Label bindId="origin" id="origin" text="{origin}"/>
+      <Label bindId="state" id="state" text="{state}"/>
+      <Label bindId="ago" id="ago" text="{ago}"/>
     </View>
   </ItemTemplate>
 </Alloy>

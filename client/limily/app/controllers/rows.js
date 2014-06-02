@@ -28,13 +28,19 @@ var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 
+var setOpacity = function(item, state) {
+  item.cell = {
+    opacity: (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) ? 0.8: 1.0
+  };
+};
+
 /**
  * Unicodes
  */
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage, but do not use the normal fetch option to serialize the transaction
-data = rows.data = [];
+data = table.data = [];
 // https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
 var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
 var rs = db.execute(sql);
@@ -56,14 +62,30 @@ for (var i = data.length; i--;) {
   var state = datum.state;
   var item = {
     itemId: datum.id,
-    img: getImage(datum.img, 'thumb') || 'noimage.png',
-    origin: datum.origin.title,
-    state: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: '',
-    ago: parseInt(datum.published, 10) ? moment(datum.published).fromNow() : ''
+    img: {
+      image: getImage(datum.img, 'thumb') || 'noimage.png'
+    },
+    title: {
+      text: datum.title
+    },
+    summary: {
+      text: datum.summary
+    },
+    origin: {
+      text: datum.origin.title
+    },
+    state: {
+      text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
+    },
+    ago: {
+      text: parseInt(datum.published, 10) ? moment(datum.published).fromNow() : ''
+    }
   };
+  setOpacity(item, state);
   items.push(item);
 }
-rows.sections[0].setItems(items);
+var section = table.sections[0];
+section.setItems(items);
 
 if (stars) {
   var sideLabel = Ti.UI.createLabel({
@@ -103,13 +125,10 @@ var escapeQuote = function(text) {
   return text.replace(/"/g, '\\"') || '';
 };
 
-var setOpacity = function(cell, state) {
-  if (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) {
-    cell.opacity = 0.8;
-  }
-};
-
-var updateState = function(id, state) {
+var updateState = function(itemIndex, id, state) {
+  var item = section.getItemAt(itemIndex);
+  setOpacity(item, state);
+  section.updateItemAt(itemIndex, item);
   var db = Ti.Database.open(DB);
   db.execute(['UPDATE ', TABLE, ' SET state = ', state, ' WHERE id = "', id, '"'].join(''));
   db.close();
@@ -117,7 +136,8 @@ var updateState = function(id, state) {
 
 table.addEventListener('itemclick', _.debounce(function(e) {
   e.cancelBubble = true;
-  var datum = data[e.itemIndex];
+  var itemIndex = e.itemIndex;
+  var datum = data[itemIndex];
   var img = getImage(datum.img);
   if (img.resolve) {
     img = img.resolve();
@@ -141,7 +161,8 @@ table.addEventListener('itemclick', _.debounce(function(e) {
     url: gSummaryHtmlPath,
     html: html,
     unread: true,
-    star: true
+    star: true,
+    e: e
   };
   var webpage = Alloy.createController('webpage', options).getView();
   var state = webpage.state = datum.state;
@@ -149,22 +170,20 @@ table.addEventListener('itemclick', _.debounce(function(e) {
   webpage.addEventListener('urlChange', function(e) {
     var viewOriginal = e.url && e.url.indexOf(gSummaryHtmlPath) === - 1;
     if (state === STATES.STAR) {
-      webpage.oldState = viewOriginal? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
+      webpage.oldState = viewOriginal ? STATES.VIEWORIGINAL: STATES.VIEWSUMMARY;
     } else if (state !== STATES.VIEWORIGINAL) {
       state = STATES.VIEWSUMMARY;
       if (viewOriginal) {
         state = STATES.VIEWORIGINAL;
       }
       datum.state = webpage.state = state;
-      updateState(datum.id, state);
+      updateState(itemIndex, datum.id, state);
     }
   });
   webpage.addEventListener('close', function(e) {
     if (webpage.state) {
       state = datum.state = webpage.state;
-      updateState(datum.id, state);
-      //var cell = e.sections[0].items();
-      //setOpacity(cell, state);
+      updateState(itemIndex, datum.id, state);
     }
     webpage = null;
   });
