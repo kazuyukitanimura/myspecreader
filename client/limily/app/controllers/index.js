@@ -14,6 +14,7 @@ db.close();
 var rotate = Ti.UI.create2DMatrix().rotate(90);
 var counterRotate = rotate.rotate( - 180);
 var max = Math.max;
+var min = Math.min;
 var pWidth = Ti.Platform.displayCaps.platformWidth;
 var pHeight = Ti.Platform.displayCaps.platformHeight;
 var scrollView = Ti.UI.createScrollableView({
@@ -159,7 +160,7 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
-index.addEventListener('openRows', _.throttle(function(e) {
+index.addEventListener('openRows', _.debounce(function(e) {
   Ti.API.debug('openRows');
   var i = 0;
   scrollView.stars = e.stars;
@@ -169,7 +170,9 @@ index.addEventListener('openRows', _.throttle(function(e) {
   db = Ti.Database.open(DB);
   db.execute('BEGIN');
   if (nextPage > currentPage && ! e.stars) { // if scrolling down
-    views[nextPage - 1].markAsRead(db);
+    for (i = min(MAX_PREV_VIEWS, nextPage) - 1; i < nextPage; i++) {
+      views[i].markAsRead(db);
+    }
     while (nextPage-- > MAX_PREV_VIEWS) {
       var view = views[0];
       view.fireEvent('free', e);
@@ -212,7 +215,7 @@ index.addEventListener('openRows', _.throttle(function(e) {
     client.send();
     return;
   }
-}, 10 * 1024));
+}, 1024, true));
 
 scrollView.addEventListener('scrollend', function(e) {
   e.stars = scrollView.stars;
