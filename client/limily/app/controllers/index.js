@@ -40,6 +40,21 @@ var allRead = Ti.UI.createLabel({
   backgroundColor: '#1F1F21',
 });
 
+var noMoreStars = Ti.UI.createLabel({
+  width: Ti.UI.FILL,
+  height: Ti.UI.FILL,
+  font: {
+    fontFamily: "Simple-Line-Icons",
+    fontSize: '20dp'
+  },
+  text: 'No more starred articles...\n\n\ue06b \ue077 \ue083',
+  color: '#FFF',
+  textAlign: 'center',
+  opacity: 0.7,
+  backgroundColor: '#1F1F21',
+  transform: counterRotate
+});
+
 var setBackground = function() {
   if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
     index.setBackgroundImage('Default.png');
@@ -173,18 +188,19 @@ index.addEventListener('openRows', _.throttle(function(e) {
       db: db
     }).getView();
     rows.setTransform(counterRotate);
-    scrollView.addView(rows);
     if (!rows.items.length) {
       if (i === offset) {
         if (e.stars) {
-          // TODO show no more stars message
+          scrollView.addView(noMoreStars);
         } else {
+          scrollView.addView(rows);
           index.add(allRead);
           index.needAuth = true;
         }
       }
       break;
     }
+    scrollView.addView(rows);
   }
   db.execute('COMMIT');
   db.close();
