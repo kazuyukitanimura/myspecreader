@@ -55,6 +55,10 @@ var noMoreStars = Ti.UI.createLabel({
   transform: counterRotate
 });
 
+var menuIcon = Alloy.createController('menuIcon', {
+  currentWindow: index
+}).getView();
+
 var setBackground = function() {
   if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
     index.setBackgroundImage('Default.png');
@@ -88,9 +92,6 @@ client.setOnload(function() { // on success
     index.add(learnMore);
   } else {
     index.add(scrollView);
-    var menuIcon = Alloy.createController('menuIcon', {
-      currentWindow: index
-    }).getView();
     index.add(menuIcon);
     index.needAuth = false;
     index.fireEvent('openRows');
@@ -152,6 +153,8 @@ client.setOnerror(function(e) { // on error including a timeout
       message: 'You can still read pre-loaded articles'
     }).show();
   }
+  index.add(scrollView);
+  index.add(menuIcon);
   index.fireEvent('openRows');
 });
 
