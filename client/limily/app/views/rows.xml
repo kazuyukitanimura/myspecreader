@@ -1,5 +1,5 @@
 <Alloy>
-  <ListSection>
-    <ListView id="table"  defaultItemTemplate="row"></ListView>
-  </ListSection>
+  <ListView id="table"  defaultItemTemplate="row">
+    <ListSection></ListSection>
+  </ListView>
 </Alloy>

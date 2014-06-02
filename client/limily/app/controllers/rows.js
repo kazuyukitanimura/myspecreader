@@ -59,26 +59,27 @@ rs.close();
 var items = [];
 for (var i = data.length; i--;) {
   var datum = data[i];
+  var datumData = JSON.parse(datum.data || '{}');
   var state = datum.state;
   var item = {
     itemId: datum.id,
     img: {
-      image: getImage(datum.img, 'thumb') || 'noimage.png'
+      image: getImage(datumData.img, 'thumb') || 'noimage.png'
     },
     title: {
-      text: datum.title
+      text: datumData.title
     },
     summary: {
-      text: datum.summary
+      text: datumData.summary
     },
     origin: {
-      text: datum.origin.title
+      text: datumData.origin.title
     },
     state: {
       text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
     },
     ago: {
-      text: parseInt(datum.published, 10) ? moment(datum.published).fromNow() : ''
+      text: parseInt(datumData.published, 10) ? moment(datumData.published).fromNow() : ''
     }
   };
   setOpacity(item, state);

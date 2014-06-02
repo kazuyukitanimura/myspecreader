@@ -191,7 +191,7 @@ index.addEventListener('openRows', _.throttle(function(e) {
       db: db
     }).getView();
     rows.setTransform(counterRotate);
-    if (!rows.items.length) {
+    if (!rows.sections.length || !rows.sections[0].items.length) {
       if (i === offset) {
         if (e.stars) {
           scrollView.addView(noMoreStars);
