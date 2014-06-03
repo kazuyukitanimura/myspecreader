@@ -154,6 +154,7 @@ client.setOnerror(function(e) { // on error including a timeout
       message: 'You can still read pre-loaded articles'
     }).show();
   }
+  index.removeAllChildren();
   index.add(scrollView);
   index.add(menuIcon);
   index.fireEvent('openRows');
