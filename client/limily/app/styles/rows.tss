@@ -9,8 +9,7 @@
 
 '#row': {
   backgroundColor: 'transparent',
-  height: '92dp',
-  className: 'itemRow'
+  height: '92dp'
 }
 
 '#cell': {
