@@ -1,14 +1,14 @@
 <Alloy>
-  <ListView id="table" defaultItemTemplate="row">
+  <ListView defaultItemTemplate="row">
     <Templates>
-      <ItemTemplate name="row">
-        <View bindId="cell" id="cell">
-          <ImageView bindId="image" id="image"/>
-          <Label bindId="title" id="title"/>
-          <Label bindId="summary" id="summary"/>
-          <Label bindId="origin" id="origin"/>
-          <Label bindId="state" id="state"/>
-          <Label bindId="ago" id="ago"/>
+      <ItemTemplate name="row" class="row">
+        <View bindId="cell" class="cell">
+          <ImageView bindId="img" class="image"/>
+          <Label bindId="title" class="title"/>
+          <Label bindId="summary" class="summary"/>
+          <Label bindId="origin" class="origin"/>
+          <Label bindId="state" class="state"/>
+          <Label bindId="ago" class="ago"/>
         </View>
       </ItemTemplate>
     </Templates>

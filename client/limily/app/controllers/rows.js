@@ -22,7 +22,7 @@ moment.lang('en', {
     yy: "%d years"
   }
 });
-var table = $.table;
+var rows = $.rows;
 var recommends = Alloy.Collections.instance(DB);
 var TABLE = recommends.config.adapter.collection_name;
 var STATES = recommends.config.STATES;
@@ -40,7 +40,7 @@ var setOpacity = function(item, state) {
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage, but do not use the normal fetch option to serialize the transaction
-data = table.data = [];
+data = rows.data = [];
 // https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
 var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
 var rs = db.execute(sql);
@@ -85,7 +85,7 @@ for (var i = data.length; i--;) {
   setOpacity(item, state);
   items.push(item);
 }
-var section = table.sections[0];
+var section = rows.sections[0];
 section.setItems(items);
 
 if (stars) {
@@ -102,7 +102,7 @@ if (stars) {
   currentWindow.add(sideLabel);
 }
 
-table.markAsRead = function(db) {
+rows.markAsRead = function(db) {
   if (data) {
     var ids = [];
     for (var i = data.length; i--;) {
@@ -135,7 +135,7 @@ var updateState = function(itemIndex, id, state) {
   db.close();
 };
 
-table.addEventListener('itemclick', _.debounce(function(e) {
+rows.addEventListener('itemclick', _.debounce(function(e) {
   e.cancelBubble = true;
   var itemIndex = e.itemIndex;
   var datum = data[itemIndex];
@@ -192,7 +192,7 @@ table.addEventListener('itemclick', _.debounce(function(e) {
 },
 256, true));
 
-table.addEventListener('swipe', function(e) {
+rows.addEventListener('swipe', function(e) {
   // prevent bubbling up to the row
   e.cancelBubble = true;
   Ti.API.debug(e.direction);
@@ -204,9 +204,9 @@ table.addEventListener('swipe', function(e) {
   }
 });
 
-table.addEventListener('free', function(e) {
+rows.addEventListener('free', function(e) {
   Ti.API.debug('table free');
-  table = null;
+  rows = null;
   recommends = null;
   $.destroy();
 });

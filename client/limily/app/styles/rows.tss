@@ -1,18 +1,19 @@
-'#table': {
-  scrollable: false,
-  //backgroundColor: '#BDBEC2',
+'#rows': {
+  canScroll: false,
   backgroundColor: 'transparent',
   separatorColor: 'transparent',
-  //allowsSelection: false,
+  showVerticalScrollIndicator: false,
   width: Ti.Platform.displayCaps.platformWidth,
+  willScrollOnStatusTap: false,
+  touchEnabled: false,
 }
 
-'#row': {
+'.row': {
   backgroundColor: 'transparent',
   height: '92dp'
 }
 
-'#cell': {
+'.cell': {
   backgroundColor: '#fff',
   height: '90dp',
   left: '5dp',
@@ -23,7 +24,7 @@
   touchEnabled: false
 }
 
-'#image': {
+'.image': {
   backgroundColor: 'white',
   height: '90dp',
   width: '90dp',
@@ -33,7 +34,7 @@
   touchEnabled: false
 }
 
-'#title': {
+'.title': {
   font: {
     fontSize: '14dp'
   },
@@ -44,7 +45,7 @@
   touchEnabled: false
 }
 
-'#summary': {
+'.summary': {
   font: {
     fontSize: '11dp'
   },
@@ -54,7 +55,7 @@
   touchEnabled: false
 }
 
-'#origin': {
+'.origin': {
   width: '118dp',
   height: '1em',
   left: '92dp',
@@ -66,7 +67,7 @@
   touchEnabled: false
 }
 
-'#state': {
+'.state': {
   width: Ti.UI.Size,
   right: '60dp',
   bottom: '2dp',
@@ -79,7 +80,7 @@
   touchEnabled: false
 }
 
-'#ago': {
+'.ago': {
   width: '68dp',
   right: '2dp',
   bottom: '2dp',
