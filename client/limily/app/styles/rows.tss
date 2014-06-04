@@ -5,7 +5,6 @@
   showVerticalScrollIndicator: false,
   width: Ti.Platform.displayCaps.platformWidth,
   willScrollOnStatusTap: false,
-  touchEnabled: false,
 }
 
 '.row': {
@@ -55,7 +54,7 @@
   touchEnabled: false
 }
 
-'.origin': {
+'.src': {
   width: '118dp',
   height: '1em',
   left: '92dp',

@@ -6,7 +6,7 @@
           <ImageView bindId="img" class="image"/>
           <Label bindId="title" class="title"/>
           <Label bindId="summary" class="summary"/>
-          <Label bindId="origin" class="origin"/>
+          <Label bindId="src" class="src"/>
           <Label bindId="state" class="state"/>
           <Label bindId="ago" class="ago"/>
         </View>

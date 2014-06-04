@@ -40,7 +40,7 @@ var setOpacity = function(item, state) {
 var uStarBlack = '\u2605';
 
 // fetch existing data from storage, but do not use the normal fetch option to serialize the transaction
-data = rows.data = [];
+var rowData = [];
 // https://github.com/appcelerator/alloy/blob/master/Alloy/lib/alloy/sync/sql.js
 var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [STATES.UNREAD, STATES.KEEPUNREAD].join(', ')), ') ORDER BY rowid DESC LIMIT ', limit, ' OFFSET ' + limit * page].join('');
 var rs = db.execute(sql);
@@ -51,35 +51,35 @@ while (rs.isValidRow()) {
     var fn = rs.fieldName(i);
     o[fn] = rs.fieldByName(fn);
   }
-  data.push(o);
+  rowData.push(o);
   rs.next();
 }
 rs.close();
 
 var items = [];
-for (var i = data.length; i--;) {
-  var datum = data[i];
-  var datumData = JSON.parse(datum.data || '{}');
-  var state = datum.state;
+for (var i = 0, l = rowData.length; i < l; i++) {
+  var rowDatum = rowData[i];
+  var data = rowDatum.data = JSON.parse(rowDatum.data || '{}');
+  var state = rowDatum.state;
   var item = {
-    itemId: datum.id,
+    itemId: rowDatum.id,
     img: {
-      image: getImage(datumData.img, 'thumb') || 'noimage.png'
+      image: getImage(data.img, 'thumb') || 'noimage.png'
     },
     title: {
-      text: datumData.title
+      text: data.title
     },
     summary: {
-      text: datumData.summary
+      text: data.summary
     },
-    origin: {
-      text: datumData.origin.title
+    src: {
+      text: data.origin.title
     },
     state: {
       text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
     },
     ago: {
-      text: parseInt(datumData.published, 10) ? moment(datumData.published).fromNow() : ''
+      text: parseInt(data.published, 10) ? moment(data.published).fromNow() : ''
     }
   };
   setOpacity(item, state);
@@ -103,13 +103,13 @@ if (stars) {
 }
 
 rows.markAsRead = function(db) {
-  if (data) {
+  if (rowData) {
     var ids = [];
-    for (var i = data.length; i--;) {
-      var datum = data[i];
-      if (datum.state === STATES.UNREAD) {
-        datum.state = STATES.PASSED;
-        ids.push(datum.id);
+    for (var i = rowData.length; i--;) {
+      var rowDatum = rowData[i];
+      if (rowDatum.state === STATES.UNREAD) {
+        rowDatum.state = STATES.PASSED;
+        ids.push(rowDatum.id);
       }
     }
     if (ids.length) {
@@ -138,8 +138,9 @@ var updateState = function(itemIndex, id, state) {
 rows.addEventListener('itemclick', _.debounce(function(e) {
   e.cancelBubble = true;
   var itemIndex = e.itemIndex;
-  var datum = data[itemIndex];
-  var img = getImage(datum.img);
+  var rowDatum = rowData[itemIndex];
+  var data = rowDatum.data;
+  var img = getImage(data.img);
   if (img.resolve) {
     img = img.resolve();
   } else if (img.nativePath) {
@@ -147,9 +148,9 @@ rows.addEventListener('itemclick', _.debounce(function(e) {
   }
   var variables = {
     '{{img}}': escapeQuote(img),
-    '{{summary}}': escapeQuote(datum.summary),
-    '{{title}}': escapeQuote(datum.title),
-    '{{href}}': escapeQuote(datum.href)
+    '{{summary}}': escapeQuote(data.summary),
+    '{{title}}': escapeQuote(data.title),
+    '{{href}}': escapeQuote(data.href)
   };
   var keys = Object.keys(variables);
   var k = '';
@@ -166,7 +167,7 @@ rows.addEventListener('itemclick', _.debounce(function(e) {
     e: e
   };
   var webpage = Alloy.createController('webpage', options).getView();
-  var state = webpage.state = datum.state;
+  var state = webpage.state = rowDatum.state;
   webpage.noInd = true;
   webpage.addEventListener('urlChange', function(e) {
     var viewOriginal = e.url && e.url.indexOf(gSummaryHtmlPath) === - 1;
@@ -177,14 +178,14 @@ rows.addEventListener('itemclick', _.debounce(function(e) {
       if (viewOriginal) {
         state = STATES.VIEWORIGINAL;
       }
-      datum.state = webpage.state = state;
-      updateState(itemIndex, datum.id, state);
+      rowDatum.state = webpage.state = state;
+      updateState(itemIndex, rowDatum.id, state);
     }
   });
   webpage.addEventListener('close', function(e) {
     if (webpage.state) {
-      state = datum.state = webpage.state;
-      updateState(itemIndex, datum.id, state);
+      state = rowDatum.state = webpage.state;
+      updateState(itemIndex, rowDatum.id, state);
     }
     webpage = null;
   });
