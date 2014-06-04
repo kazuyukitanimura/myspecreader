@@ -5,6 +5,7 @@
   showVerticalScrollIndicator: false,
   width: Ti.Platform.displayCaps.platformWidth,
   willScrollOnStatusTap: false,
+  //allowsSelection: false // until 3.3 allowsSelection prevents events
 }
 
 '.row': {

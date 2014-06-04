@@ -105,14 +105,17 @@ if (stars) {
 rows.markAsRead = function(db) {
   if (rowData) {
     var ids = [];
+    items = section.items;
     for (var i = rowData.length; i--;) {
       var rowDatum = rowData[i];
       if (rowDatum.state === STATES.UNREAD) {
         rowDatum.state = STATES.PASSED;
         ids.push(rowDatum.id);
+        setOpacity(items[i], STATES.PASSED);
       }
     }
     if (ids.length) {
+      section.setItems(items);
       try {
         db.execute(['UPDATE ', TABLE, ' SET state = ', STATES.PASSED, ' WHERE id IN ("', ids.join('", "'), '")'].join(''));
       } catch(err) {
