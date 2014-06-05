@@ -73,7 +73,7 @@ for (var i = 0, l = rowData.length; i < l; i++) {
       text: data.summary
     },
     src: {
-      text: (data.origin || {}).title
+      text: data.src
     },
     state: {
       text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
