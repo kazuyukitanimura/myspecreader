@@ -141,6 +141,7 @@ var updateState = function(itemIndex, id, state) {
 rows.addEventListener('itemclick', _.debounce(function(e) {
   e.cancelBubble = true;
   var itemIndex = e.itemIndex;
+  rows.deselectItem(0, itemIndex);
   var rowDatum = rowData[itemIndex];
   var data = rowDatum.data;
   var img = getImage(data.img);

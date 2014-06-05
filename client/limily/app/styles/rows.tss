@@ -10,7 +10,8 @@
 
 '.row': {
   backgroundColor: 'transparent',
-  height: '92dp'
+  height: '92dp',
+  touchEnabled: false
 }
 
 '.cell': {
