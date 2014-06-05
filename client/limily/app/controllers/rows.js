@@ -46,7 +46,7 @@ var sql = ['SELECT * FROM ', TABLE, ' WHERE state IN (', (stars ? STATES.STAR: [
 var rs = db.execute(sql);
 while (rs.isValidRow()) {
   var o = {};
-  var fc = _.isFunction(rs.fieldCount) ? rs.fieldCount() : rs.fieldCount;
+  var fc = _.isFunction(rs.fieldCount) ? rs.fieldCount() : rs.fieldCount; //var fc = rs.fieldCount; // TODO change this after 3.3
   for (var i = 0; i < fc; i++) {
     var fn = rs.fieldName(i);
     o[fn] = rs.fieldByName(fn);
@@ -73,7 +73,7 @@ for (var i = 0, l = rowData.length; i < l; i++) {
       text: data.summary
     },
     src: {
-      text: data.origin.title
+      text: (data.origin || {}).title
     },
     state: {
       text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
