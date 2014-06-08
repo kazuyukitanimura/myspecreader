@@ -17,10 +17,6 @@ if (cluster.isMaster) {
       gid: stats.gid
     }).on('close', function(code) {
       if (code === 0) {
-        //var newWorker = cluster.fork().on('listening', function(w, address) {
-        //  worker.kill();
-        //  worker = newWorker;
-        //});
         worker.kill();
       }
     });
@@ -33,4 +29,5 @@ if (cluster.isMaster) {
   });
 } else {
   require('./lib/appChild');
+  require('./lib/webpage');
 }

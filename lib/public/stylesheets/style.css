@@ -1,0 +1,88 @@
+body {
+  background-color: #E1FF00;
+  margin: 0;
+  padding: 0;
+  font-family: "HelveticaNeueThin", "HelveticaNeue-Thin", "Helvetica Neue Thin", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosRegular', "Arial", sans-serif;
+  font-weight: 200;
+  font-stretch: normal;
+  color: #1F1F21;
+  min-width: 600px;
+}
+
+#content {
+  background-color: #F7F7F7;
+  padding: 2%;
+  min-height: 400px;
+}
+
+a {
+  color: #1F1F21;
+  text-decoration: none;
+  font-size: 11pt;
+  margin: 10px;
+}
+
+h1 {
+  margin: 0;
+  color: #E1FF00;
+  font-family: "AthelasItalic", serif;
+  font-weight: 300;
+  font-stretch: normal;
+  font-size: 1000%;
+  text-shadow: -3px -3px 9px rgba(0, 0, 0, 0.1), 3px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  margin: -30px 0px 0px 10px;
+  font-weight: 200;
+}
+
+h3 {
+  margin: 0px 0px 0px 10px;
+  color: #8E8E93;
+  font-weight: 200;
+}
+
+.badge {
+  height: 50px;
+}
+
+#explain {
+  margin: 10px;
+  width: 500px;
+}
+
+.soon {
+  background-color: #8E8E93;
+  color: #E1FF00;
+  opacity: 0.9;
+  z-index: 1;
+  text-align: center;
+  padding: auto;
+  margin-top: -44px;
+  margin-left: 1px;
+}
+
+.storeLink {
+  display: inline-block;
+  width: 180px;
+}
+
+#screenshot {
+  height:  640px;
+  position: absolute;
+  top: -50px;
+  margin-left: -80px;
+}
+
+footer {
+  bottom: 0;
+  width: 100%;
+  padding: 0px 2%;
+  z-index: -1;
+}
+
+#license {
+  font-size: 9pt;
+  bottom: 0px;
+}
