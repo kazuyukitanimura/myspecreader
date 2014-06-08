@@ -24,6 +24,16 @@ var scrollView = Ti.UI.createScrollableView({
   top: '14dp',
   transform: rotate
 });
+var backgroundImages = { // key: height, val: filename
+  480: 'Default.png',
+  768: 'Default-Landscape.png',
+  960: 'Default@2x.png',
+  1024: 'Default-Portrait.png',
+  1136: 'Default-568h@2x.png',
+  1536: 'Default-Landscape@2x.png',
+  2048: 'Default-Portrait@2x.png'
+  // TODO add Android backgroundImage
+};
 
 var learnMore = Alloy.createController('learnMore').getView();
 
@@ -61,12 +71,9 @@ var menuIcon = Alloy.createController('menuIcon', {
 }).getView();
 
 var setBackground = function() {
-  if (Ti.Gesture.isPortrait()) {
-    index.setBackgroundImage('Default.png');
-  } else {
-    index.setBackgroundImage('Default-Landscape.png');
-  }
+  index.setBackgroundImage(backgroundImages[Ti.Platform.displayCaps.platformHeight] || 'Default.png');
 };
+setBackground();
 
 var MAX_NEXT_VIEWS = 4; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
@@ -128,7 +135,7 @@ client.setOnload(function() { // on success
 
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
-  client.timeout = Math.min(client.timeout * 2, 32 * 1000); // Max 32sec
+  client.timeout = min(client.timeout * 2, 32 * 1000); // Max 32sec
   var firstTime = Ti.App.Properties.getBool('firstTime', true);
   if (firstTime) {
     Titanium.UI.createAlertDialog({

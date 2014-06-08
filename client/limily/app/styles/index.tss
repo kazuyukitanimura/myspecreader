@@ -1,5 +1,4 @@
 '.container': {
   //backgroundColor: 'white'
   backgroundColor: '#BDBEC2',
-  backgroundImage: 'Default.png'
 }
