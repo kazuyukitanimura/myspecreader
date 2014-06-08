@@ -61,7 +61,7 @@ var menuIcon = Alloy.createController('menuIcon', {
 }).getView();
 
 var setBackground = function() {
-  if ([Ti.UI.LANDSCAPE_LEFT, Ti.UI.LANDSCAPE_RIGHT].indexOf(index.orientation) === - 1) {
+  if (Ti.Gesture.isPortrait()) {
     index.setBackgroundImage('Default.png');
   } else {
     index.setBackgroundImage('Default-Landscape.png');
