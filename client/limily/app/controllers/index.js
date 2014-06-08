@@ -239,6 +239,7 @@ index.unloadViews = function() {
     view = null;
   }
   currentPage = scrollView.currentPage = 0;
+  postRecommends(0, index);
 };
 
 if (Alloy.isTablet) {
