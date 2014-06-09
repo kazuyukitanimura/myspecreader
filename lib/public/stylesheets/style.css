@@ -47,7 +47,7 @@ h3 {
   height: 50px;
 }
 
-#explain {
+#description {
   margin: 10px;
   width: 500px;
 }
@@ -85,4 +85,9 @@ footer {
 #license {
   font-size: 9pt;
   bottom: 0px;
+}
+
+#terms {
+  background-color: #F7F7F7;
+  padding: 2%;
 }
