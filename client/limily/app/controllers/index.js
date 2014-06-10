@@ -75,6 +75,7 @@ var setBackground = function() {
 };
 setBackground();
 
+var FIRST_TIME = 'firstTime';
 var MAX_NEXT_VIEWS = 4; // including the current page
 var MAX_PREV_VIEWS = 2; // without the current page
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
@@ -103,7 +104,7 @@ client.setOnload(function() { // on success
     index.add(menuIcon);
     index.needAuth = false;
     index.fireEvent('openRows');
-    Ti.App.Properties.setBool('firstTime', false);
+    Ti.App.Properties.setBool(FIRST_TIME, false);
   }
   // setup background jobs
   var bgOptions = {
@@ -136,18 +137,16 @@ client.setOnload(function() { // on success
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
   client.timeout = min(client.timeout * 2, 32 * 1000); // Max 32sec
-  var firstTime = Ti.App.Properties.getBool('firstTime', true);
+  var firstTime = Ti.App.Properties.getBool(FIRST_TIME, true);
   if (firstTime) {
     Titanium.UI.createAlertDialog({
       title: 'Welcome, but Limily needs the network for the first time',
-      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.',
-      exitOnClose: true
+      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
     }).show();
-    index.close();
-    if (OS_ANDROID) {
-      Titanium.Android.currentActivity.finish();
-    }
-    return; // XXXX iOS does not die http://stackoverflow.com/questions/22616698/quit-application-in-titanium-ios
+    setBackground();
+    client.open('HEAD', authUrl);
+    client.send();
+    return;
   }
   if (Ti.Network.online) {
     index.needAuth = firstTime;
