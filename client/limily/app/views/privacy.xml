@@ -24,7 +24,7 @@
   " cancel="0">
     <!-- The ButtonNames tag sets the buttonNames property. -->
     <ButtonNames>
-      <ButtonName>Cancel</ButtonName>
+      <ButtonName>Reject</ButtonName>
       <ButtonName>Accept</ButtonName>
     </ButtonNames>
   </AlertDialog>

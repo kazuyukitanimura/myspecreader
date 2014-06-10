@@ -66,6 +66,19 @@ function doClick(e) {
     text: 'Because Limily needs a source of feeds and helps you with finding the most interesting news.',
     left: 20,
   }));
+  var privacy = Ti.UI.createButton({
+    title: 'Privacy and Terms of Use',
+    font: {
+      fontWeight: 'bold',
+      fontSize: 17
+    },
+    left: 20,
+    top: 20
+  });
+  privacy.addEventListener('click', function(e) {
+    Alloy.createController('privacy');
+  });
+  scrollView.add(privacy);
   var contactus = Ti.UI.createButton({
     title: 'Contact us',
     font: {

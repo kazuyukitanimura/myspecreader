@@ -13,4 +13,4 @@ var gBaseUrl = 'https://limily.com';
 var DB = 'recommends';
 var gSummaryHtmlPath = 'webViews/summary.html';
 var gSummaryHtml = Ti.Filesystem.getFile(gSummaryHtmlPath).read().text.replace(/(^\s+)|\n/, '');
-var gTERM_ACCEPTED = 'term20140609_10';
+var gTERM_ACCEPTED = 'term20140609';
