@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 var parentWindow = args.parentWindow;
+var clearSession = require('clearSession');
 var menu = $.menu;
 var menuList = $.menuList;
 var MENU_OPEN = 'menuOpen';
@@ -83,8 +84,7 @@ function about(e) {
 }
 
 function logout(e) {
-  Ti.API.debug('logout');
-  Ti.Network.createHTTPClient().clearCookies(gBaseUrl);
+  clearSession();
   home(e);
 }
 
