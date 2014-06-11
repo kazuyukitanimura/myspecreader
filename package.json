@@ -11,6 +11,7 @@
   , "compression": "*"
   , "consolidate": "*"
   , "express": "*"
+  , "express-ipfilter": "*"
   , "forever": "*"
   , "fussy": "*"
   , "hiredis": "*"
