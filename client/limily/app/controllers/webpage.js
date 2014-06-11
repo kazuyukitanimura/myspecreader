@@ -44,7 +44,7 @@ var backButton = Ti.UI.createButton({
   left: '4dp',
   width: '40dp',
   font: {
-    fontFamily: "Simple-Line-Icons",
+    fontFamily: 'Simple-Line-Icons',
     fontSize: '30dp'
   },
   color: '#1F1F21',

@@ -6,7 +6,7 @@
   width: '45dp',
   textAlign: 'center',
   font: {
-    fontFamily: "Simple-Line-Icons",
+    fontFamily: 'Simple-Line-Icons',
     fontSize: '30dp'
   },
   color: '#F7F7F7',

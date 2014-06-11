@@ -30,6 +30,6 @@
   backgroundColor: '#1F1f21',
   color: '#F7F7F7',
   font: {
-    fontFamily: "Simple-Line-Icons"
+    fontFamily: 'Simple-Line-Icons'
   }
 }

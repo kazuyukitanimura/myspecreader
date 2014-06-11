@@ -41,7 +41,7 @@ var allRead = Ti.UI.createLabel({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
   font: {
-    fontFamily: "Simple-Line-Icons",
+    fontFamily: 'Simple-Line-Icons',
     fontSize: '20dp'
   },
   text: 'Analyzing articles now...\n\nIt may take a few minutes.\n\n\ue06b \ue077 \ue083',
@@ -55,7 +55,7 @@ var noMoreStars = Ti.UI.createLabel({
   width: Ti.UI.FILL,
   height: Ti.UI.FILL,
   font: {
-    fontFamily: "Simple-Line-Icons",
+    fontFamily: 'Simple-Line-Icons',
     fontSize: '20dp'
   },
   text: 'No more starred articles...\n\n\ue06b \ue077 \ue083',
