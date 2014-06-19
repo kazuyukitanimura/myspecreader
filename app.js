@@ -12,7 +12,7 @@ if (cluster.isMaster) {
     // TODO fix this nested spawns
     spawn('gsutil', ['cp', '/var/lib/redis/appendonly.aof', 'gs://limily/redis/'], {
       detached: true,
-      stdio: ['ignore', 'ignore', process.stderr]
+      stdio: ['ignore', 'ignore', 'ignore']
     }).on('close', function(code) {
       if (code === 0) {
         spawn('git', ['pull', '--ff-only', '--rebase'], {
