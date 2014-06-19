@@ -9,15 +9,23 @@ if (cluster.isMaster) {
   var spawn = require('child_process').spawn;
   var worker = cluster.fork();
   setInterval(function() {
-    spawn('git', ['pull', '--ff-only', '--rebase'], {
-      cwd: __dirname,
+    // TODO fix this nested spawns
+    spawn('gsutil', ['cp', '/var/lib/redis/appendonly.aof', 'gs://limily/redis/'], {
       detached: true,
-      stdio: ['ignore', process.stdout, process.stderr],
-      uid: stats.uid,
-      gid: stats.gid
+      stdio: ['ignore', process.stdout, process.stderr]
     }).on('close', function(code) {
       if (code === 0) {
-        worker.kill();
+        spawn('git', ['pull', '--ff-only', '--rebase'], {
+          cwd: __dirname,
+          detached: true,
+          stdio: ['ignore', process.stdout, process.stderr],
+          uid: stats.uid,
+          gid: stats.gid
+        }).on('close', function(code) {
+          if (code === 0) {
+            worker.kill();
+          }
+        });
       }
     });
   },
