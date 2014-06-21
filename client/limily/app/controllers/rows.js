@@ -33,6 +33,11 @@ var setOpacity = function(item, state) {
     opacity: (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) ? 0.8: 1.0
   };
 };
+var setState = function(item, state) {
+  item.state = {
+    text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
+  };
+};
 
 /**
  * Unicodes
@@ -75,14 +80,12 @@ for (var i = 0, l = rowData.length; i < l; i++) {
     src: {
       text: data.src
     },
-    state: {
-      text: state === STATES.KEEPUNREAD ? 'Kept unread': state === STATES.STAR ? uStarBlack: ''
-    },
     ago: {
       text: parseInt(data.published, 10) ? moment(data.published).fromNow() : ''
     }
   };
   setOpacity(item, state);
+  setState(item, state);
   items.push(item);
 }
 var section = rows.sections[0];
@@ -132,6 +135,7 @@ var escapeQuote = function(text) {
 var updateState = function(itemIndex, id, state) {
   var item = section.getItemAt(itemIndex);
   setOpacity(item, state);
+  setState(item, state);
   section.updateItemAt(itemIndex, item);
   var db = Ti.Database.open(DB);
   db.execute(['UPDATE ', TABLE, ' SET state = ', state, ' WHERE id = "', id, '"'].join(''));
