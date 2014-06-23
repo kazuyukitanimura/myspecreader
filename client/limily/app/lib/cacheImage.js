@@ -16,23 +16,6 @@ function _getFile(url, ver) {
   return Ti.Filesystem.getFile(Ti.Filesystem.applicationCacheDirectory, md5);
 }
 
-function resize(blob) {
-  var w = blob.getWidth();
-  var h = blob.getHeight();
-  var maxSize = 2048;
-  if (w > maxSize || h > maxSize) {
-    if (w > h) {
-      h *= maxSize / w;
-      w = maxSize;
-    } else {
-      w *= maxSize / h;
-      h = maxSize;
-    }
-    return blob.imageAsResized(w | 0, h | 0);
-  }
-  return blob;
-}
-
 function _getBlob(image) {
   return Ti.UI.createImageView({
     backgroundColor: 'white',
@@ -68,9 +51,9 @@ function setImage(url, ver, as) {
           if (this.responseData) {
             try {
               var blob = _getBlob(this.responseData);
-              file.write(as ? as(blob) : resize(blob));
+              file.write(as ? as(blob) : blob);
               if (ver) {
-                _getFile(url).write(resize(blob));
+                _getFile(url).write(blob);
               }
             } catch(err) {
               Ti.API.error(err);

@@ -8,6 +8,23 @@ var STATES = recommends.config.STATES;
 var unreadState = STATES.UNREAD;
 var starState = STATES.STAR;
 
+function resize(blob) {
+  var w = blob.getWidth();
+  var h = blob.getHeight();
+  var maxSize = 2048;
+  if (w > maxSize || h > maxSize) {
+    if (w > h) {
+      h *= maxSize / w;
+      w = maxSize;
+    } else {
+      w *= maxSize / h;
+      h = maxSize;
+    }
+    return blob.imageAsResized(w | 0, h | 0);
+  }
+  return blob;
+}
+
 function toThumb(blob) {
   return blob.imageAsThumbnail(90, 0, 0);
 }
