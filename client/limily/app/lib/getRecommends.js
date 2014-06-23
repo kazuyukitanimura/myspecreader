@@ -69,7 +69,6 @@ function getHttp(url) {
         sqlArgs.push(id);
         sqlArgs.push(id);
         sqlArgs.push(JSON.stringify(item));
-        setImage(item.img/*, null, resize*/);
         setImage(item.img, 'thumb', toThumb);
       }
       if (items.length) {
