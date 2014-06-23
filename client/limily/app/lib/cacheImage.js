@@ -52,9 +52,6 @@ function setImage(url, ver, as) {
             try {
               var blob = _getBlob(this.responseData);
               file.write(as ? as(blob) : blob);
-              if (ver) {
-                _getFile(url).write(blob);
-              }
             } catch(err) {
               Ti.API.error(err);
             }
