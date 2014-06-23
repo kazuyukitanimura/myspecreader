@@ -12,8 +12,7 @@ var client = Ti.Network.createHTTPClient({
   enableKeepAlive: true
 });
 client.setOnload(function() { // on success
-  var url = this.location;
-  Ti.API.debug('sucess ' + url);
+  Ti.API.debug('sucess getReadIds');
   if (this.status >= 400) { // workaround
     if (this.onerror) {
       this.onerror(e);
@@ -31,7 +30,7 @@ client.setOnload(function() { // on success
   }
 });
 
-exports = function() {
+var getReadIds = function() {
   // silently ignore this if there's no network connection
   if (!Ti.Network.online) {
     return;
@@ -39,3 +38,5 @@ exports = function() {
   client.open('GET', url);
   client.send();
 };
+
+exports = getReadIds;
