@@ -38,7 +38,6 @@ client.setOnload(function() { // on success
       sqlArgs.push(id);
       sqlArgs.push(id);
       sqlArgs.push(JSON.stringify(item));
-      setImage(item.img);
       setImage(item.img, 'thumb', toThumb);
     }
     if (items.length) {
