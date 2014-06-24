@@ -203,10 +203,10 @@ index.addEventListener('openRows', _.debounce(function(e) {
     rows.setTransform(counterRotate);
     if (!rows.sections.length || !rows.sections[0].items.length) {
       if (i === offset) {
+        scrollView.addView(rows);
         if (e.stars) {
-          scrollView.addView(noMoreStars);
+          index.add(noMoreStars);
         } else {
-          scrollView.addView(rows);
           index.add(allRead);
           index.needAuth = true;
         }
