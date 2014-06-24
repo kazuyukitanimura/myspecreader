@@ -145,7 +145,7 @@ client.setOnerror(function(e) { // on error including a timeout
     }).show();
     setBackground();
     client.open('HEAD', authUrl);
-    setTimeout(client.send, 4 * 1000);
+    setTimeout(client.send, 32 * 1000);
     return;
   }
   if (Ti.Network.online) {
@@ -219,7 +219,7 @@ index.addEventListener('openRows', _.debounce(function(e) {
   db.close();
   if (Ti.Network.online && index.needAuth) {
     client.open('HEAD', authUrl);
-    setTimeout(client.send, 4 * 1000);
+    setTimeout(client.send, 32 * 1000);
     return;
   }
 }, 1024, true));
