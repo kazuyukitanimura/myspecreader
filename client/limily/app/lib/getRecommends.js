@@ -27,7 +27,23 @@ client.setOnload(function(e) { // on success
     return;
   }
   try {
-    var items = JSON.parse(this.responseText).items;
+    var response = JSON.parse(this.responseText);
+    var items = response.items;
+    if (response.nofeed) {
+      var dialog = Ti.UI.createAlertDialog({
+        cancel: 0,
+        buttonNames: ['No Thanks', 'Sure'],
+        message: 'Would you like to add some on Feedly?',
+        title: 'No Feed Subscription Found'
+      });
+      dialog.addEventListener('click', function(e) {
+        if (e.index === 1) {
+          Alloy.createController('webpage', 'https://feedly.com/').getView().open();
+        }
+      });
+      dialog.show();
+      return;
+    }
     // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
     // the order of saving to sqlite is important
     // the larger rowid, the newer (higher priority)
@@ -35,7 +51,7 @@ client.setOnload(function(e) { // on success
     // by sorting by rowid, we can always get the newest sorted ranking
     var sql = ['INSERT OR REPLACE INTO', TABLE, '(id, state, data) VALUES '].join(' ');
     // http://stackoverflow.com/questions/1609637/is-it-possible-to-insert-multiple-rows-at-a-time-in-an-sqlite-database
-    var sqlVal = ['(?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState , '), ?)'].join('');
+    var sqlVal = ['(?, COALESCE((SELECT state FROM ', TABLE, ' WHERE id = ?), ', unreadState, '), ?)'].join('');
     var sqls = [];
     var sqlArgs = [];
     for (var i = items.length; i--;) {
