@@ -37,7 +37,7 @@ function doClick(e) {
     top: 20
   }));
   scrollView.add(Ti.UI.createLabel({
-    text: 'Limily is an inteligent news feed reader. It learns your preference and reading behavior over time. To save your time, Limily automagically brings the most relevant news at the top of the list. Limily is the best learning tool for those who want to keep up with the newest technologies and trending.\nSupported feed services: Feedly',
+    text: 'Limily is an inteligent news feed reader mobile app. It learns your preference and reading behavior over time. To save your time, Limily automagically brings the most relevant and personalized news at the top of the list. Limily is the best learning tool for those who want to keep up with the newest technologies and trending.\nSupported feed services: Feedly',
     left: 20,
   }));
   scrollView.add(Ti.UI.createLabel({
