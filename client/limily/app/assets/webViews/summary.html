@@ -12,7 +12,8 @@
       <div id="spacer"></div>
     </div>
     <a id="original" href="{{href}}" onclick="this.innerHTML='&nbsp;&nbsp;Loading...';this.style.backgroundImage='url(\'webViews/spinner.gif\')';">View website</a>
-    <iframe src="{{href}}" height="0" frameborder="0" sandbox></iframe>
+    <img class="cache" src="webViews/spinner.gif">
+    <iframe class="cache" src="{{href}}" height="0" frameborder="0" sandbox></iframe>
     <script>
       document.addEventListener('gestureend', function(e) {
         if (e.scale < 1.0) {

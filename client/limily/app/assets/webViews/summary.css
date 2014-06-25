@@ -44,7 +44,7 @@ body {
   width: 80%;
   position: relative;
 }
-iframe {
+.cache {
   height: 0px;
   border: 0;
 }
