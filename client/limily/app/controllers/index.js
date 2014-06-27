@@ -6,7 +6,7 @@ index.needAuth = true;
 
 var db = Ti.Database.open(DB); // sqlite setup http://www.sqlite.org/pragma.html
 db.execute('PRAGMA journal_mode = WAL');
-db.execute('PRAGMA synchronous = ON');
+db.execute('PRAGMA synchronous = 2');
 db.execute('PRAGMA locking_mode = EXCLUSIVE');
 db.execute('PRAGMA read_uncommitted = 1');
 db.close();
