@@ -2,9 +2,6 @@ var getReadIds = require('getReadIds');
 var getStars = require('getStars');
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/recommends';
-var recommends = Alloy.Collections.instance(DB);
-var TABLE = recommends.config.adapter.collection_name;
-var STATES = recommends.config.STATES;
 var unreadState = STATES.UNREAD;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,

@@ -11,6 +11,8 @@
 // Alloy.Globals.someGlobalFunction = function(){};
 var gBaseUrl = 'https://limily.com';
 var DB = 'recommends';
+var TABLE = Alloy.Collections.instance(DB).config.adapter.collection_name;
+var STATES = Alloy.Collections.instance(DB).config.STATES;
 var gSummaryHtmlPath = 'webViews/summary.html';
 var gSummaryHtml = Ti.Filesystem.getFile(gSummaryHtmlPath).read().text.replace(/(^\s+)|\n/, '');
 var gTERM_ACCEPTED = 'term20140609';

@@ -8,8 +8,6 @@ exports = function(index) {
     return;
   }
   var recommends = Alloy.createCollection(DB); // always create a new local instance
-  var TABLE = recommends.config.adapter.collection_name;
-  var STATES = recommends.config.STATES;
   if (recommends) {
     recommends.fetch({
       query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid DESC LIMIT ', sendLimit].join(' ')
@@ -58,10 +56,12 @@ exports = function(index) {
             Ti.API.error(err);
           }
         }
+        recommends = null;
       });
       client.setOnerror(function(e) { // on error including a timeout
         Ti.API.debug(e.error);
         index.needAuth = true;
+        recommends = null;
       });
     }
   }

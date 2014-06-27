@@ -1,7 +1,4 @@
 var url = gBaseUrl + '/readids';
-var recommends = Alloy.Collections.instance(DB);
-var TABLE = recommends.config.adapter.collection_name;
-var STATES = recommends.config.STATES;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
   timeout: 64 * 1000, // in milliseconds

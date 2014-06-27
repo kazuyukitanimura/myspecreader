@@ -23,9 +23,6 @@ moment.lang('en', {
   }
 });
 var rows = $.rows;
-var recommends = Alloy.Collections.instance(DB);
-var TABLE = recommends.config.adapter.collection_name;
-var STATES = recommends.config.STATES;
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 
 var setOpacity = function(item, state) {
@@ -216,6 +213,5 @@ rows.addEventListener('swipe', function(e) {
 rows.addEventListener('free', function(e) {
   Ti.API.debug('table free');
   rows = null;
-  recommends = null;
   $.destroy();
 });

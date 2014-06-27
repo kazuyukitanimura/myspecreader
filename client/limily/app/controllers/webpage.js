@@ -10,9 +10,6 @@ if (options.html) {
   html = options.html;
 }
 
-var recommends = Alloy.Collections.instance(DB);
-var STATES = recommends.config.STATES;
-
 /**
  * Unicodes
  */

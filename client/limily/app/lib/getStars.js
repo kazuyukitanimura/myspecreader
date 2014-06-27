@@ -1,8 +1,5 @@
 var setImage = require('cacheImage').setImage;
 var url = gBaseUrl + '/stars';
-var recommends = Alloy.Collections.instance(DB);
-var TABLE = recommends.config.adapter.collection_name;
-var STATES = recommends.config.STATES;
 var starState = STATES.STAR;
 var client = Ti.Network.createHTTPClient({
   autoRedirect: false,
