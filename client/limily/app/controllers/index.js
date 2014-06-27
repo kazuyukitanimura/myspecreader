@@ -8,7 +8,7 @@ var db = Ti.Database.open(DB); // sqlite setup http://www.sqlite.org/pragma.html
 db.execute('PRAGMA journal_mode = WAL');
 db.execute('PRAGMA synchronous = 0');
 db.execute('PRAGMA locking_mode = EXCLUSIVE');
-db.execute('PRAGMA read_uncommitted = 1');
+db.execute('PRAGMA read_uncommitted = 0');
 db.close();
 
 var rotate = Ti.UI.create2DMatrix().rotate(90);
@@ -175,7 +175,7 @@ index.addEventListener('openRows', _.debounce(function(e) {
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
   db = Ti.Database.open(DB);
-  db.execute('BEGIN');
+  db.execute('BEGIN EXCLUSIVE');
   if (nextPage > currentPage && ! e.stars) { // if scrolling down
     for (i = min(MAX_PREV_VIEWS, nextPage) - 1; i < nextPage; i++) {
       views[i].markAsRead(db);
