@@ -180,17 +180,14 @@ index.addEventListener('openRows', _.debounce(function(e) {
     for (i = min(MAX_PREV_VIEWS, nextPage) - 1; i < nextPage; i++) {
       views[i].markAsRead(db);
     }
-    while (nextPage-- > MAX_PREV_VIEWS) {
+    while (nextPage > MAX_PREV_VIEWS) {
+      nextPage -= 1;
       var view = views[0];
       view.fireEvent('free', e);
       view = null;
       scrollView.shiftView();
     }
-    var leaveLimit = 0;
-    for (i = ++nextPage + 1; i--;) {
-      leaveLimit += (((views[i].data || [])[0] || {}).rows || []).length; // there is only one section
-    }
-    postRecommends(leaveLimit, index);
+    postRecommends(index);
   }
   currentPage = nextPage;
   for (i = offset; i < MAX_NEXT_VIEWS; i++) {
@@ -238,7 +235,7 @@ index.unloadViews = function() {
     view = null;
   }
   currentPage = scrollView.currentPage = 0;
-  postRecommends(0, index);
+  postRecommends(index);
 };
 
 if (Alloy.isTablet) {

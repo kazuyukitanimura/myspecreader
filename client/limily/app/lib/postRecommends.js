@@ -1,9 +1,9 @@
 var delImage = require('cacheImage').delImage;
 var postUrl = gBaseUrl + '/recommends';
 var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
-var sendLimit = 64;
+var sendLimit = Math.max(64, limit * 2);
 
-exports = function(leaveLimit, index) {
+exports = function(index) {
   if (!Ti.Network.online) {
     return;
   }
@@ -12,10 +12,8 @@ exports = function(leaveLimit, index) {
   var STATES = recommends.config.STATES;
   if (recommends) {
     recommends.fetch({
-      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid ASC'].join(' ')
+      query: ['SELECT * FROM', TABLE, 'WHERE state NOT IN (', STATES.UNREAD, ') ORDER BY rowid DESC LIMIT ', sendLimit].join(' ')
     });
-    console.log('leaveLimit', leaveLimit);
-    recommends = _.last(recommends.initial(leaveLimit | 0), sendLimit); // do not send the leaveLimit amount of recommends, returns an array
     if (recommends.length) {
       var data = recommends.map(function(recommend) {
         var data = JSON.parse(recommend.get('data'));
