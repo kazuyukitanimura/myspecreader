@@ -67,7 +67,7 @@ function home(e) {
   Ti.API.debug('home');
   parentWindow.needAuth = true;
   parentWindow.unloadViews();
-  parentWindow.fireEvent('openRows');
+  parentWindow.fireEvent('loggedin');
   closeMenu();
 }
 
