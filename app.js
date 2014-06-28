@@ -10,7 +10,7 @@ if (cluster.isMaster) {
   var worker = cluster.fork();
   setInterval(function() {
     // TODO fix this nested spawns
-    spawn('gsutil', ['cp', '/var/lib/redis/appendonly.aof', 'gs://limily/redis/'], {
+    spawn('gsutil', ['cp', '/var/lib/redis/*', 'gs://limily/redis/'], {
       detached: true,
       stdio: ['ignore', 'ignore', 'ignore']
     }).on('close', function(code) {
