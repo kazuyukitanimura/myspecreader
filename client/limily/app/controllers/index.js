@@ -84,8 +84,15 @@ var client = Ti.Network.createHTTPClient({ // cookies should be manually managed
   timeout: 1000,
   enableKeepAlive: true
 });
-client.open('HEAD', authUrl); // Prepare the connection.
-client.send(); // Send the request.
+client.ping = function(delay) {
+  this.open('HEAD', authUrl); // Prepare the connection.
+  if (delay) {
+    setTimeout(this.send, delay);
+  } else {
+    this.send(); // Send the request.
+  }
+};
+client.ping();
 var intervalId = 0;
 client.setOnload(function() { // on success
   //Ti.API.debug("headers: " + JSON.stringify(this.getResponseHeaders()));
@@ -97,6 +104,9 @@ client.setOnload(function() { // on success
       resLocation: resLocation,
       currentWindow: index
     }).getView();
+    loginButton.addEventListener('loggedin', function(e) {
+      client.ping();
+    });
     index.add(loginButton);
     index.add(learnMore);
   } else {
@@ -144,8 +154,7 @@ client.setOnerror(function(e) { // on error including a timeout
       message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
     }).show();
     setBackground();
-    client.open('HEAD', authUrl);
-    setTimeout(client.send, 16 * 1000);
+    client.ping(16 * 1000);
     return;
   }
   if (Ti.Network.online) {
@@ -215,8 +224,7 @@ index.addEventListener('openRows', _.debounce(function(e) {
   db.execute('COMMIT');
   db.close();
   if (Ti.Network.online && index.needAuth) {
-    client.open('HEAD', authUrl);
-    setTimeout(client.send, 16 * 1000);
+    client.ping(16 * 1000);
     return;
   }
 }, 1024, true));

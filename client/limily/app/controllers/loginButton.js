@@ -6,8 +6,7 @@ var getRecommends = require('getRecommends');
 var openLoginPage = function() {
   var webpage = Alloy.createController('webpage', url).getView();
   webpage.addEventListener('authenticated', function(e) {
-    getRecommends();
-    currentWindow.fireEvent('openRows');
+    currentWindow.fireEvent('loggedin');
     Ti.API.debug('authenticated');
   });
   webpage.open();
