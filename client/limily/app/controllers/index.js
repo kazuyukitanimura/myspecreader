@@ -104,9 +104,6 @@ client.setOnload(function() { // on success
       resLocation: resLocation,
       currentWindow: index
     }).getView();
-    loginButton.addEventListener('loggedin', function(e) {
-      client.ping();
-    });
     index.add(loginButton);
     index.add(learnMore);
   } else {
@@ -207,7 +204,7 @@ index.addEventListener('openRows', _.debounce(function(e) {
       db: db
     }).getView();
     rows.setTransform(counterRotate);
-    if (!rows.sections.length || !rows.sections[0].items.length) {
+    if (!rows.sections.length || ! rows.sections[0].items.length) {
       if (i === 0) {
         scrollView.addView(rows);
         if (e.stars) {
@@ -227,7 +224,8 @@ index.addEventListener('openRows', _.debounce(function(e) {
     client.ping(16 * 1000);
     return;
   }
-}, 1024, true));
+},
+1024, true));
 
 scrollView.addEventListener('scrollend', function(e) {
   e.stars = scrollView.stars;
@@ -260,6 +258,10 @@ if (Alloy.isTablet) {
     }
   });
 }
+
+index.addEventListener('loggedin', function(e) {
+  client.ping();
+});
 
 index.open();
 index.addEventListener("close", function() {
