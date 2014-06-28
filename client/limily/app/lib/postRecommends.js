@@ -35,6 +35,9 @@ exports = function(index) {
         var ids = [];
         for (var i = recommends.length; i--;) {
           var recommend = recommends[i];
+          if (!recommend) {
+            continue; // FIXME why recommend ever would be undefined?
+          }
           var data = JSON.parse(recommend.get('data'));
           var state = recommend.get('state');
           if (state !== STATES.KEEPUNREAD && state !== STATES.STAR) { // do not delete markAsUnread and star
