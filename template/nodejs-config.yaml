@@ -29,6 +29,8 @@ modules:
 actions:
   install:
     commands: [
+      "set -x",
+      "echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf && /sbin/sysctl -p",
       "apt-get update && apt-get -y upgrade && apt-get -y install git-core make build-essential vim && apt-get -y install -t wheezy-backports redis-server",
       "redis-cli ping && redis-cli config set appendonly yes && redis-cli config rewrite",
       "wget -O nodejs.tar.gz http://nodejs.org/dist/${VERSION}/node-${VERSION}-linux-x64.tar.gz",
