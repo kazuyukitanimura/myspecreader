@@ -15,6 +15,6 @@ var TABLE = Alloy.Collections.instance(DB).config.adapter.collection_name;
 var STATES = Alloy.Collections.instance(DB).config.STATES;
 var gSummaryHtmlPath = 'webViews/summary.html';
 var gSummaryHtml = Ti.Filesystem.getFile(gSummaryHtmlPath).read().text.replace(/(^\s+)|\n/, '');
-var gTERM_ACCEPTED = 'term20140609';
+var gTERM_ACCEPTED = 'term20140628';
 var reporter = require('reporter');
 reporter = 'info@limily.com';
