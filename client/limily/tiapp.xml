@@ -50,6 +50,7 @@
 	</mobileweb>
 	<modules>
 		<module version="0.1">com.limily.verticalscrollableview</module>
+		<module version="0.1">yy.logcatcher</module>
 	</modules>
 	<deployment-targets>
 		<target device="android">false</target>
