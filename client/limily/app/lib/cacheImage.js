@@ -17,11 +17,30 @@ function _getFile(url, ver) {
 }
 
 function _getBlob(image) {
-  return Ti.UI.createImageView({
+  var imageView = Ti.UI.createImageView({
     backgroundColor: 'white',
     image: image,
     height: Ti.UI.SIZE,
     width: Ti.UI.SIZE,
+    preventDefaultImage: true
+  }).toImage();
+  var w = imageView.getWidth();
+  var h = imageView.getHeight();
+  if (w > 2048 && w >= h) {
+    h *= (2048 / w);
+    w = 2048;
+  } else if (h > 2048 && h >= w) {
+    w *= (2048 / h);
+    h = 2048;
+  } else {
+    return imageView;
+  }
+  imageView = null;
+  return Ti.UI.createImageView({
+    backgroundColor: 'white',
+    image: image,
+    height: h | 0,
+    width: w | 0,
     preventDefaultImage: true
   }).toImage();
 }
