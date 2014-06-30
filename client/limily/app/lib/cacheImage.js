@@ -24,8 +24,8 @@ function _getBlob(image) {
     width: Ti.UI.SIZE,
     preventDefaultImage: true
   }).toImage();
-  var w = imageView.getWidth();
-  var h = imageView.getHeight();
+  var w = imageView.width;
+  var h = imageView.height;
   if (w > 2048 && w >= h) {
     h *= (2048 / w);
     w = 2048;
@@ -35,7 +35,6 @@ function _getBlob(image) {
   } else {
     return imageView;
   }
-  imageView = null;
   return Ti.UI.createImageView({
     backgroundColor: 'white',
     image: image,
