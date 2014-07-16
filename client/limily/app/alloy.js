@@ -18,3 +18,4 @@ var gSummaryHtml = Ti.Filesystem.getFile(gSummaryHtmlPath).read().text.replace(/
 var gTERM_ACCEPTED = 'term20140628';
 var reporter = require('reporter');
 reporter = 'info@limily.com';
+Ti.App.forceSplashAsSnapshot = true;

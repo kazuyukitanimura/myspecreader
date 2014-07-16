@@ -81,7 +81,7 @@ var MAX_PREV_VIEWS = 2; // without the current page
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
   // timeout in milliseconds
-  timeout: 1000,
+  timeout: 4000,
   enableKeepAlive: true
 });
 client.ping = function(delay) {
