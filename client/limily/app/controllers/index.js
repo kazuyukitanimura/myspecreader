@@ -81,7 +81,7 @@ var MAX_PREV_VIEWS = 2; // without the current page
 var client = Ti.Network.createHTTPClient({ // cookies should be manually managed for Android
   autoRedirect: false,
   // timeout in milliseconds
-  timeout: 4000,
+  timeout: 1000,
   enableKeepAlive: true
 });
 client.ping = function(delay) {
@@ -144,18 +144,7 @@ client.setOnload(function() { // on success
 client.setOnerror(function(e) { // on error including a timeout
   Ti.API.debug(e.error);
   client.timeout = min(client.timeout * 2, 32 * 1000); // Max 32sec
-  var firstTime = Ti.App.Properties.getBool(FIRST_TIME, true);
-  if (firstTime) {
-    Titanium.UI.createAlertDialog({
-      title: 'Welcome, but Limily needs the network for the first time',
-      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
-    }).show();
-    setBackground();
-    client.ping(16 * 1000);
-    return;
-  }
   if (Ti.Network.online) {
-    index.needAuth = firstTime;
     //Titanium.UI.createAlertDialog({
     //  title: 'There was a network issue',
     //  message: 'Limily will automatically retry later.'
@@ -223,6 +212,17 @@ index.addEventListener('openRows', _.debounce(function(e) {
   if (Ti.Network.online && index.needAuth) {
     client.ping(16 * 1000);
     return;
+  } else if (! Ti.Network.online) {
+    var firstTime = Ti.App.Properties.getBool(FIRST_TIME, true);
+    if (firstTime) {
+      Titanium.UI.createAlertDialog({
+        title: 'Welcome, but Limily needs the network for the first time',
+        message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
+      }).show();
+      setBackground();
+      client.ping(16 * 1000);
+      return;
+    }
   }
 },
 1024, true));
