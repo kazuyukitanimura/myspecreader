@@ -19,6 +19,7 @@ var pWidth = Ti.Platform.displayCaps.platformWidth;
 var pHeight = Ti.Platform.displayCaps.platformHeight;
 var scrollView = Ti.UI.createScrollableView({
   showPagingControl: false,
+  cacheSize: 1,
   height: max(pWidth, pHeight),
   width: max(pWidth, pHeight),
   top: '14dp',
