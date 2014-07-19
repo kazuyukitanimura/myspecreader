@@ -45,7 +45,7 @@ var allRead = Ti.UI.createLabel({
     fontFamily: 'Simple-Line-Icons',
     fontSize: '20dp'
   },
-  text: 'Analyzing articles now...\n\nIt may take a few minutes.\n\n\ue06b \ue077 \ue083',
+  text: 'Communicating with the server...\n\nIt may take a few minutes.\n\n\ue06b \ue077 \ue083',
   color: '#FFF',
   textAlign: 'center',
   opacity: 0.7,
@@ -168,6 +168,10 @@ index.addEventListener('openRows', _.debounce(function(e) {
   var i = 0;
   scrollView.stars = e.stars;
   var views = scrollView.views || [];
+  if (views.length && !views[0].sections[0].items.length) {
+    scrollView.shiftView();
+    views = scrollView.views || [];
+  }
   var nextPage = e.currentPage || currentPage;
   var offset = views.length - nextPage;
   db = Ti.Database.open(DB);
@@ -199,10 +203,11 @@ index.addEventListener('openRows', _.debounce(function(e) {
         scrollView.addView(rows);
         if (e.stars) {
           index.add(noMoreStars);
-        } else {
-          index.add(allRead);
-          index.needAuth = true;
         }
+      }
+      if (i < 2 && !e.stars) {
+        index.add(allRead);
+        index.needAuth = true;
       }
       break;
     }
@@ -211,19 +216,16 @@ index.addEventListener('openRows', _.debounce(function(e) {
   db.execute('COMMIT');
   db.close();
   if (Ti.Network.online && index.needAuth) {
+    client.ping(8 * 1000);
+    return;
+  } else if (! Ti.Network.online && Ti.App.Properties.getBool(FIRST_TIME, true)) {
+    Titanium.UI.createAlertDialog({
+      title: 'Welcome, but Limily needs the network for the first time',
+      message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
+    }).show();
+    setBackground();
     client.ping(16 * 1000);
     return;
-  } else if (! Ti.Network.online) {
-    var firstTime = Ti.App.Properties.getBool(FIRST_TIME, true);
-    if (firstTime) {
-      Titanium.UI.createAlertDialog({
-        title: 'Welcome, but Limily needs the network for the first time',
-        message: 'Apologies. Limily failed getting online. Please check your Wifi / carrier signal. Also please make sure enabling your data network device settings.'
-      }).show();
-      setBackground();
-      client.ping(16 * 1000);
-      return;
-    }
   }
 },
 1024, true));
