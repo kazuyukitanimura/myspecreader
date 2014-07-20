@@ -27,18 +27,20 @@ client.setOnload(function(e) { // on success
     var response = JSON.parse(this.responseText);
     var items = response.items;
     if (response.nofeed) {
-      var dialog = Ti.UI.createAlertDialog({
-        cancel: 0,
-        buttonNames: ['No Thanks', 'Sure'],
-        message: 'Would you like to add some on Feedly?',
-        title: 'No Feed Subscription Found'
-      });
-      dialog.addEventListener('click', function(e) {
-        if (e.index === 1) {
-          Alloy.createController('webpage', 'https://feedly.com/').getView().open();
-        }
-      });
-      dialog.show();
+      _.debounce(function(){
+        var dialog = Ti.UI.createAlertDialog({
+          title: 'No Feed Subscription Found',
+          message: 'Would you like to add some on Feedly?',
+          buttonNames: ['No Thanks', 'Sure'],
+          cancel: 0
+        });
+        dialog.addEventListener('click', function(e) {
+          if (e.index === 1) {
+            Alloy.createController('webpage', 'https://feedly.com/').getView().open();
+          }
+        });
+        dialog.show();
+      }, 60 * 60 * 1000, true);
       return;
     }
     // UPSERT code http://stackoverflow.com/questions/418898/sqlite-upsert-not-insert-or-replace
