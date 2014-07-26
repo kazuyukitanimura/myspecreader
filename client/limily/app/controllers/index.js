@@ -70,6 +70,9 @@ var noMoreStars = Ti.UI.createLabel({
 var menuIcon = Alloy.createController('menuIcon', {
   currentWindow: index
 }).getView();
+var homeIcon = Alloy.createController('homeIcon', {
+  currentWindow: index
+}).getView();
 
 var setBackground = function() {
   index.setBackgroundImage(backgroundImages[Ti.Platform.displayCaps.platformHeight] || 'Default.png');
@@ -110,6 +113,7 @@ client.setOnload(function() { // on success
   } else {
     index.add(scrollView);
     index.add(menuIcon);
+    index.add(homeIcon);
     index.needAuth = false;
     index.fireEvent('openRows');
     Ti.App.Properties.setBool(FIRST_TIME, false);
@@ -159,6 +163,7 @@ client.setOnerror(function(e) { // on error including a timeout
   index.removeAllChildren();
   index.add(scrollView);
   index.add(menuIcon);
+  index.add(homeIcon);
   index.fireEvent('openRows');
 });
 

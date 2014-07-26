@@ -1,0 +1,15 @@
+'#homeIcon': {
+  scrollable: false,
+  backgroundColor: '#1F1F21',
+  right: '-2',
+  borderWidth: 0,
+  width: '32dp',
+  height: '32dp',
+  textAlign: 'center',
+  font: {
+    fontFamily: 'Simple-Line-Icons',
+    fontSize: '26dp'
+  },
+  color: '#F7F7F7',
+  opacity: 0.9
+}

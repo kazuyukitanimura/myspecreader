@@ -27,7 +27,7 @@ var limit = ((Ti.Platform.displayCaps.platformHeight / 92) | 0);
 
 var setOpacity = function(item, state) {
   item.cell = {
-    opacity: (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) ? 0.8: 1.0
+    opacity: (state !== STATES.UNREAD && state !== STATES.KEEPUNREAD) ? 0.86: 1.0
   };
 };
 var setState = function(item, state) {
@@ -89,7 +89,7 @@ var section = rows.sections[0];
 section.setItems(items);
 
 if (stars) {
-  var sideLabel = Ti.UI.createLabel({
+  var topLabel = Ti.UI.createLabel({
     width: Ti.Platform.displayCaps.platformWidth,
     top: '0dp',
     height: '14dp',
@@ -99,7 +99,7 @@ if (stars) {
     backgroundColor: '#E1FF00',
     textAlign: 'center'
   });
-  currentWindow.add(sideLabel);
+  currentWindow.add(topLabel);
 }
 
 rows.markAsRead = function(db) {
@@ -197,18 +197,6 @@ rows.addEventListener('itemclick', _.debounce(function(e) {
   webpage.open();
 },
 256, true));
-
-rows.addEventListener('swipe', function(e) {
-  // prevent bubbling up to the row
-  e.cancelBubble = true;
-  Ti.API.debug(e.direction);
-  var direction = e.direction;
-  if (direction === 'right') {
-    Alloy.createController('menu', {
-      parentWindow: currentWindow
-    }).getView().open();
-  }
-});
 
 rows.addEventListener('free', function(e) {
   Ti.API.debug('table free');
