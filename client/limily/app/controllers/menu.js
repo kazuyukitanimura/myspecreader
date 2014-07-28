@@ -75,6 +75,15 @@ function settings(e) {
   Ti.API.debug('settings');
 }
 
+function rate(e) {
+  // https://gist.github.com/dawsontoth/1011043
+  if (Ti.Android) {
+    Ti.Platform.openURL('market://details?id='); // TODO
+  } else {
+    Ti.Platform.openURL('https://itunes.apple.com/'); // TODO
+  }
+}
+
 function about(e) {
   Ti.API.debug('about');
   Titanium.UI.createAlertDialog({
@@ -89,7 +98,7 @@ function logout(e) {
 }
 
 //var itemClicks = [home, search, stars, recent, settings, about, logout];
-var itemClicks = [home, stars, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
+var itemClicks = [home, stars, rate, about, logout]; // TODO implement search and settings, then delete this line and put back the above line
 
 menuList.addEventListener('itemclick', function(e) { // ListItem does not fire itemclick
   e.cancelBubble = true;

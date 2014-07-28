@@ -13,6 +13,7 @@
         <ListItem class="menuItem" title="\ue09b  Stars" />
         <!-- <ListItem class="menuItem" title="\ue081  Recently Read" /> -->
         <!-- <ListItem class="menuItem" title="\ue09a  Settings" /> comment out until we impleent-->
+        <ListItem class="menuItem" title="\ue028  Rate This App" />
         <ListItem class="menuItem" title="\ue08b  About" />
         <ListItem class="menuItem" title="\ue065  Logout" />
       </ListSection>
