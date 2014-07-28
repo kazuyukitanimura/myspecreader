@@ -10,8 +10,8 @@
   left: '-200dp',
   backgroundColor: '#1F1f21',
   color: '#F7F7F7',
-  //height: '330dp', // 44 * 7 + 22
-  height: '176dp', // 44 * 4
+  //height: '374dp', // 44 * 8 + 22
+  height: '220dp', // 44 * 5
   opacity: 0.9
 }
 
