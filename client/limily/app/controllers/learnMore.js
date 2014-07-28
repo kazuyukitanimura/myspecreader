@@ -50,7 +50,7 @@ function doClick(e) {
     top: 20
   }));
   scrollView.add(Ti.UI.createLabel({
-    text: 'Simple intuitive UI\nInteligent news selection from feeds\nCached news can be read even offline',
+    text: 'Simple intuitive UI\nInteligent news selection from feeds\nCached news can be read even offline\nOpen original website fast',
     left: 20,
   }));
   scrollView.add(Ti.UI.createLabel({
