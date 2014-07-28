@@ -22,6 +22,11 @@
       <h1>{{ title }}</h1>
       <h2>{{ subtitle }}</h2>
       <h3>{{ slogan }}</h3>
+      <ul>
+        {{# features }}
+          <li>{{ . }}</li>
+        {{/ features }}
+      </ul>
       <div id="description">{{& description }}</div>
       <a class="storeLink" href="{{ appStoreUrl }}" rel="nofollow">
         <img class="badge" alt="Download on the App Store" src="{{ appStoreBadge }}" />
@@ -35,6 +40,7 @@
           Coming soon...
         </div>
       </a>
+      <img id="screenshot_side" src="/images/screenshot_side.png" />
       <img id="screenshot" src="/images/screenshot.png" />
     </div>
     <footer>

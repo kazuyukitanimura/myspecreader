@@ -68,11 +68,18 @@ h3 {
   width: 180px;
 }
 
-#screenshot {
-  height:  640px;
+#screenshot_side {
+  height:  540px;
   position: absolute;
-  top: -50px;
-  margin-left: -80px;
+  top: 8px;
+  margin-left: 136px;
+}
+
+#screenshot {
+  height:  540px;
+  position: absolute;
+  top: 8px;
+  margin-left: 300px;
 }
 
 footer {
@@ -80,6 +87,7 @@ footer {
   width: 100%;
   padding: 0px 2%;
   z-index: -1;
+  position: fixed;
 }
 
 #license {
