@@ -168,6 +168,7 @@ client.setOnerror(function(e) { // on error including a timeout
 });
 
 var currentPage = max(scrollView.currentPage, 0); // the currentPage can be -1
+var noNewsAvail = 3;
 index.addEventListener('openRows', _.debounce(function(e) {
   Ti.API.debug('openRows');
   var i = 0;
@@ -221,6 +222,12 @@ index.addEventListener('openRows', _.debounce(function(e) {
   db.execute('COMMIT');
   db.close();
   if (Ti.Network.online && index.needAuth) {
+    if (!(--noNewsAvail)) {
+      Titanium.UI.createAlertDialog({
+        title: 'No news seems to be available on Feedly',
+        message: 'Please try later'
+      }).show();
+    }
     client.ping(8 * 1000);
     return;
   } else if (!Ti.Network.online && Ti.App.Properties.getBool(FIRST_TIME, true)) {
@@ -231,6 +238,8 @@ index.addEventListener('openRows', _.debounce(function(e) {
     setBackground();
     client.ping(16 * 1000);
     return;
+  } else {
+    noNewsAvail = 3;
   }
 },
 1024, true));
