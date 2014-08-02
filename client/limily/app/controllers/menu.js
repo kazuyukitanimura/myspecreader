@@ -80,7 +80,7 @@ function rate(e) {
   if (Ti.Android) {
     Ti.Platform.openURL('market://details?id='); // TODO
   } else {
-    Ti.Platform.openURL('https://itunes.apple.com/'); // TODO
+    Ti.Platform.openURL('http://appstore.com/limily');
   }
 }
 
