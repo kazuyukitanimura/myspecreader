@@ -227,6 +227,7 @@ index.addEventListener('openRows', _.debounce(function(e) {
         title: 'No news seems to be available on Feedly',
         message: 'Please try later'
       }).show();
+      noNewsAvail = 3;
     }
     client.ping(8 * 1000);
     return;
